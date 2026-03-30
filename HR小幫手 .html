@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HR 小幫手</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=DM+Mono:wght@400;500&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════ SHARED BASE ═══════════════════════════ */
+:root {
+  --ink:#1b1f2e; --ink2:#4a5068; --ink3:#8c90a0;
+  --paper:#faf9f6; --paper2:#f2f0eb; --paper3:#e8e5de;
+  --rule:#d8d4cc;
+  --navy:#1e3560; --navy2:#2a4a84;
+  --accent:#1a56db; --accent-pale:#e8f0fe;
+  --red:#c0392b; --red2:#fdf1f0;
+  --orange:#c05c00; --orange2:#fef6ee;
+  --green:#1a6b42; --green2:#eef7f2; --green-pale:#e6f4ec;
+  --amber:#92520a; --amber-pale:#fef3e2;
+  --gold:#9a7800; --gold2:#fefae8;
+  --mono:'DM Mono','JetBrains Mono',monospace;
+  --sans:'Noto Sans TC',sans-serif;
+  --r:8px; --r-lg:14px;
+  --line:rgba(15,17,23,.1); --line2:rgba(15,17,23,.05);
+  --white:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);font-size:13px;line-height:1.65;min-height:100vh}
+
+/* ═══════════════════════════ APP SHELL ═══════════════════════════ */
+#app-home, #app-night, #app-overtime { display:none }
+#app-home.active, #app-night.active, #app-overtime.active { display:block }
+
+/* ═══════════════════════════ HOME PAGE ═══════════════════════════ */
+.home-wrap {
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:40px 20px;
+  background:var(--navy);
+  position:relative;overflow:hidden;
+}
+.home-bg {
+  position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 50% at 20% 80%, rgba(42,74,132,0.5) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 80% 20%, rgba(26,86,219,0.25) 0%, transparent 55%);
+}
+.home-bg-grid {
+  position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size:40px 40px;
+}
+.home-brand {
+  display:flex;align-items:center;gap:14px;margin-bottom:12px;
+  position:relative;z-index:1;
+}
+.home-logo {
+  width:56px;height:56px;
+  background:linear-gradient(135deg, #4a78c8, #1a56db);
+  border-radius:16px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;
+  box-shadow:0 8px 30px rgba(26,86,219,0.5);
+}
+.home-title {
+  font-size:36px;font-weight:700;color:#fff;
+  letter-spacing:-1px;line-height:1;
+}
+.home-sub {
+  font-size:12px;color:rgba(255,255,255,0.4);
+  letter-spacing:.15em;text-transform:uppercase;
+  font-family:var(--mono);margin-top:3px;
+}
+.home-tagline {
+  font-size:15px;color:rgba(255,255,255,0.55);
+  margin-bottom:52px;position:relative;z-index:1;
+  text-align:center;
+}
+.home-cards {
+  display:grid;grid-template-columns:1fr 1fr;gap:20px;
+  max-width:760px;width:100%;
+  position:relative;z-index:1;
+}
+.home-card {
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:20px;
+  padding:32px 28px;
+  cursor:pointer;
+  transition:all .22s cubic-bezier(.22,1,.36,1);
+  text-decoration:none;
+  position:relative;overflow:hidden;
+}
+.home-card::before {
+  content:'';position:absolute;inset:0;border-radius:20px;
+  background:linear-gradient(135deg,rgba(255,255,255,0.08) 0%, transparent 60%);
+  opacity:0;transition:opacity .22s;
+}
+.home-card:hover {
+  background:rgba(255,255,255,0.1);
+  border-color:rgba(255,255,255,0.25);
+  transform:translateY(-4px);
+  box-shadow:0 20px 50px rgba(0,0,0,0.3);
+}
+.home-card:hover::before { opacity:1 }
+.home-card:active { transform:translateY(-2px) scale(0.99) }
+.hc-icon {
+  width:52px;height:52px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;margin-bottom:18px;
+}
+.hc-icon-night { background:linear-gradient(135deg,#2a1f6e,#1a56db); }
+.hc-icon-ot { background:linear-gradient(135deg,#6e1f1f,#c0392b); }
+.hc-name {
+  font-size:19px;font-weight:700;color:#fff;
+  letter-spacing:-0.3px;margin-bottom:8px;
+}
+.hc-desc {
+  font-size:12px;color:rgba(255,255,255,0.5);
+  line-height:1.8;
+}
+.hc-arrow {
+  position:absolute;bottom:20px;right:22px;
+  font-size:18px;color:rgba(255,255,255,0.25);
+  transition:all .2s;
+}
+.home-card:hover .hc-arrow {
+  color:rgba(255,255,255,0.6);
+  transform:translateX(4px);
+}
+.hc-tags {
+  display:flex;gap:6px;flex-wrap:wrap;margin-top:14px;
+}
+.hc-tag {
+  font-size:10px;font-family:var(--mono);
+  padding:2px 8px;border-radius:99px;
+  background:rgba(255,255,255,0.08);
+  color:rgba(255,255,255,0.4);
+  border:1px solid rgba(255,255,255,0.1);
+}
+.home-footer {
+  margin-top:40px;position:relative;z-index:1;
+  font-size:11px;color:rgba(255,255,255,0.2);
+  font-family:var(--mono);letter-spacing:.05em;
+  text-align:center;
+}
+
+/* ═══════════════════════════ BACK BUTTON (shared topbar element) ═══════════════════════════ */
+.back-btn {
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 11px;border-radius:6px;
+  font-size:11px;font-weight:500;cursor:pointer;
+  border:1px solid rgba(255,255,255,0.15);
+  background:rgba(255,255,255,0.08);
+  color:rgba(255,255,255,0.75);
+  font-family:var(--sans);transition:all .15s;
+}
+.back-btn:hover { background:rgba(255,255,255,0.14);color:#fff }
+.back-btn-dark {
+  border:1px solid var(--rule);
+  background:var(--white);
+  color:var(--ink2);
+}
+.back-btn-dark:hover { background:var(--paper2) }
+
+/* ═══════════════════════════ NIGHT ALLOWANCE SYSTEM ═══════════════════════════ */
+.night-shell{display:grid;grid-template-columns:230px 1fr;min-height:100vh}
+.night-sb{background:var(--ink);color:rgba(255,255,255,.85);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.night-sb-brand{padding:22px 18px 18px;border-bottom:1px solid rgba(255,255,255,.08)}
+.night-brand-row{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.night-brand-ico{width:28px;height:28px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center}
+.night-brand-name{font-size:13px;font-weight:700;color:#fff}
+.night-brand-sub{font-size:9px;color:rgba(255,255,255,.35);font-family:var(--mono);letter-spacing:.1em}
+.night-sb-sec{padding:14px 10px 6px}
+.night-sb-lbl{font-size:9px;font-family:var(--mono);color:rgba(255,255,255,.3);letter-spacing:.12em;text-transform:uppercase;padding:0 8px;margin-bottom:4px}
+.night-nav{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r);cursor:pointer;color:rgba(255,255,255,.55);font-size:12px;transition:all .15s;border:none;background:none;width:100%;text-align:left}
+.night-nav:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.9)}
+.night-nav.active{background:var(--accent);color:#fff}
+.night-sb-foot{margin-top:auto;padding:14px 18px;border-top:1px solid rgba(255,255,255,.08)}
+.night-sb-chip{display:flex;justify-content:space-between;font-size:10px;color:rgba(255,255,255,.35);padding:3px 0}
+.night-sb-chip-val{font-family:var(--mono);color:rgba(255,255,255,.75);font-size:11px}
+.night-topbar{background:var(--white);border-bottom:1px solid var(--line);padding:0 28px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.night-page-ttl{font-size:14px;font-weight:700;color:var(--ink);letter-spacing:-.3px}
+.night-topbar-acts{display:flex;gap:8px;align-items:center}
+.night-content{padding:24px 28px}
+.night-card{background:var(--white);border:1px solid var(--line);border-radius:var(--r-lg);padding:20px 22px;margin-bottom:14px}
+.night-card-ttl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:16px;font-family:var(--mono)}
+.night-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:var(--r);font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--line);background:var(--white);color:var(--ink2);font-family:var(--sans);transition:all .15s;white-space:nowrap}
+.night-btn:hover{background:var(--paper)}
+.night-btn:active{transform:scale(.98)}
+.night-btn:disabled{opacity:.4;cursor:not-allowed}
+.night-btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.night-btn-primary:hover{background:#1648c5}
+.night-btn-green{background:var(--green);color:#fff;border-color:var(--green)}
+.night-btn-green:hover{opacity:.9}
+.night-btn-sm{padding:5px 11px;font-size:11px}
+.night-btn-xs{padding:3px 8px;font-size:10px}
+.night-dz{border:1.5px dashed rgba(15,17,23,.18);border-radius:var(--r-lg);padding:36px 20px;text-align:center;cursor:pointer;transition:all .2s;background:var(--paper)}
+.night-dz:hover,.night-dz.over{border-color:var(--accent);background:var(--accent-pale)}
+.night-dz p{color:var(--ink3);font-size:12px;margin-top:8px}
+.night-dz strong{color:var(--accent)}
+.night-stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.night-stat{background:var(--paper);border-radius:var(--r);padding:12px 14px;border:1px solid var(--line2)}
+.night-stat-lbl{font-size:9px;color:var(--ink3);font-family:var(--mono);letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px}
+.night-stat-val{font-size:20px;font-weight:700;color:var(--ink);letter-spacing:-1px}
+.night-stat-unit{font-size:10px;color:var(--ink3);font-weight:400;margin-left:2px}
+.night-tbl-wrap{border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;overflow-x:auto}
+.night-tbl-wrap table{width:100%;border-collapse:collapse}
+.night-tbl-wrap thead{background:var(--paper)}
+.night-tbl-wrap th{padding:9px 13px;text-align:left;font-size:9px;font-family:var(--mono);font-weight:500;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--line);white-space:nowrap;cursor:pointer;user-select:none}
+.night-tbl-wrap th:hover{color:var(--ink)}
+.night-tbl-wrap td{padding:8px 13px;border-bottom:1px solid var(--line2);color:var(--ink2);font-size:12px;white-space:nowrap}
+.night-tbl-wrap tr:last-child td{border-bottom:none}
+.night-tbl-wrap tr:hover td{background:#fafaf8}
+.night-tr{text-align:right}.night-mono{font-family:var(--mono)}
+.night-accent{color:var(--accent);font-weight:700;font-size:13px}
+.night-name-cell{font-weight:500;color:var(--ink)}
+.night-badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:500;font-family:var(--mono)}
+.night-badge-green{background:var(--green-pale);color:var(--green)}
+.night-badge-amber{background:var(--amber-pale);color:var(--amber)}
+.night-badge-red{background:var(--red2);color:var(--red)}
+.night-badge-blue{background:var(--accent-pale);color:var(--accent)}
+.night-pill{display:inline-block;padding:1px 7px;border-radius:4px;font-size:10px;font-family:var(--mono);background:var(--paper);border:1px solid var(--line);color:var(--ink2)}
+.night-pill-neg{background:var(--red2);color:var(--red);border-color:rgba(185,28,28,.15)}
+.night-pill-dim{opacity:.3}
+.night-log{background:#0f1117;border-radius:var(--r);padding:12px 14px;font-family:var(--mono);font-size:10px;max-height:140px;overflow-y:auto;border:1px solid var(--line)}
+.night-ll{padding:1px 0;line-height:1.6}
+.night-ll.ok{color:#4ade80}.night-ll.err{color:#f87171}.night-ll.warn{color:#fbbf24}.night-ll.info{color:#60a5fa}.night-ll.dim{color:rgba(255,255,255,.3)}
+.night-prog{height:3px;background:var(--line2);border-radius:2px;overflow:hidden;margin-top:10px}
+.night-prog-bar{height:100%;background:var(--accent);border-radius:2px;transition:width .4s ease}
+.night-frow{display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+.night-frow input,.night-frow select{padding:6px 10px;border:1px solid var(--line);border-radius:var(--r);background:var(--white);color:var(--ink);font-size:12px;outline:none;font-family:var(--sans)}
+.night-frow input:focus,.night-frow select:focus{border-color:var(--accent)}
+.night-ml-a{margin-left:auto}
+.night-page{display:none}.night-page.active{display:block}
+.night-empty{padding:60px 20px;text-align:center;color:var(--ink3)}
+.night-empty p{font-size:12px;margin-top:12px}
+.night-fmap-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.night-fmap-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--line2);font-size:12px}
+.night-fmap-row:last-child{border-bottom:none}
+.night-fmap-key{font-family:var(--mono);font-size:11px;color:var(--ink3)}
+.night-fmap-val{font-family:var(--mono);font-size:11px;font-weight:500}
+.night-fmap-val.ok{color:var(--green)}
+.night-fmap-val.warn{color:var(--amber)}
+.night-chip{background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:1px 7px;font-size:10px;font-family:var(--mono)}
+.night-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.night-field{display:flex;flex-direction:column;gap:4px}
+.night-field label{font-size:10px;font-weight:500;color:var(--ink2);font-family:var(--mono);letter-spacing:.03em}
+.night-field input,.night-field select{padding:7px 10px;border:1px solid var(--line);border-radius:var(--r);background:var(--paper);color:var(--ink);font-size:12px;font-family:var(--sans);outline:none}
+.night-field input:focus,.night-field select:focus{border-color:var(--accent);background:var(--white)}
+.night-form-full{grid-column:1/-1}
+.night-conn-bar{display:flex;align-items:center;gap:8px;padding:9px 13px;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);margin-bottom:14px}
+.night-cdot{width:7px;height:7px;border-radius:50%;background:var(--ink3)}
+.night-cdot.ok{background:#22c55e}.night-cdot.err{background:var(--red)}.night-cdot.ping{background:#f59e0b;animation:nightpulse 1s infinite}
+@keyframes nightpulse{0%,100%{opacity:1}50%{opacity:.3}}
+.night-shift-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--line2);font-size:12px}
+.night-shift-row:last-child{border-bottom:none}
+.night-dash-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.night-kpi{background:var(--white);border:1px solid var(--line);border-radius:var(--r-lg);padding:18px 20px;position:relative;overflow:hidden}
+.night-kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--kpi-color,var(--accent))}
+.night-kpi-label{font-size:10px;font-family:var(--mono);color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+.night-kpi-value{font-size:26px;font-weight:700;color:var(--ink);letter-spacing:-1.5px;line-height:1}
+.night-kpi-unit{font-size:12px;color:var(--ink3);font-weight:400;margin-left:3px}
+.night-kpi-sub{font-size:11px;color:var(--ink3);margin-top:6px}
+.night-kpi-trend{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-family:var(--mono);padding:2px 7px;border-radius:20px;margin-top:6px}
+.night-trend-up{background:var(--green-pale);color:var(--green)}
+.night-trend-dn{background:var(--red2);color:var(--red)}
+.night-dash-row{display:grid;gap:14px;margin-bottom:14px}
+.night-dash-row-2{grid-template-columns:1fr 1fr}
+.night-dash-row-3{grid-template-columns:2fr 1fr 1fr}
+.night-dash-row-half{grid-template-columns:3fr 2fr}
+.night-chart-card{background:var(--white);border:1px solid var(--line);border-radius:var(--r-lg);padding:18px 20px}
+.night-chart-ttl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px;font-family:var(--mono)}
+.night-chart-sub{font-size:11px;color:var(--ink3);margin-bottom:16px}
+.night-chart-wrap{position:relative}
+.night-rank-list{list-style:none}
+.night-rank-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line2)}
+.night-rank-item:last-child{border-bottom:none}
+.night-rank-num{font-family:var(--mono);font-size:10px;color:var(--ink3);min-width:18px;text-align:right}
+.night-rank-name{font-size:12px;font-weight:500;flex:1;color:var(--ink)}
+.night-rank-dept{font-size:10px;color:var(--ink3)}
+.night-rank-bar-wrap{width:80px;height:5px;background:var(--line2);border-radius:3px;overflow:hidden}
+.night-rank-bar{height:100%;background:var(--accent);border-radius:3px;transition:width .6s ease}
+.night-rank-val{font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:500;min-width:36px;text-align:right}
+.night-dept-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--line2)}
+.night-dept-row:last-child{border-bottom:none}
+.night-dept-name{font-size:11px;min-width:110px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.night-dept-bar-wrap{flex:1;height:8px;background:var(--line2);border-radius:4px;overflow:hidden}
+.night-dept-bar{height:100%;border-radius:4px;transition:width .6s ease}
+.night-dept-val{font-family:var(--mono);font-size:11px;min-width:44px;text-align:right;color:var(--ink2)}
+.night-legend-list{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+.night-legend-item{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--ink2)}
+.night-legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.night-legend-pct{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--ink3)}
+.night-hm-cell{border-radius:3px;height:22px;display:flex;align-items:center;justify-content:center;font-size:9px;font-family:var(--mono);color:var(--ink3);cursor:default;transition:opacity .15s}
+.night-hm-cell:hover{opacity:.8}
+
+/* ═══════════════════════════ OVERTIME AUDIT SYSTEM ═══════════════════════════ */
+.ot-masthead{background:var(--navy);padding:0 28px;display:flex;align-items:stretch;justify-content:space-between;border-bottom:3px solid #4a78c8;position:sticky;top:0;z-index:50}
+.ot-masthead-logo{display:flex;align-items:center;gap:14px;padding:14px 0}
+.ot-logo-mark{width:36px;height:36px;background:linear-gradient(135deg,#4a78c8,#2a4a84);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.ot-logo-text{color:#fff;font-size:15px;font-weight:700;letter-spacing:.02em}
+.ot-logo-sub{color:rgba(255,255,255,.45);font-size:10px;letter-spacing:.06em;text-transform:uppercase;margin-top:1px}
+.ot-masthead-actions{display:flex;align-items:center;gap:8px}
+.ot-layout{display:grid;grid-template-columns:240px 1fr;min-height:calc(100vh - 71px)}
+.ot-sidebar{background:var(--paper2);border-right:1px solid var(--rule);padding:24px 0;position:sticky;top:71px;height:calc(100vh - 71px);overflow-y:auto}
+.ot-sidebar-sec{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);padding:0 20px;margin-bottom:4px;margin-top:20px}
+.ot-sidebar-sec:first-child{margin-top:0}
+.ot-nav-item{display:flex;align-items:center;gap:10px;padding:9px 20px;font-size:12px;color:var(--ink2);cursor:pointer;transition:all .12s;border-left:2px solid transparent;user-select:none}
+.ot-nav-item:hover{background:var(--paper3);color:var(--ink)}
+.ot-nav-item.active{background:#e8edf7;color:var(--navy2);border-left-color:var(--navy2);font-weight:500}
+.ot-nav-ic{font-size:14px;width:18px;text-align:center}
+.ot-main{padding:28px 32px;overflow-y:auto}
+.ot-page{display:none;animation:otFadeUp .2s ease}
+.ot-page.active{display:block}
+@keyframes otFadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.ot-page-header{margin-bottom:24px}
+.ot-page-title{font-size:20px;font-weight:700;color:var(--navy);letter-spacing:-.01em}
+.ot-page-desc{font-size:12px;color:var(--ink3);margin-top:4px}
+.ot-alert{padding:11px 15px;border-radius:6px;font-size:12px;margin-bottom:18px;display:flex;gap:10px;align-items:flex-start;border-left:3px solid}
+.ot-alert-info{background:var(--gold2);border-color:var(--gold);color:var(--gold)}
+.ot-alert-ok{background:var(--green2);border-color:var(--green);color:var(--green)}
+.ot-alert-err{background:var(--red2);border-color:var(--red);color:var(--red)}
+.ot-alert-warn{background:var(--orange2);border-color:var(--orange);color:var(--orange)}
+.ot-upload-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.ot-uzone{border:1.5px dashed var(--rule);border-radius:10px;background:white;padding:22px 16px;text-align:center;cursor:pointer;transition:all .18s;position:relative;overflow:hidden}
+.ot-uzone::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 60%,rgba(30,53,96,.03));pointer-events:none}
+.ot-uzone:hover,.ot-uzone.drag{border-color:var(--navy2);background:#f0f4fb}
+.ot-uzone.loaded{border-color:var(--green);background:var(--green2);border-style:solid}
+.ot-uz-num{width:28px;height:28px;border-radius:50%;background:var(--navy);color:white;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+.ot-uzone.loaded .ot-uz-num{background:var(--green)}
+.ot-uz-title{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.ot-uz-cols{font-size:10px;color:var(--ink3);margin-bottom:8px;line-height:1.5}
+.ot-uz-badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:600;font-family:var(--mono);background:var(--paper3);color:var(--ink2)}
+.ot-uzone.loaded .ot-uz-badge{background:var(--green);color:white}
+.ot-uz-status{font-size:11px;color:var(--green);font-weight:500;margin-top:6px;min-height:16px}
+.ot-run-card{background:white;border:1px solid var(--rule);border-radius:10px;padding:18px 20px;margin-top:16px}
+.ot-prog-wrap{background:var(--paper3);border-radius:99px;height:4px;margin:10px 0;overflow:hidden}
+.ot-prog-bar{height:100%;border-radius:99px;background:var(--navy2);transition:width .3s ease}
+.ot-log-box{background:#0f1320;color:#8fca8f;font-family:var(--mono);font-size:11px;border-radius:6px;padding:12px;max-height:150px;overflow-y:auto;line-height:1.9;margin-top:10px}
+.ot-log-e{color:#f08080}.ot-log-w{color:#e8c570}.ot-log-i{color:#80b8f0}.ot-log-ok{color:#8fca8f}
+.ot-stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.ot-stat{background:white;border:1px solid var(--rule);border-radius:10px;padding:16px 18px;border-top:3px solid}
+.ot-stat-n{border-top-color:var(--navy2)}.ot-stat-r{border-top-color:var(--red)}.ot-stat-o{border-top-color:var(--orange)}.ot-stat-g{border-top-color:var(--green)}
+.ot-stat-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3)}
+.ot-stat-val{font-size:28px;font-weight:700;margin:3px 0 1px;letter-spacing:-.03em}
+.ot-stat-n .ot-stat-val{color:var(--navy2)}.ot-stat-r .ot-stat-val{color:var(--red)}.ot-stat-o .ot-stat-val{color:var(--orange)}.ot-stat-g .ot-stat-val{color:var(--green)}
+.ot-stat-sub{font-size:10px;color:var(--ink3)}
+.ot-toolbar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.ot-toolbar input,.ot-toolbar select{padding:7px 11px;border:1px solid var(--rule);border-radius:6px;font-family:var(--sans);font-size:12px;background:white;color:var(--ink);outline:none;transition:border .12s}
+.ot-toolbar input:focus,.ot-toolbar select:focus{border-color:var(--navy2)}
+.ot-toolbar input{min-width:180px}
+.ot-tc{font-size:11px;color:var(--ink3);margin-left:auto}
+.ot-result-card{background:white;border:1px solid var(--rule);border-radius:10px;overflow:hidden}
+.ot-result-head{padding:14px 20px;border-bottom:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center;background:var(--paper2)}
+.ot-rh-title{font-size:13px;font-weight:700;color:var(--navy)}
+.ot-tbl-wrap{overflow-x:auto}
+.ot-tbl-wrap table{width:100%;border-collapse:collapse;font-size:12px}
+.ot-tbl-wrap thead{background:var(--paper2)}
+.ot-tbl-wrap th{padding:9px 16px;text-align:left;font-size:10px;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--rule);white-space:nowrap}
+.ot-tbl-wrap td{padding:10px 16px;border-bottom:1px solid var(--rule);vertical-align:top}
+.ot-tbl-wrap tr:last-child td{border-bottom:none}
+.ot-tbl-wrap tr:hover td{background:#f7f6f2}
+.ot-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:700;white-space:nowrap}
+.ot-b-red{background:var(--red2);color:var(--red)}.ot-b-orange{background:var(--orange2);color:var(--orange)}.ot-b-blue{background:#e8edf7;color:var(--navy2)}.ot-b-gray{background:var(--paper3);color:var(--ink2)}
+.ot-mono{font-family:var(--mono);font-size:11px}
+.ot-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:6px;font-size:12px;font-weight:600;font-family:var(--sans);cursor:pointer;border:none;transition:all .12s;white-space:nowrap;letter-spacing:.01em}
+.ot-btn-navy{background:var(--navy);color:white}.ot-btn-navy:hover{background:var(--navy2)}
+.ot-btn-outline{background:white;color:var(--ink);border:1px solid var(--rule)}.ot-btn-outline:hover{background:var(--paper2)}
+.ot-btn-green{background:var(--green);color:white}.ot-btn-green:hover{background:#145c38}
+.ot-btn-sm{padding:5px 10px;font-size:11px}
+.ot-btn:disabled{opacity:.38;cursor:not-allowed}
+.ot-btn-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.ot-empty{text-align:center;padding:60px 20px;color:var(--ink3)}
+.ot-empty-ic{font-size:36px;opacity:.2;margin-bottom:10px}
+.ot-col-map-desc{background:white;border:1px solid var(--rule);border-radius:10px;padding:18px 20px;margin-bottom:16px}
+.ot-cmd-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:12px}
+.ot-cmd-row{display:grid;grid-template-columns:60px 140px 1fr;gap:8px 12px;align-items:start;padding:7px 0;border-bottom:1px solid var(--rule);font-size:12px}
+.ot-cmd-row:last-child{border-bottom:none}
+.ot-cmd-col{color:var(--navy2);font-family:var(--mono);font-weight:700;font-size:11px}
+.ot-cmd-table{font-size:11px;color:var(--ink2)}
+.ot-cmd-desc{color:var(--ink3)}
+.ot-rule-card{background:white;border:1px solid var(--rule);border-radius:10px;padding:18px 20px;margin-bottom:14px}
+.ot-rule-num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--navy);color:white;font-size:11px;font-weight:700;margin-right:8px;flex-shrink:0}
+.ot-rule-title{font-size:13px;font-weight:700;color:var(--navy);display:flex;align-items:center;margin-bottom:8px}
+.ot-rule-body{font-size:12px;color:var(--ink2);line-height:1.8;padding-left:30px}
+.ot-formula{background:var(--paper2);border:1px solid var(--rule);border-radius:6px;padding:8px 12px;font-family:var(--mono);font-size:11px;color:var(--navy);margin:6px 0;display:inline-block}
+.ot-notice{background:var(--gold2);border:1px solid #e8d87a;border-left:3px solid var(--gold);border-radius:6px;padding:12px 16px;font-size:12px;color:var(--gold);margin-bottom:16px}
+.ot-drw-ov{position:fixed;inset:0;background:rgba(0,0,0,.25);z-index:100;display:none;justify-content:flex-end;backdrop-filter:blur(2px)}
+.ot-drw-ov.on{display:flex}
+.ot-drw{width:480px;background:var(--paper);display:flex;flex-direction:column;height:100vh;overflow-y:auto;box-shadow:-6px 0 30px rgba(0,0,0,.12);border-left:1px solid var(--rule)}
+.ot-drw-hd{padding:18px 22px;border-bottom:1px solid var(--rule);display:flex;justify-content:space-between;align-items:flex-start;position:sticky;top:0;background:white;z-index:2}
+.ot-drw-name{font-size:16px;font-weight:700;color:var(--navy)}
+.ot-drw-date{font-size:11px;color:var(--ink3);margin-top:2px;font-family:var(--mono)}
+.ot-drw-x{background:none;border:none;cursor:pointer;font-size:18px;color:var(--ink3);padding:2px}
+.ot-drw-body{padding:20px 22px}
+.ot-kv{display:grid;grid-template-columns:100px 1fr;gap:7px 12px;margin-bottom:14px}
+.ot-kv-k{font-size:11px;color:var(--ink3);padding-top:1px}
+.ot-kv-v{font-size:12px;font-weight:600}
+.ot-chk{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--rule)}
+.ot-chk:last-child{border-bottom:none}
+.ot-chk-ic{font-size:15px;margin-top:1px;flex-shrink:0}
+.ot-chk-body{flex:1}
+.ot-chk-lbl{font-size:12px;font-weight:600}
+.ot-chk-detail{font-size:10px;color:var(--ink3);font-family:var(--mono);margin-top:2px}
+.ot-chk-res{font-size:11px;font-weight:700;white-space:nowrap;margin-top:2px}
+
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:var(--rule);border-radius:3px}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════
+  HOME PAGE
+════════════════════════════════════════════════════════════ -->
+<div id="app-home" class="active">
+  <div class="home-wrap">
+    <div class="home-bg"></div>
+    <div class="home-bg-grid"></div>
+    <div class="home-brand">
+      <div class="home-logo">🤖</div>
+      <div>
+        <div class="home-title">HR 小幫手</div>
+        <div class="home-sub">HR ASSISTANT PLATFORM</div>
+      </div>
+    </div>
+    <div class="home-tagline">請選擇您要使用的功能</div>
+
+    <div class="home-cards">
+      <!-- Card 1: 夜點津貼 -->
+      <div class="home-card" onclick="launchNight()">
+        <div class="hc-icon hc-icon-night">🌙</div>
+        <div class="hc-name">夜點津貼計算</div>
+        <div class="hc-desc">
+          自動讀取出勤 Excel，依班別計算每位員工的夜點津貼時數，支援跨 Sheet 合併、假別扣除與 EIP 串接。
+        </div>
+        <div class="hc-tags">
+          <span class="hc-tag">Excel 上傳</span>
+          <span class="hc-tag">多 Sheet</span>
+          <span class="hc-tag">班別設定</span>
+          <span class="hc-tag">儀表板</span>
+          <span class="hc-tag">EIP 串接</span>
+        </div>
+        <div class="hc-arrow">→</div>
+      </div>
+
+      <!-- Card 2: 加班異常檢核 -->
+      <div class="home-card" onclick="launchOvertime()">
+        <div class="hc-icon hc-icon-ot">🔍</div>
+        <div class="hc-name">加班異常檢核</div>
+        <div class="hc-desc">
+          上傳三份報表後，自動執行三項稽核：時段比對、時數計算、換休核對，快速找出申報異常。
+        </div>
+        <div class="hc-tags">
+          <span class="hc-tag">三表比對</span>
+          <span class="hc-tag">時段核對</span>
+          <span class="hc-tag">時數稽核</span>
+          <span class="hc-tag">換休核對</span>
+          <span class="hc-tag">匯出報告</span>
+        </div>
+        <div class="hc-arrow">→</div>
+      </div>
+    </div>
+
+    <div class="home-footer">HR 小幫手 · 整合版 v1.0</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+  夜點津貼系統
+════════════════════════════════════════════════════════════ -->
+<div id="app-night">
+<div class="night-shell">
+<aside class="night-sb">
+  <div class="night-sb-brand">
+    <div class="night-brand-row">
+      <div class="night-brand-ico">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      </div>
+      <span class="night-brand-name">夜點津貼系統</span>
+    </div>
+    <div class="night-brand-sub">NIGHT ALLOWANCE v4.0</div>
+  </div>
+  <div class="night-sb-sec">
+    <div class="night-sb-lbl">資料來源</div>
+    <button class="night-nav active" onclick="nightGotoPage('upload',this)">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      上傳 Excel / CSV
+    </button>
+    <button class="night-nav" onclick="nightGotoPage('eip',this)">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      EIP 系統串接
+    </button>
+  </div>
+  <div class="night-sb-sec">
+    <div class="night-sb-lbl">報表</div>
+    <button class="night-nav" onclick="nightGotoPage('dash',this)">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      數據儀表板
+    </button>
+    <button class="night-nav" onclick="nightGotoPage('result',this)">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/></svg>
+      加總報表
+    </button>
+    <button class="night-nav" onclick="nightGotoPage('detail',this)">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      明細查詢
+    </button>
+  </div>
+  <div class="night-sb-sec">
+    <div class="night-sb-lbl">設定</div>
+    <button class="night-nav" onclick="nightGotoPage('config',this)">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 19.07a10 10 0 0 1 0-14.14"/></svg>
+      班別 & 欄位設定
+    </button>
+  </div>
+  <div class="night-sb-foot">
+    <div class="night-sb-chip"><span>員工人數</span><span class="night-sb-chip-val" id="sb-emp">—</span></div>
+    <div class="night-sb-chip"><span>資料筆數</span><span class="night-sb-chip-val" id="sb-rows">—</span></div>
+    <div class="night-sb-chip"><span>總夜點時數</span><span class="night-sb-chip-val" id="sb-total">—</span></div>
+    <div style="margin-top:12px;">
+      <button class="back-btn" onclick="goHome()" style="width:100%;justify-content:center;">← 回首頁</button>
+    </div>
+  </div>
+</aside>
+
+<div>
+  <div class="night-topbar">
+    <div class="night-page-ttl" id="night-page-ttl">上傳 Excel / CSV</div>
+    <div class="night-topbar-acts">
+      <button class="night-btn night-btn-sm" onclick="nightLoadDemo()">載入示範資料</button>
+      <button class="night-btn night-btn-sm night-btn-green" id="night-btn-export" onclick="nightExportExcel()" disabled>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        匯出 Excel
+      </button>
+    </div>
+  </div>
+
+  <div class="night-content">
+  <!-- PAGE: UPLOAD -->
+  <div class="night-page active" id="night-page-upload">
+    <div class="night-card">
+      <div class="night-card-ttl">上傳出勤資料</div>
+      <div class="night-dz" id="night-dz" onclick="document.getElementById('night-fi').click()">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="var(--ink3)" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+        <p>拖曳或點選上傳 <strong>Excel (.xlsx) / CSV</strong></p>
+        <p>自動支援多 Sheet，全頁面遍歷後依姓名合併計算</p>
+        <input type="file" id="night-fi" accept=".csv,.xlsx,.xls" style="display:none" onchange="nightHandleFile(event)">
+      </div>
+      <div id="night-upload-status" style="display:none;margin-top:12px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <span style="font-size:11px;font-family:var(--mono);color:var(--ink2);" id="night-upload-fname"></span>
+          <span class="night-badge night-badge-blue" id="night-upload-badge">處理中</span>
+        </div>
+        <div class="night-prog"><div class="night-prog-bar" id="night-prog-bar" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="night-card" id="night-fmap-card" style="display:none;">
+      <div class="night-card-ttl">偵測到的欄位對應</div>
+      <div class="night-fmap-grid">
+        <div>
+          <div class="night-fmap-row"><span class="night-fmap-key">姓名欄</span><span class="night-fmap-val ok" id="night-fm-name">—</span></div>
+          <div class="night-fmap-row"><span class="night-fmap-key">課別/部門欄</span><span class="night-fmap-val ok" id="night-fm-dept">—</span></div>
+          <div class="night-fmap-row"><span class="night-fmap-key">班別欄</span><span class="night-fmap-val ok" id="night-fm-shift">—</span></div>
+        </div>
+        <div>
+          <div class="night-fmap-row"><span class="night-fmap-key">實際出勤欄</span><span class="night-fmap-val ok" id="night-fm-cin">—</span></div>
+          <div class="night-fmap-row"><span class="night-fmap-key">實際退勤欄</span><span class="night-fmap-val ok" id="night-fm-cout">—</span></div>
+          <div class="night-fmap-row"><span class="night-fmap-key">備註欄</span><span class="night-fmap-val ok" id="night-fm-note">—</span></div>
+        </div>
+      </div>
+      <div style="margin-top:14px;padding:10px 12px;background:var(--paper);border-radius:var(--r);border:1px solid var(--line);">
+        <div style="font-size:10px;color:var(--ink3);font-family:var(--mono);margin-bottom:6px;">時間欄位偵測格式</div>
+        <div id="night-time-fmt-info" style="font-size:11px;color:var(--ink2);font-family:var(--mono);"></div>
+      </div>
+    </div>
+    <div class="night-card" style="padding-bottom:14px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div class="night-card-ttl" style="margin-bottom:0">系統日誌</div>
+        <button class="night-btn night-btn-xs" onclick="document.getElementById('night-log').innerHTML=''">清除</button>
+      </div>
+      <div class="night-log" id="night-log"><div class="night-ll dim">系統就緒。請上傳出勤資料。</div></div>
+    </div>
+  </div>
+
+  <!-- PAGE: EIP -->
+  <div class="night-page" id="night-page-eip">
+    <div class="night-card">
+      <div class="night-card-ttl">EIP 系統連線設定</div>
+      <div class="night-conn-bar">
+        <span class="night-cdot" id="night-eip-dot"></span>
+        <span style="font-size:12px;color:var(--ink2);" id="night-eip-lbl">尚未連線</span>
+        <span style="font-size:10px;font-family:var(--mono);color:var(--ink3);margin-left:auto;" id="night-eip-detail"></span>
+      </div>
+      <div class="night-form-grid" style="margin-bottom:12px;">
+        <div class="night-field"><label>EIP 系統網址</label><input type="url" id="night-f-url" placeholder="https://eip.company.com"></div>
+        <div class="night-field"><label>API 路徑</label><input type="text" id="night-f-path" value="/api/attendance"></div>
+        <div class="night-field"><label>帳號</label><input type="text" id="night-f-user" placeholder="employee_id"></div>
+        <div class="night-field"><label>密碼 / Token</label><input type="password" id="night-f-pass" placeholder="••••••••"></div>
+        <div class="night-field"><label>驗證方式</label>
+          <select id="night-f-auth">
+            <option value="basic">HTTP Basic Auth</option>
+            <option value="bearer">Bearer Token</option>
+            <option value="apikey">API Key Header</option>
+          </select>
+        </div>
+        <div class="night-field"><label>查詢月份</label><input type="month" id="night-f-month"></div>
+        <div class="night-field night-form-full"><label>自訂 Header（JSON，選填）</label><input type="text" id="night-f-hdrs" placeholder='{"X-Token":"abc"}'></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:18px;">
+        <button class="night-btn night-btn-primary night-btn-sm" onclick="nightConnectEIP()">連接並抓取</button>
+        <button class="night-btn night-btn-sm" onclick="nightTestEIP()">測試連線</button>
+        <button class="night-btn night-btn-sm" onclick="nightSaveEIP()">儲存設定</button>
+        <span id="night-eip-spin" style="display:none;font-size:10px;font-family:var(--mono);color:var(--ink3);align-self:center;">● 連線中...</span>
+      </div>
+      <div style="background:var(--amber-pale);border:1px solid rgba(146,82,10,.15);border-radius:var(--r);padding:12px 14px;font-size:11px;color:var(--amber);line-height:1.8;">
+        <strong>CORS 限制：</strong>瀏覽器安全政策限制跨域存取。解法：A. 請 IT 在 EIP 加入 CORS 標頭　B. 設本地反向代理　C. 從 EIP 匯出 xlsx 後直接上傳（最快）
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: DASHBOARD -->
+  <div class="night-page" id="night-page-dash">
+    <div id="night-dash-empty" class="night-empty">
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      <p>尚無資料，請先上傳出勤 Excel 或連接 EIP</p>
+    </div>
+    <div id="night-dash-data" style="display:none;">
+      <div class="night-dash-kpi-grid" id="night-dash-kpis"></div>
+      <div class="night-dash-row night-dash-row-half" style="margin-bottom:14px;">
+        <div class="night-chart-card">
+          <div class="night-chart-ttl">各員工夜點時數排名</div>
+          <div class="night-chart-sub">依夜點時數由高至低排序，前 15 名</div>
+          <div class="night-chart-wrap" style="height:320px;"><canvas id="night-chart-bar"></canvas></div>
+        </div>
+        <div class="night-chart-card">
+          <div class="night-chart-ttl">Top 10 夜點排行榜</div>
+          <div class="night-chart-sub">夜點時數最高員工</div>
+          <ul class="night-rank-list" id="night-rank-list"></ul>
+        </div>
+      </div>
+      <div class="night-dash-row night-dash-row-3" style="margin-bottom:14px;">
+        <div class="night-chart-card">
+          <div class="night-chart-ttl">課別夜點時數分布</div>
+          <div class="night-chart-sub">各課別佔總夜點時數比例</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:center;">
+            <div class="night-chart-wrap" style="height:180px;"><canvas id="night-chart-dept-pie"></canvas></div>
+            <div id="night-dept-legend" class="night-legend-list"></div>
+          </div>
+        </div>
+        <div class="night-chart-card">
+          <div class="night-chart-ttl">假別扣除分布</div>
+          <div class="night-chart-sub">各假別影響時數</div>
+          <div class="night-chart-wrap" style="height:160px;"><canvas id="night-chart-leave-pie"></canvas></div>
+          <div id="night-leave-legend" class="night-legend-list"></div>
+        </div>
+        <div class="night-chart-card">
+          <div class="night-chart-ttl">班別出勤人次</div>
+          <div class="night-chart-sub">各班別使用次數</div>
+          <div class="night-chart-wrap" style="height:200px;"><canvas id="night-chart-shift-doughnut"></canvas></div>
+        </div>
+      </div>
+      <div class="night-dash-row night-dash-row-2" style="margin-bottom:14px;">
+        <div class="night-chart-card">
+          <div class="night-chart-ttl">課別夜點時數比較</div>
+          <div class="night-chart-sub">含員工人數與平均值</div>
+          <div id="night-dept-bar-list" style="margin-top:4px;"></div>
+        </div>
+        <div class="night-chart-card">
+          <div class="night-chart-ttl">夜點時數分布直方圖</div>
+          <div class="night-chart-sub">員工夜點時數落點分布</div>
+          <div class="night-chart-wrap" style="height:200px;"><canvas id="night-chart-hist"></canvas></div>
+        </div>
+      </div>
+      <div class="night-dash-row night-dash-row-2">
+        <div class="night-chart-card">
+          <div class="night-chart-ttl">夜點時數 vs 跨夜天數</div>
+          <div class="night-chart-sub">每個點代表一位員工</div>
+          <div class="night-chart-wrap" style="height:220px;"><canvas id="night-chart-scatter"></canvas></div>
+        </div>
+        <div class="night-chart-card">
+          <div class="night-chart-ttl">各課別跨夜天數</div>
+          <div class="night-chart-sub">跨夜值班負擔分析</div>
+          <div class="night-chart-wrap" style="height:220px;"><canvas id="night-chart-overnight-bar"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: RESULT -->
+  <div class="night-page" id="night-page-result">
+    <div id="night-result-empty" class="night-empty">
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/></svg>
+      <p>尚無資料，請先上傳出勤 Excel 或連接 EIP</p>
+    </div>
+    <div id="night-result-data" style="display:none;">
+      <div class="night-stats-row" id="night-stats-row"></div>
+      <div class="night-card" style="padding:16px 18px;">
+        <div class="night-frow">
+          <input placeholder="搜尋姓名..." id="night-r-q" oninput="nightRenderResult()">
+          <select id="night-r-dept" onchange="nightRenderResult()"><option value="">全部課別</option></select>
+          <span class="night-ml-a" style="font-size:11px;color:var(--ink3);font-family:var(--mono);" id="night-result-count"></span>
+        </div>
+        <div class="night-tbl-wrap">
+          <table>
+            <thead><tr>
+              <th onclick="nightSort('rank')">#</th>
+              <th onclick="nightSort('dept')">課別</th>
+              <th onclick="nightSort('name')">姓名</th>
+              <th onclick="nightSort('nightHours')" style="text-align:right">夜點時數（hr）</th>
+              <th onclick="nightSort('overnight')" style="text-align:right">跨夜天數</th>
+              <th onclick="nightSort('count')" style="text-align:right">出勤筆數</th>
+              <th style="text-align:right">假扣除（hr）</th>
+            </tr></thead>
+            <tbody id="night-result-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: DETAIL -->
+  <div class="night-page" id="night-page-detail">
+    <div id="night-detail-empty" class="night-empty">
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <p>尚無資料</p>
+    </div>
+    <div id="night-detail-data" style="display:none;">
+      <div class="night-card" style="padding:16px 18px;">
+        <div class="night-frow">
+          <input placeholder="搜尋姓名..." id="night-d-q" oninput="nightRenderDetail()">
+          <select id="night-d-dept" onchange="nightRenderDetail()"><option value="">全部課別</option></select>
+          <select id="night-d-shift" onchange="nightRenderDetail()"><option value="">全部班別</option></select>
+          <span class="night-ml-a" style="font-size:11px;color:var(--ink3);font-family:var(--mono);" id="night-detail-count"></span>
+        </div>
+        <div class="night-tbl-wrap">
+          <table>
+            <thead><tr>
+              <th>課別</th><th>姓名</th><th>班別</th>
+              <th>出勤日</th><th>實際出勤</th><th>實際退勤</th>
+              <th>夜點區間</th>
+              <th style="text-align:right">夜點時數</th>
+              <th style="text-align:right">假扣除</th>
+              <th style="text-align:right">跨夜</th>
+              <th>備註</th>
+            </tr></thead>
+            <tbody id="night-detail-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: CONFIG -->
+  <div class="night-page" id="night-page-config">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div class="night-card">
+        <div class="night-card-ttl">欄位對應設定</div>
+        <div style="font-size:11px;color:var(--ink3);margin-bottom:12px;">系統已自動偵測並支援以下欄位名稱：</div>
+        <div id="night-col-map-list"></div>
+        <div style="margin-top:14px;padding:10px 12px;background:var(--accent-pale);border-radius:var(--r);font-size:11px;color:var(--accent);line-height:1.7;">
+          <strong>您的檔案欄位：</strong><br>
+          員工姓名 / 部門 / 班別名稱 / 出勤日 / 實際出勤 / 實際退勤 / 備註<br>
+          <strong>時間格式：</strong>Excel datetime.time 物件（自動處理）
+        </div>
+      </div>
+      <div class="night-card">
+        <div class="night-card-ttl">班別對照表</div>
+        <div id="night-shift-list"></div>
+        <div style="margin-top:12px;display:flex;gap:8px;">
+          <input id="night-new-shift" placeholder="HHMM-HHMM" style="flex:1;padding:6px 10px;border:1px solid var(--line);border-radius:var(--r);font-size:11px;font-family:var(--mono);background:var(--paper);color:var(--ink);outline:none;">
+          <button class="night-btn night-btn-sm night-btn-primary" onclick="nightAddShift()">新增</button>
+        </div>
+      </div>
+      <div class="night-card">
+        <div class="night-card-ttl">計算規則</div>
+        <div style="font-size:11px;line-height:2.2;color:var(--ink2);">
+          <div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--line2);">
+            <span style="color:var(--ink3);font-family:var(--mono);">夜點有效區間</span><span style="font-family:var(--mono);">22:00 ~ 07:00</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--line2);">
+            <span style="color:var(--ink3);font-family:var(--mono);">請假扣除範圍</span><span style="font-family:var(--mono);">特休 / 事假 / 病假 / 生理假（全部假別）</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--line2);">
+            <span style="color:var(--ink3);font-family:var(--mono);">備註時間格式</span><span style="font-family:var(--mono);">假別HHMM~HHMM</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:3px 0;">
+            <span style="color:var(--ink3);font-family:var(--mono);">跨夜判定門檻</span><span style="font-family:var(--mono);">實際退勤 &gt; 隔日 00:30</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+  加班異常稽核系統
+════════════════════════════════════════════════════════════ -->
+<div id="app-overtime">
+<header class="ot-masthead">
+  <div class="ot-masthead-logo">
+    <div class="ot-logo-mark">⚙</div>
+    <div>
+      <div class="ot-logo-text">加班異常檢核</div>
+      <div class="ot-logo-sub">HR Overtime Audit Platform</div>
+    </div>
+  </div>
+  <div class="ot-masthead-actions">
+    <button class="back-btn" onclick="goHome()">← 回首頁</button>
+    <button class="ot-btn ot-btn-outline ot-btn-sm" onclick="otLoadSample()">📄 載入範例</button>
+    <button class="ot-btn ot-btn-navy ot-btn-sm" id="ot-run-btn" onclick="otRunAudit()" disabled>▶ 執行稽核</button>
+  </div>
+</header>
+
+<div class="ot-layout">
+<nav class="ot-sidebar">
+  <div class="ot-sidebar-sec">資料上傳</div>
+  <div class="ot-nav-item active" id="ot-nav-upload" onclick="otGo('upload')"><span class="ot-nav-ic">📁</span>上傳三份報表</div>
+  <div class="ot-sidebar-sec">稽核結果</div>
+  <div class="ot-nav-item" id="ot-nav-result" onclick="otGo('result')"><span class="ot-nav-ic">🔍</span>異常記錄</div>
+  <div class="ot-sidebar-sec">說明文件</div>
+  <div class="ot-nav-item" id="ot-nav-colmap" onclick="otGo('colmap')"><span class="ot-nav-ic">🗂</span>欄位對應說明</div>
+  <div class="ot-nav-item" id="ot-nav-rules" onclick="otGo('rules')"><span class="ot-nav-ic">📋</span>稽核規則說明</div>
+</nav>
+
+<main class="ot-main">
+
+  <!-- 上傳頁 -->
+  <div class="ot-page active" id="ot-pg-upload">
+    <div class="ot-page-header">
+      <div class="ot-page-title">上傳三份報表</div>
+      <div class="ot-page-desc">依序上傳以下三份 Excel 報表，系統將自動對應欄位並執行交叉稽核</div>
+    </div>
+    <div class="ot-notice">⚠ 第三份表（公假換休）若無資料或不適用，可略過不上傳，系統將跳過第三項檢核。</div>
+    <div class="ot-upload-grid">
+      <div class="ot-uzone" id="ot-z1" onclick="document.getElementById('ot-f1').click()"
+           ondragover="otDg(event,true,'ot-z1')" ondragleave="otDg(event,false,'ot-z1')" ondrop="otDp(event,'t1')">
+        <input type="file" id="ot-f1" accept=".xlsx,.xls,.csv" onchange="otLoadF(this,'t1')" style="display:none">
+        <div class="ot-uz-num">1</div>
+        <div class="ot-uz-title">明細表</div>
+        <div class="ot-uz-cols">K欄：加班開始時間（雙列標頭）<br>S欄：合計時數</div>
+        <div class="ot-uz-badge" id="ot-zb1">尚未上傳</div>
+        <div class="ot-uz-status" id="ot-zs1"></div>
+      </div>
+      <div class="ot-uzone" id="ot-z2" onclick="document.getElementById('ot-f2').click()"
+           ondragover="otDg(event,true,'ot-z2')" ondragleave="otDg(event,false,'ot-z2')" ondrop="otDp(event,'t2')">
+        <input type="file" id="ot-f2" accept=".xlsx,.xls,.csv" onchange="otLoadF(this,'t2')" style="display:none">
+        <div class="ot-uz-num">2</div>
+        <div class="ot-uz-title">出勤加班時數明細表</div>
+        <div class="ot-uz-cols">G欄：加班起訖時間<br>P欄：換休時數合計 ／ Q欄：總合</div>
+        <div class="ot-uz-badge" id="ot-zb2">尚未上傳</div>
+        <div class="ot-uz-status" id="ot-zs2"></div>
+      </div>
+      <div class="ot-uzone" id="ot-z3" onclick="document.getElementById('ot-f3').click()"
+           ondragover="otDg(event,true,'ot-z3')" ondragleave="otDg(event,false,'ot-z3')" ondrop="otDp(event,'t3')">
+        <input type="file" id="ot-f3" accept=".xlsx,.xls,.csv" onchange="otLoadF(this,'t3')" style="display:none">
+        <div class="ot-uz-num">3</div>
+        <div class="ot-uz-title">公假換休時數表 <span style="font-size:10px;color:var(--ink3);">選填</span></div>
+        <div class="ot-uz-cols">員工姓名(C欄) ／ 事實發生日(G欄)<br>I欄 換休前二 ／ J欄 換休後二 ／ K欄 換休國定</div>
+        <div class="ot-uz-badge" id="ot-zb3">尚未上傳</div>
+        <div class="ot-uz-status" id="ot-zs3"></div>
+      </div>
+    </div>
+    <div id="ot-run-prog" style="display:none;" class="ot-run-card">
+      <div style="font-size:13px;font-weight:700;color:var(--navy);">⚙ 稽核進行中…</div>
+      <div class="ot-prog-wrap"><div class="ot-prog-bar" id="ot-pb" style="width:0%"></div></div>
+      <div id="ot-pl" style="font-size:11px;color:var(--ink3);margin-top:4px;"></div>
+      <div class="ot-log-box" id="ot-lg"></div>
+    </div>
+  </div>
+
+  <!-- 結果頁 -->
+  <div class="ot-page" id="ot-pg-result">
+    <div class="ot-page-header">
+      <div class="ot-page-title">稽核結果</div>
+      <div class="ot-page-desc">以下僅列出異常記錄，所有正常資料均已過濾</div>
+    </div>
+    <div class="ot-stat-row">
+      <div class="ot-stat ot-stat-n"><div class="ot-stat-lbl">總稽核筆數</div><div class="ot-stat-val" id="ot-st-total">—</div><div class="ot-stat-sub">明細表全部記錄</div></div>
+      <div class="ot-stat ot-stat-r"><div class="ot-stat-lbl">異常筆數</div><div class="ot-stat-val" id="ot-st-anom">—</div><div class="ot-stat-sub">三項檢核不符</div></div>
+      <div class="ot-stat ot-stat-o"><div class="ot-stat-lbl">無對應記錄</div><div class="ot-stat-val" id="ot-st-missing">—</div><div class="ot-stat-sub">出勤加班表未找到</div></div>
+      <div class="ot-stat ot-stat-g"><div class="ot-stat-lbl">正常筆數</div><div class="ot-stat-val" id="ot-st-ok">—</div><div class="ot-stat-sub">通過所有檢核</div></div>
+    </div>
+    <div class="ot-result-card">
+      <div class="ot-result-head">
+        <div class="ot-rh-title">🚨 加班異常記錄</div>
+        <div class="ot-btn-row">
+          <button class="ot-btn ot-btn-outline ot-btn-sm" onclick="otExpCSV()">⬇ 匯出 CSV</button>
+          <button class="ot-btn ot-btn-green ot-btn-sm" onclick="otExpXLS()">⬇ 匯出 Excel</button>
+        </div>
+      </div>
+      <div class="ot-toolbar" style="padding:14px 16px 0;">
+        <input id="ot-fn" placeholder="🔍 搜尋員工姓名…" oninput="otApplyF()">
+        <select id="ot-fr" onchange="otApplyF()">
+          <option value="">全部異常類型</option>
+          <option value="時段">表定與實際時段不符</option>
+          <option value="多報">加班時數計算不合</option>
+          <option value="換休">公假換休時數不符</option>
+        </select>
+        <select id="ot-fm" onchange="otApplyF()"><option value="">全部月份</option></select>
+        <span class="ot-tc" id="ot-fc"></span>
+      </div>
+      <div class="ot-tbl-wrap">
+        <table>
+          <thead><tr>
+            <th style="width:32px;">#</th><th>員工姓名</th><th>出勤日</th>
+            <th>異常原因</th><th>差額 / 明細</th><th style="width:60px;"></th>
+          </tr></thead>
+          <tbody id="ot-tb"></tbody>
+        </table>
+      </div>
+      <div class="ot-empty" id="ot-no-anom" style="display:none;">
+        <div class="ot-empty-ic">✅</div>
+        <div style="font-size:14px;font-weight:600;color:var(--green);">稽核完成，無異常記錄</div>
+        <div style="font-size:12px;margin-top:4px;">所有比對資料均通過三項檢核</div>
+      </div>
+      <div class="ot-empty" id="ot-no-result">
+        <div class="ot-empty-ic">🔍</div>
+        <div>尚無稽核結果，請先上傳資料並執行稽核</div>
+      </div>
+    </div>
+    <div id="ot-missing-section" style="display:none;margin-top:20px;">
+      <div class="ot-result-card">
+        <div class="ot-result-head" style="background:#fff8f0;">
+          <div class="ot-rh-title" style="color:var(--orange);">⚠ 出勤加班表無對應記錄（共 <span id="ot-missing-count">0</span> 筆）</div>
+          <div class="ot-btn-row">
+            <button class="ot-btn ot-btn-outline ot-btn-sm" onclick="otExpMissingCSV()">⬇ 匯出 CSV</button>
+            <button class="ot-btn ot-btn-outline ot-btn-sm" onclick="otToggleMissing()" id="ot-missing-toggle-btn">▼ 展開明細</button>
+          </div>
+        </div>
+        <div style="padding:10px 16px;background:#fff8f0;border-bottom:1px solid var(--rule);">
+          <span style="font-size:11px;color:var(--orange);">這些明細表記錄在出勤加班時數明細表中找不到相同姓名+出勤日的對應，可能為跨月申報，請人工確認。</span>
+        </div>
+        <div id="ot-missing-body" style="display:none;">
+          <div class="ot-toolbar" style="padding:14px 16px 0;">
+            <input id="ot-mn" placeholder="🔍 搜尋員工姓名…" oninput="otApplyMissing()">
+            <select id="ot-mm" onchange="otApplyMissing()"><option value="">全部月份</option></select>
+            <span class="ot-tc" id="ot-mc"></span>
+          </div>
+          <div class="ot-tbl-wrap">
+            <table>
+              <thead><tr>
+                <th style="width:32px;">#</th><th>員工姓名</th><th>出勤日</th>
+                <th>申報月份</th><th>K欄（表定時段）</th><th>S欄（合計時數）</th>
+              </tr></thead>
+              <tbody id="ot-mtb"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 欄位對應說明 -->
+  <div class="ot-page" id="ot-pg-colmap">
+    <div class="ot-page-header"><div class="ot-page-title">欄位對應說明</div><div class="ot-page-desc">說明三份報表在本系統中實際使用的欄位位置及對應內容</div></div>
+    <div class="ot-col-map-desc">
+      <div class="ot-cmd-title">① 明細表</div>
+      <div class="ot-cmd-row" style="font-size:10px;font-weight:700;color:var(--ink3);border-bottom:2px solid var(--rule);"><div>Excel欄</div><div>欄位名稱</div><div>用途說明</div></div>
+      <div class="ot-cmd-row"><div class="ot-cmd-col">E欄</div><div class="ot-cmd-table">員工姓名</div><div class="ot-cmd-desc">關聯鍵（配合出勤日使用）</div></div>
+      <div class="ot-cmd-row"><div class="ot-cmd-col">H欄</div><div class="ot-cmd-table">出勤日</div><div class="ot-cmd-desc">關聯鍵（格式：YYYY/MM/DD）</div></div>
+      <div class="ot-cmd-row" style="background:var(--gold2);"><div class="ot-cmd-col">K欄</div><div class="ot-cmd-table">加班開始時間（子標頭）</div><div class="ot-cmd-desc">⚠ 雙列標頭，K欄是「實際加班時間」合併儲存格下的開始時間</div></div>
+      <div class="ot-cmd-row" style="background:var(--gold2);"><div class="ot-cmd-col">S欄</div><div class="ot-cmd-table">合計時數</div><div class="ot-cmd-desc">加班合計小時數，用於檢核②公式計算</div></div>
+    </div>
+    <div class="ot-col-map-desc">
+      <div class="ot-cmd-title">② 出勤加班時數明細表</div>
+      <div class="ot-cmd-row" style="font-size:10px;font-weight:700;color:var(--ink3);border-bottom:2px solid var(--rule);"><div>Excel欄</div><div>欄位名稱</div><div>用途說明</div></div>
+      <div class="ot-cmd-row"><div class="ot-cmd-col">D欄</div><div class="ot-cmd-table">員工姓名</div><div class="ot-cmd-desc">關聯鍵</div></div>
+      <div class="ot-cmd-row"><div class="ot-cmd-col">E欄</div><div class="ot-cmd-table">出勤日</div><div class="ot-cmd-desc">關聯鍵</div></div>
+      <div class="ot-cmd-row" style="background:var(--gold2);"><div class="ot-cmd-col">G欄</div><div class="ot-cmd-table">加班起訖時間</div><div class="ot-cmd-desc">取前5碼與明細表K欄比對</div></div>
+      <div class="ot-cmd-row" style="background:var(--gold2);"><div class="ot-cmd-col">P欄</div><div class="ot-cmd-table">換休時數合計</div><div class="ot-cmd-desc">對應稽核②的 P 值（申報端）</div></div>
+      <div class="ot-cmd-row" style="background:var(--gold2);"><div class="ot-cmd-col">Q欄</div><div class="ot-cmd-table">總合</div><div class="ot-cmd-desc">對應稽核②的 Q 值（核准端）</div></div>
+    </div>
+    <div class="ot-col-map-desc">
+      <div class="ot-cmd-title">③ 公假換休時數表（選填）</div>
+      <div class="ot-cmd-row" style="font-size:10px;font-weight:700;color:var(--ink3);border-bottom:2px solid var(--rule);"><div>Excel欄</div><div>欄位名稱</div><div>用途說明</div></div>
+      <div class="ot-cmd-row"><div class="ot-cmd-col">A欄</div><div class="ot-cmd-table">員工姓名</div><div class="ot-cmd-desc">關聯鍵</div></div>
+      <div class="ot-cmd-row"><div class="ot-cmd-col">B欄</div><div class="ot-cmd-table">出勤日</div><div class="ot-cmd-desc">關聯鍵</div></div>
+      <div class="ot-cmd-row" style="background:var(--gold2);"><div class="ot-cmd-col">I欄</div><div class="ot-cmd-table">換休時數一</div><div class="ot-cmd-desc">三欄相加為換休合計</div></div>
+      <div class="ot-cmd-row" style="background:var(--gold2);"><div class="ot-cmd-col">J欄</div><div class="ot-cmd-table">換休時數二</div><div class="ot-cmd-desc">三欄相加為換休合計</div></div>
+      <div class="ot-cmd-row" style="background:var(--gold2);"><div class="ot-cmd-col">K欄</div><div class="ot-cmd-table">換休時數三</div><div class="ot-cmd-desc">三欄相加為換休合計</div></div>
+    </div>
+  </div>
+
+  <!-- 規則說明 -->
+  <div class="ot-page" id="ot-pg-rules">
+    <div class="ot-page-header"><div class="ot-page-title">稽核規則說明</div><div class="ot-page-desc">本系統依序執行三項檢核，任一不符即標記為加班異常</div></div>
+    <div class="ot-rule-card">
+      <div class="ot-rule-title"><span class="ot-rule-num">1</span>比對表定與實際加班時段</div>
+      <div class="ot-rule-body">取明細表 <strong>K欄</strong>（加班開始時間），與出勤加班時數明細表 <strong>G欄</strong>（加班起訖時間）的前五個字元進行字串比對。<br><br><div class="ot-formula">K欄前5碼  ≠  G欄前5碼  →  異常</div></div>
+    </div>
+    <div class="ot-rule-card">
+      <div class="ot-rule-title"><span class="ot-rule-num">2</span>檢查多報或少報加班</div>
+      <div class="ot-rule-body">以下公式結果若不為 0，代表申報與核准時數不一致：<br><br><div class="ot-formula">出勤加班時數明細表.P欄  −  出勤加班時數明細表.Q欄  +  明細表.S欄  ≠ 0  →  異常</div><br>差額為正：多報；差額為負：少報。</div>
+    </div>
+    <div class="ot-rule-card">
+      <div class="ot-rule-title"><span class="ot-rule-num">3</span>確認公假換休時數</div>
+      <div class="ot-rule-body"><strong>僅當 明細表.S欄 為 0 或空值時</strong>才執行此項檢核。<br><br><div class="ot-formula">換休合計 = 公假換休時數表.I欄 + J欄 + K欄</div><div class="ot-formula">出勤加班時數明細表.Q欄  −  換休合計  ≠ 0  →  異常</div></div>
+    </div>
+    <div class="ot-rule-card" style="border-left:3px solid var(--gold);">
+      <div class="ot-rule-title" style="color:var(--gold);">⚠ 跨月申報說明</div>
+      <div class="ot-rule-body">若某筆明細表記錄在出勤加班時數明細表中找不到對應的姓名+日期，則<strong>跳過不計入稽核</strong>。這是因為實務上員工可能在月底加班、下個月才申報（跨月申報）。</div>
+    </div>
+  </div>
+
+</main>
+</div>
+
+<!-- Drawer -->
+<div class="ot-drw-ov" id="ot-drw-ov" onclick="otCloseDrwOv(event)">
+  <div class="ot-drw">
+    <div class="ot-drw-hd">
+      <div><div class="ot-drw-name" id="ot-drw-name">—</div><div class="ot-drw-date" id="ot-drw-date">—</div></div>
+      <button class="ot-drw-x" onclick="otCloseDrw()">✕</button>
+    </div>
+    <div class="ot-drw-body" id="ot-drw-body"></div>
+  </div>
+</div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════
+// APP ROUTER
+// ════════════════════════════════════════════════
+function goHome() {
+  document.querySelectorAll('#app-home,#app-night,#app-overtime').forEach(e=>e.classList.remove('active'));
+  document.getElementById('app-home').classList.add('active');
+}
+function launchNight() {
+  document.querySelectorAll('#app-home,#app-night,#app-overtime').forEach(e=>e.classList.remove('active'));
+  document.getElementById('app-night').classList.add('active');
+  nightRenderShifts();
+}
+function launchOvertime() {
+  document.querySelectorAll('#app-home,#app-night,#app-overtime').forEach(e=>e.classList.remove('active'));
+  document.getElementById('app-overtime').classList.add('active');
+}
+
+// ════════════════════════════════════════════════
+// NIGHT ALLOWANCE SYSTEM
+// ════════════════════════════════════════════════
+let NIGHT_SHIFTS = {
+  '2330-0830':{ns:23*60+30,ne:7*60,max:7.5},
+  '2300-0800':{ns:23*60,ne:7*60,max:8.0},
+  '2200-0700':{ns:22*60,ne:7*60,max:9.0},
+  '2100-0600':{ns:22*60,ne:6*60,max:8.0},
+  '1700-0200':{ns:22*60,ne:2*60,max:4.0},
+  '1600-0100':{ns:22*60,ne:1*60,max:3.0},
+  '1500-0000':{ns:22*60,ne:0,max:2.0},
+  '1400-2300':{ns:22*60,ne:23*60,max:1.0},
+};
+const NIGHT_FIELD_MAP={name:['員工姓名','姓名','name','Name','員工名稱'],dept:['部門','課別','科別','dept','department'],shift:['班別名稱','班別','班次','shift'],date:['出勤日','日期','date','Date'],cin:['實際出勤','出勤時間','上班時間','clock_in','clockIn'],cout:['實際退勤','退勤時間','下班時間','clock_out','clockOut'],note:['備註','note','remark','說明']};
+let nightRawRows=[],nightProcessed=[],nightAggregated=[],nightDetectedCols={},nightDetectedTimeFmt='',nightSortKey='nightHours',nightSortDir=-1;
+const NIGHT_PAGE_TITLES={upload:'上傳 Excel / CSV',eip:'EIP 系統串接',dash:'數據儀表板',result:'加總報表',detail:'明細查詢',config:'班別 & 欄位設定'};
+let nightCharts={};
+
+function nightGotoPage(id,btn){
+  document.querySelectorAll('.night-nav').forEach(n=>n.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.night-page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('night-page-'+id).classList.add('active');
+  document.getElementById('night-page-ttl').textContent=NIGHT_PAGE_TITLES[id];
+}
+function nightLog(msg,type='dim'){
+  const box=document.getElementById('night-log');
+  const t=new Date().toLocaleTimeString('zh-TW',{hour12:false});
+  const d=document.createElement('div');d.className='night-ll '+type;d.textContent=t+'  '+msg;
+  box.appendChild(d);box.scrollTop=box.scrollHeight;
+}
+
+// Drag & drop
+const nightDz=document.getElementById('night-dz');
+nightDz.addEventListener('dragover',e=>{e.preventDefault();nightDz.classList.add('over')});
+nightDz.addEventListener('dragleave',()=>nightDz.classList.remove('over'));
+nightDz.addEventListener('drop',e=>{e.preventDefault();nightDz.classList.remove('over');const f=e.dataTransfer.files[0];if(f)nightProcessFile(f)});
+function nightHandleFile(e){const f=e.target.files[0];if(f)nightProcessFile(f);e.target.value='';}
+
+function nightProcessFile(file){
+  const ext=file.name.split('.').pop().toLowerCase();
+  nightLog(`讀取：${file.name}（${(file.size/1024).toFixed(1)} KB）`,'info');
+  nightShowProgress(file.name,20);
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      let allRows=[];
+      if(ext==='csv'){allRows=nightParseCSV(e.target.result);nightLog(`CSV：${allRows.length} 筆`,'ok');}
+      else{
+        const wb=XLSX.read(e.target.result,{type:'binary',cellDates:true});
+        nightLog(`Excel 共 ${wb.SheetNames.length} 個 Sheet：${wb.SheetNames.join('、')}`,'info');
+        wb.SheetNames.forEach(sn=>{const ws=wb.Sheets[sn];const sr=XLSX.utils.sheet_to_json(ws,{defval:''});nightLog(`  Sheet "${sn}"：${sr.length} 筆`,'ok');allRows=allRows.concat(sr);});
+        nightLog(`全部 Sheet 合計 ${allRows.length} 筆`,'ok');
+      }
+      nightShowProgress(file.name,60);
+      if(allRows.length)nightDetectColumns(Object.keys(allRows[0]));
+      nightRawRows=nightNormalizeRows(allRows);
+      nightLog(`有效紀錄 ${nightRawRows.length} 筆，開始計算...`,'info');
+      nightShowProgress(file.name,90);
+      nightCalculate();
+      nightShowProgress(file.name,100,true);
+      document.getElementById('night-fmap-card').style.display='block';
+      nightShowFieldMapStatus();
+    }catch(err){nightLog(`錯誤：${err.message}`,'err');document.getElementById('night-upload-badge').className='night-badge night-badge-red';document.getElementById('night-upload-badge').textContent='失敗';}
+  };
+  if(ext==='csv')reader.readAsText(file,'UTF-8');else reader.readAsBinaryString(file);
+}
+function nightShowProgress(fname,pct,done=false){
+  document.getElementById('night-upload-status').style.display='block';
+  document.getElementById('night-upload-fname').textContent=fname;
+  document.getElementById('night-prog-bar').style.width=pct+'%';
+  const b=document.getElementById('night-upload-badge');
+  if(done){b.className='night-badge night-badge-green';b.textContent='完成';}
+  else{b.className='night-badge night-badge-blue';b.textContent='處理中';}
+}
+function nightDetectColumns(keys){
+  nightDetectedCols={};
+  for(const[field,aliases]of Object.entries(NIGHT_FIELD_MAP)){const found=aliases.find(a=>keys.includes(a));nightDetectedCols[field]=found||null;}
+  nightLog(`欄位偵測：${Object.entries(nightDetectedCols).map(([k,v])=>k+'→'+(v||'?')).join('  ')}`,'info');
+}
+function nightShowFieldMapStatus(){
+  const labels={name:'姓名欄',dept:'課別/部門欄',shift:'班別欄',cin:'實際出勤欄',cout:'實際退勤欄',note:'備註欄'};
+  for(const[k,lbl]of Object.entries(labels)){
+    const el=document.getElementById('night-fm-'+k);if(!el)continue;
+    const col=nightDetectedCols[k];
+    el.textContent=col?col:'（未偵測）';el.className='night-fmap-val '+(col?'ok':'warn');
+  }
+  document.getElementById('night-time-fmt-info').textContent=nightDetectedTimeFmt||'自動偵測中';
+}
+function nightParseCSV(text){
+  const lines=text.split(/\r?\n/);const headers=lines[0].split(',').map(h=>h.trim().replace(/^"|"$/g,''));
+  return lines.slice(1).filter(l=>l.trim()).map(l=>{const vals=l.split(',').map(v=>v.trim().replace(/^"|"$/g,''));const obj={};headers.forEach((h,i)=>obj[h]=vals[i]||'');return obj;});
+}
+function nightParseTime(val){
+  if(!val&&val!==0)return null;
+  if(typeof val==='number'){nightDetectedTimeFmt='Excel 數值時間';const totalMin=Math.round(val*1440);return totalMin%1440;}
+  if(val instanceof Date){nightDetectedTimeFmt='Date 物件';return val.getHours()*60+val.getMinutes();}
+  const s=String(val).trim();
+  const m=s.match(/(\d{1,2}):(\d{2})/);if(m){nightDetectedTimeFmt='HH:MM 字串';return parseInt(m[1])*60+parseInt(m[2]);}
+  return null;
+}
+function nightNormalizeRows(rows){
+  const dc=nightDetectedCols;
+  return rows.filter(r=>{
+    const name=r[dc.name];const shift=r[dc.shift];
+    return name&&String(name).trim()&&shift&&String(shift).trim();
+  }).map(r=>({
+    name:String(r[dc.name]||'').trim(),dept:String(r[dc.dept]||'').trim(),shift:String(r[dc.shift]||'').trim(),
+    date:String(r[dc.date]||'').trim(),cin:nightParseTime(r[dc.cin]),cout:nightParseTime(r[dc.cout]),
+    note:String(r[dc.note]||'').trim(),raw:r,
+  }));
+}
+function nightFmtMin(m){const h=Math.floor(((m%1440)+1440)%1440/60);const mm=((m%1440)+1440)%1440%60;return`${String(h).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;}
+function nightParseLeave(note,nsStart,nsEnd){
+  let deduct=0;
+  const re=/[\u7279\u4f11\u4e8b\u75c5\u751f\u7406\u516c\u53da\u0041-\u005a\u0061-\u007a\u4e00-\u9fff]*(\d{3,4})[~～](\d{3,4})/g;
+  let m;while((m=re.exec(note))!==null){
+    const s=parseInt(m[1].length===3?'0'+m[1]:m[1].slice(0,2))*60+parseInt(m[1].slice(-2));
+    let e=parseInt(m[2].length===3?'0'+m[2]:m[2].slice(0,2))*60+parseInt(m[2].slice(-2));
+    if(e<s)e+=1440;
+    const ls=Math.max(s,nsStart),le=Math.min(e,nsEnd);
+    if(le>ls)deduct+=(le-ls)/60;
+  }
+  return deduct;
+}
+function nightCalcNight(row){
+  const shift=NIGHT_SHIFTS[row.shift];
+  if(!shift)return{nightHours:0,deduct:0,overnight:false,nightStart:'',nightEnd:'',noShift:true};
+  const NS=shift.ns,NE=shift.ne<shift.ns?shift.ne+1440:shift.ne+1440;
+  let cin=row.cin,cout=row.cout;
+  let nightHours=0,overnight=false,nightStart='',nightEnd='';
+  if(cin!==null&&cout!==null){
+    if(cout<cin)cout+=1440;
+    const effectStart=Math.max(cin,NS),effectEnd=Math.min(cout,NE);
+    if(effectEnd>effectStart){
+      nightHours=Math.min((effectEnd-effectStart)/60,shift.max);
+      nightStart=nightFmtMin(effectStart);nightEnd=nightFmtMin(effectEnd%1440);
+    }
+    overnight=cout>1440+30;
+  } else if(row.note){
+    // full shift from note
+    nightHours=shift.max;nightStart=nightFmtMin(NS);nightEnd=nightFmtMin(shift.ne);
+    overnight=!row.shift.startsWith('14')&&!row.shift.startsWith('15');
+  }
+  const deduct=row.note?nightParseLeave(row.note,NS,NE):0;
+  nightHours=Math.max(0,nightHours-deduct);
+  return{nightHours:Math.round(nightHours*100)/100,deduct:Math.round(deduct*100)/100,overnight,nightStart,nightEnd,noShift:false};
+}
+function nightCalculate(){
+  nightProcessed=nightRawRows.map(r=>({...r,...nightCalcNight(r)}));
+  const map={};
+  nightProcessed.forEach(r=>{
+    const k=r.name;
+    if(!map[k])map[k]={name:r.name,dept:r.dept,nightHours:0,overnight:0,count:0,deduct:0,shifts:{}};
+    map[k].nightHours+=r.nightHours;map[k].deduct+=r.deduct;
+    if(r.overnight)map[k].overnight++;map[k].count++;
+    map[k].shifts[r.shift]=(map[k].shifts[r.shift]||0)+1;
+  });
+  nightAggregated=Object.values(map).map((v,i)=>({...v,nightHours:Math.round(v.nightHours*100)/100,deduct:Math.round(v.deduct*100)/100,rank:i+1}));
+  nightAggregated.sort((a,b)=>b.nightHours-a.nightHours);nightAggregated.forEach((v,i)=>v.rank=i+1);
+  document.getElementById('sb-emp').textContent=nightAggregated.length;
+  document.getElementById('sb-rows').textContent=nightRawRows.length;
+  document.getElementById('sb-total').textContent=nightAggregated.reduce((s,v)=>s+v.nightHours,0).toFixed(1)+' hr';
+  document.getElementById('night-btn-export').disabled=false;
+  nightRenderResult();nightRenderDetail();nightRenderDash();
+}
+function nightSort(key){if(nightSortKey===key)nightSortDir*=-1;else{nightSortKey=key;nightSortDir=-1;}nightRenderResult();}
+function nightRenderResult(){
+  if(!nightAggregated.length){document.getElementById('night-result-empty').style.display='block';document.getElementById('night-result-data').style.display='none';return;}
+  document.getElementById('night-result-empty').style.display='none';document.getElementById('night-result-data').style.display='block';
+  const q=(document.getElementById('night-r-q').value||'').toLowerCase();
+  const dept=document.getElementById('night-r-dept').value||'';
+  const depts=[...new Set(nightAggregated.map(r=>r.dept))].sort();
+  const dsel=document.getElementById('night-r-dept');const cur=dsel.value;
+  dsel.innerHTML='<option value="">全部課別</option>'+depts.map(d=>`<option value="${d}"${d===cur?' selected':''}>${d}</option>`).join('');
+  let data=[...nightAggregated];
+  if(q)data=data.filter(r=>r.name.toLowerCase().includes(q)||r.dept.toLowerCase().includes(q));
+  if(dept)data=data.filter(r=>r.dept===dept);
+  data.sort((a,b)=>(a[nightSortKey]<b[nightSortKey]?-1:a[nightSortKey]>b[nightSortKey]?1:0)*nightSortDir);
+  const stats=[
+    {lbl:'員工人數',val:nightAggregated.length,unit:'人'},
+    {lbl:'總夜點時數',val:nightAggregated.reduce((s,v)=>s+v.nightHours,0).toFixed(1),unit:'hr'},
+    {lbl:'總跨夜天數',val:nightAggregated.reduce((s,v)=>s+v.overnight,0),unit:'天'},
+    {lbl:'平均夜點/人',val:(nightAggregated.reduce((s,v)=>s+v.nightHours,0)/nightAggregated.length).toFixed(1),unit:'hr'},
+  ];
+  document.getElementById('night-stats-row').innerHTML=stats.map(s=>`<div class="night-stat"><div class="night-stat-lbl">${s.lbl}</div><div class="night-stat-val">${s.val}<span class="night-stat-unit">${s.unit}</span></div></div>`).join('');
+  document.getElementById('night-result-count').textContent=`顯示 ${data.length} / ${nightAggregated.length} 人`;
+  document.getElementById('night-result-tbody').innerHTML=data.map((r,i)=>`<tr>
+    <td class="night-mono" style="color:var(--ink3)">${i+1}</td>
+    <td>${r.dept}</td><td class="night-name-cell">${r.name}</td>
+    <td class="night-tr"><span class="night-accent">${r.nightHours.toFixed(2)}</span></td>
+    <td class="night-tr night-mono">${r.overnight}</td>
+    <td class="night-tr night-mono">${r.count}</td>
+    <td class="night-tr night-mono">${r.deduct>0?r.deduct.toFixed(2):'—'}</td>
+  </tr>`).join('');
+}
+function nightRenderDetail(){
+  if(!nightProcessed.length){document.getElementById('night-detail-empty').style.display='block';document.getElementById('night-detail-data').style.display='none';return;}
+  document.getElementById('night-detail-empty').style.display='none';document.getElementById('night-detail-data').style.display='block';
+  const q=(document.getElementById('night-d-q').value||'').toLowerCase();
+  const dept=document.getElementById('night-d-dept').value||'';
+  const shift=document.getElementById('night-d-shift').value||'';
+  const depts=[...new Set(nightProcessed.map(r=>r.dept))].sort();
+  const shifts=[...new Set(nightProcessed.map(r=>r.shift))].sort();
+  const dd=document.getElementById('night-d-dept');const dc=dd.value;
+  dd.innerHTML='<option value="">全部課別</option>'+depts.map(d=>`<option value="${d}"${d===dc?' selected':''}>${d}</option>`).join('');
+  const ds=document.getElementById('night-d-shift');const dsc=ds.value;
+  ds.innerHTML='<option value="">全部班別</option>'+shifts.map(s=>`<option value="${s}"${s===dsc?' selected':''}>${s}</option>`).join('');
+  let data=[...nightProcessed];
+  if(q)data=data.filter(r=>r.name.toLowerCase().includes(q)||r.dept.toLowerCase().includes(q));
+  if(dept)data=data.filter(r=>r.dept===dept);if(shift)data=data.filter(r=>r.shift===shift);
+  document.getElementById('night-detail-count').textContent=`顯示 ${data.length} 筆`;
+  document.getElementById('night-detail-tbody').innerHTML=data.map(r=>`<tr>
+    <td>${r.dept}</td><td class="night-name-cell">${r.name}</td>
+    <td class="night-mono">${r.shift}</td><td class="night-mono">${r.date}</td>
+    <td class="night-mono">${r.cin!==null?nightFmtMin(r.cin):'—'}</td>
+    <td class="night-mono">${r.cout!==null?nightFmtMin(r.cout%1440):'—'}</td>
+    <td class="night-mono" style="color:var(--ink3)">${r.nightStart&&r.nightEnd?r.nightStart+'~'+r.nightEnd:'—'}</td>
+    <td class="night-tr"><span class="${r.nightHours>0?'night-accent night-mono':'night-mono'}">${r.nightHours.toFixed(2)}</span></td>
+    <td class="night-tr night-mono">${r.deduct>0?r.deduct.toFixed(2):'—'}</td>
+    <td class="night-tr">${r.overnight?'<span class="night-badge night-badge-amber">跨夜</span>':''}</td>
+    <td style="font-size:10px;color:var(--ink3);max-width:160px;overflow:hidden;text-overflow:ellipsis;">${r.note||''}</td>
+  </tr>`).join('');
+}
+function nightDestroyChart(id){if(nightCharts[id]){nightCharts[id].destroy();delete nightCharts[id];}}
+function nightRenderDash(){
+  if(!nightAggregated.length){document.getElementById('night-dash-empty').style.display='block';document.getElementById('night-dash-data').style.display='none';return;}
+  document.getElementById('night-dash-empty').style.display='none';document.getElementById('night-dash-data').style.display='block';
+  const total=nightAggregated.reduce((s,v)=>s+v.nightHours,0);
+  const kpis=[
+    {lbl:'員工人數',val:nightAggregated.length,unit:'人',color:'#1a56db',trend:'',sub:'有夜點記錄員工'},
+    {lbl:'總夜點時數',val:total.toFixed(1),unit:'hr',color:'#1a7a4a',trend:'',sub:'本期合計'},
+    {lbl:'最高夜點',val:nightAggregated[0]?.nightHours.toFixed(1)||'0',unit:'hr',color:'#92520a',trend:'',sub:nightAggregated[0]?.name||'—'},
+    {lbl:'平均夜點/人',val:(total/nightAggregated.length).toFixed(1),unit:'hr',color:'#7c3aed',trend:'',sub:'本期均值'},
+  ];
+  document.getElementById('night-dash-kpis').innerHTML=kpis.map(k=>`<div class="night-kpi" style="--kpi-color:${k.color}"><div class="night-kpi-label">${k.lbl}</div><div class="night-kpi-value">${k.val}<span class="night-kpi-unit">${k.unit}</span></div><div class="night-kpi-sub">${k.sub}</div></div>`).join('');
+  // Bar chart top 15
+  const top15=[...nightAggregated].slice(0,15);
+  nightDestroyChart('bar');
+  nightCharts['bar']=new Chart(document.getElementById('night-chart-bar'),{type:'bar',data:{labels:top15.map(v=>v.name),datasets:[{data:top15.map(v=>v.nightHours),backgroundColor:'rgba(26,86,219,.75)',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:'#7a7e8e'},border:{display:false}},y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{font:{size:10},color:'#7a7e8e'},border:{display:false}}}}});
+  // Rank list
+  document.getElementById('night-rank-list').innerHTML=nightAggregated.slice(0,10).map((v,i)=>`<li class="night-rank-item"><span class="night-rank-num">${i+1}</span><span class="night-rank-name">${v.name}<span class="night-rank-dept"> · ${v.dept}</span></span><div class="night-rank-bar-wrap"><div class="night-rank-bar" style="width:${(v.nightHours/nightAggregated[0].nightHours*100).toFixed(0)}%"></div></div><span class="night-rank-val">${v.nightHours.toFixed(1)}</span></li>`).join('');
+  // Dept pie
+  const deptMap={};nightAggregated.forEach(v=>{deptMap[v.dept]=(deptMap[v.dept]||0)+v.nightHours;});
+  const depts=Object.entries(deptMap).sort((a,b)=>b[1]-a[1]);
+  const PIE_COLORS=['#1a56db','#1a7a4a','#9a7800','#c0392b','#7c3aed','#0891b2','#d97706','#059669'];
+  nightDestroyChart('dept-pie');
+  nightCharts['dept-pie']=new Chart(document.getElementById('night-chart-dept-pie'),{type:'doughnut',data:{labels:depts.map(d=>d[0]),datasets:[{data:depts.map(d=>d[1]),backgroundColor:PIE_COLORS,borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
+  document.getElementById('night-dept-legend').innerHTML=depts.slice(0,6).map((d,i)=>`<div class="night-legend-item"><span class="night-legend-dot" style="background:${PIE_COLORS[i]}"></span>${d[0]}<span class="night-legend-pct">${(d[1]/total*100).toFixed(0)}%</span></div>`).join('');
+  // Shift doughnut
+  const shiftMap={};nightProcessed.forEach(r=>{shiftMap[r.shift]=(shiftMap[r.shift]||0)+1;});
+  const shifts=Object.entries(shiftMap).sort((a,b)=>b[1]-a[1]);
+  nightDestroyChart('shift-doughnut');
+  nightCharts['shift-doughnut']=new Chart(document.getElementById('night-chart-shift-doughnut'),{type:'doughnut',data:{labels:shifts.map(s=>s[0]),datasets:[{data:shifts.map(s=>s[1]),backgroundColor:PIE_COLORS,borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{font:{size:9},boxWidth:10}}}}});
+  // Dept bar
+  document.getElementById('night-dept-bar-list').innerHTML=depts.map(d=>`<div class="night-dept-row"><span class="night-dept-name">${d[0]}</span><div class="night-dept-bar-wrap"><div class="night-dept-bar" style="width:${(d[1]/depts[0][1]*100).toFixed(0)}%;background:var(--accent)"></div></div><span class="night-dept-val">${d[1].toFixed(1)} hr</span></div>`).join('');
+  // Histogram
+  const bins=Array(10).fill(0);const maxH=nightAggregated[0]?.nightHours||1;const step=maxH/10;
+  nightAggregated.forEach(v=>{const b=Math.min(Math.floor(v.nightHours/step),9);bins[b]++;});
+  nightDestroyChart('hist');
+  nightCharts['hist']=new Chart(document.getElementById('night-chart-hist'),{type:'bar',data:{labels:bins.map((_,i)=>`${(i*step).toFixed(0)}-${((i+1)*step).toFixed(0)}`),datasets:[{data:bins,backgroundColor:'rgba(26,86,219,.65)',borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:'#7a7e8e'},border:{display:false}},y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{font:{size:10},color:'#7a7e8e',stepSize:1},border:{display:false}}}}});
+  // Scatter
+  nightDestroyChart('scatter');
+  nightCharts['scatter']=new Chart(document.getElementById('night-chart-scatter'),{type:'scatter',data:{datasets:[{data:nightAggregated.map(v=>({x:v.nightHours,y:v.overnight})),backgroundColor:'rgba(26,86,219,.6)',pointRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{title:{display:true,text:'夜點時數(hr)',font:{size:9}},ticks:{font:{size:9}},grid:{color:'rgba(0,0,0,.04)'}},y:{title:{display:true,text:'跨夜天數',font:{size:9}},ticks:{font:{size:9},stepSize:1},grid:{color:'rgba(0,0,0,.04)'}}}}});
+  // Overnight bar
+  const overnightByDept={};nightAggregated.forEach(v=>{overnightByDept[v.dept]=(overnightByDept[v.dept]||0)+v.overnight;});
+  const odepts=Object.entries(overnightByDept).sort((a,b)=>b[1]-a[1]);
+  nightDestroyChart('overnight-bar');
+  nightCharts['overnight-bar']=new Chart(document.getElementById('night-chart-overnight-bar'),{type:'bar',data:{labels:odepts.map(d=>d[0]),datasets:[{data:odepts.map(d=>d[1]),backgroundColor:'rgba(26,86,219,.7)',borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.raw} 天`}}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:'#7a7e8e'},border:{display:false}},y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{font:{size:10},color:'#7a7e8e',stepSize:1},border:{display:false}}}}});
+}
+function nightExportExcel(){
+  if(!nightAggregated.length){alert('尚無資料');return;}
+  const wb=XLSX.utils.book_new();
+  const sum=[['課別','姓名','夜點時數(hr)','跨夜天數','出勤筆數','假扣除(hr)'],...nightAggregated.map(v=>[v.dept,v.name,v.nightHours,v.overnight,v.count,v.deduct])];
+  const det=[['課別','姓名','班別','出勤日','實際出勤','實際退勤','夜點區間開始','夜點區間結束','夜點時數(hr)','假扣除(hr)','跨夜','備註'],...nightProcessed.map(r=>[r.dept,r.name,r.shift,r.date,r.cin!==null?nightFmtMin(r.cin):'',r.cout!==null?nightFmtMin(r.cout%1440):'',r.nightStart,r.nightEnd,r.nightHours,r.deduct,r.overnight?'是':'',r.note])];
+  const ws1=XLSX.utils.aoa_to_sheet(sum),ws2=XLSX.utils.aoa_to_sheet(det);
+  ws1['!cols']=[{wch:14},{wch:10},{wch:14},{wch:10},{wch:10},{wch:12}];
+  ws2['!cols']=[{wch:14},{wch:10},{wch:12},{wch:14},{wch:10},{wch:10},{wch:8},{wch:8},{wch:14},{wch:12},{wch:6},{wch:20}];
+  XLSX.utils.book_append_sheet(wb,ws1,'夜點加總');XLSX.utils.book_append_sheet(wb,ws2,'明細記錄');
+  XLSX.writeFile(wb,`夜點津貼_${new Date().toLocaleDateString('zh-TW').replace(/\//g,'-')}.xlsx`);
+}
+// EIP
+function nightBuildHdrs(){const auth=document.getElementById('night-f-auth').value,user=document.getElementById('night-f-user').value,pass=document.getElementById('night-f-pass').value,custom=document.getElementById('night-f-hdrs').value.trim();const h={'Accept':'application/json'};if(auth==='basic'&&user)h['Authorization']='Basic '+btoa(user+':'+pass);if(auth==='bearer'&&pass)h['Authorization']='Bearer '+pass;if(auth==='apikey'&&pass)h['X-API-Key']=pass;if(custom){try{Object.assign(h,JSON.parse(custom))}catch(e){}}return h;}
+async function nightTestEIP(){const url=document.getElementById('night-f-url').value.trim();if(!url){nightLog('請輸入 EIP 網址','warn');return;}nightSetEIP('ping','測試中...');try{const r=await fetch(url+document.getElementById('night-f-path').value+'?test=1',{method:'HEAD',headers:nightBuildHdrs(),signal:AbortSignal.timeout(5000)});nightSetEIP('ok',`連線成功 HTTP ${r.status}`);nightLog(`EIP 回應 HTTP ${r.status}`,'ok');}catch(e){nightSetEIP('err','連線失敗');nightLog('CORS 或網址不可達，建議直接上傳 xlsx','warn');}}
+async function nightConnectEIP(){const url=document.getElementById('night-f-url').value.trim(),path=document.getElementById('night-f-path').value,month=document.getElementById('night-f-month').value;if(!url||!month){nightLog('請填寫網址與月份','warn');return;}document.getElementById('night-eip-spin').style.display='inline';nightSetEIP('ping',`抓取 ${month}...`);try{const r=await fetch(`${url}${path}?month=${month}`,{headers:nightBuildHdrs(),signal:AbortSignal.timeout(15000)});if(!r.ok)throw new Error(`HTTP ${r.status}`);const json=await r.json();const data=Array.isArray(json)?json:(json.data||json.records||[]);nightLog(`EIP 回傳 ${data.length} 筆`,'ok');if(data.length)nightDetectColumns(Object.keys(data[0]));nightRawRows=nightNormalizeRows(data);nightCalculate();nightSetEIP('ok',`已連線（${nightRawRows.length} 筆）`);}catch(e){nightSetEIP('err','失敗');nightLog(`EIP 失敗：${e.message}`,'err');}finally{document.getElementById('night-eip-spin').style.display='none';}}
+function nightSetEIP(state,label){const dot=document.getElementById('night-eip-dot');dot.className='night-cdot';if(state)dot.classList.add(state==='ping'?'ping':state);document.getElementById('night-eip-lbl').textContent=label;}
+function nightSaveEIP(){try{localStorage.setItem('night-eip',JSON.stringify({url:document.getElementById('night-f-url').value,path:document.getElementById('night-f-path').value,user:document.getElementById('night-f-user').value,auth:document.getElementById('night-f-auth').value}));nightLog('EIP 設定已儲存','ok');}catch(e){}}
+function nightRenderShifts(){
+  document.getElementById('night-shift-list').innerHTML=Object.entries(NIGHT_SHIFTS).map(([code,s])=>`<div class="night-shift-row"><span style="font-family:var(--mono);font-weight:500;font-size:11px;min-width:90px">${code}</span><span style="font-family:var(--mono);font-size:11px;color:var(--ink3);flex:1">${nightFmtMin(s.ns)}–${nightFmtMin(s.ne<s.ns?s.ne+1440:s.ne)}</span><span style="font-family:var(--mono);font-size:11px;color:var(--accent);min-width:50px;text-align:right">${s.max.toFixed(1)} hr</span><button class="night-btn night-btn-xs" style="color:var(--red);border-color:rgba(185,28,28,.2)" onclick="nightRemoveShift('${code}')">移除</button></div>`).join('');
+  document.getElementById('night-col-map-list').innerHTML=Object.entries(NIGHT_FIELD_MAP).map(([k,aliases])=>`<div class="night-fmap-row"><span class="night-fmap-key">${k}</span><span style="font-size:10px;color:var(--ink3)">${aliases.slice(0,4).map(a=>`<span class="night-chip">${a}</span>`).join(' ')}</span></div>`).join('');
+}
+function nightRemoveShift(code){delete NIGHT_SHIFTS[code];nightRenderShifts();nightLog(`移除班別 ${code}`,'warn');}
+function nightAddShift(){const code=document.getElementById('night-new-shift').value.trim();const m=code.match(/^(\d{4})-(\d{4})$/);if(!m){nightLog('格式應為 HHMM-HHMM','err');return;}const sMin=parseInt(m[1].slice(0,2))*60+parseInt(m[1].slice(2,4));const eMin=parseInt(m[2].slice(0,2))*60+parseInt(m[2].slice(2,4));const NS=22*60,NE7=7*60;const eNorm=eMin<=sMin?eMin+1440:eMin;const ne=Math.min(eNorm,NE7+1440)%1440;const max=Math.max(0,(Math.min(eNorm,NE7+1440)-Math.max(NS,sMin))/60);NIGHT_SHIFTS[code]={ns:NS,ne,max};nightRenderShifts();document.getElementById('night-new-shift').value='';nightLog(`新增班別 ${code}，夜點上限 ${max.toFixed(1)} hr`,'ok');}
+function nightLoadDemo(){const demo=[{'員工姓名':'黃馨儀','部門':'運務課','班別名稱':'2330-0830','出勤日':'2026/01/31(六)','實際出勤':'23:30','實際退勤':'09:36','備註':''},{'員工姓名':'黃馨儀','部門':'運務課','班別名稱':'2330-0830','出勤日':'2026/02/02(一)','實際出勤':'00:27','實際退勤':'08:46','備註':'特休2330~0030'},{'員工姓名':'陳育棋','部門':'大肚運務課','班別名稱':'2300-0800','出勤日':'2026/02/01(日)','實際出勤':'22:56','實際退勤':'08:07','備註':''},{'員工姓名':'鄧勝献','部門':'岡山營運課','班別名稱':'2200-0700','出勤日':'2026/02/03(二)','實際出勤':'','實際退勤':'','備註':'未住院病假2200~0700'},{'員工姓名':'張文仁','部門':'岡山營運課','班別名稱':'2200-0700','出勤日':'2026/02/04(三)','實際出勤':'','實際退勤':'','備註':'特休2200~0700'},{'員工姓名':'江衍成','部門':'岡山營運課','班別名稱':'1700-0200','出勤日':'2026/02/05(四)','實際出勤':'17:49','實際退勤':'02:22','備註':'特休1700~1800'},{'員工姓名':'羊俊傑','部門':'北區設備工程課','班別名稱':'1500-0000','出勤日':'2026/02/08(日)','實際出勤':'15:00','實際退勤':'00:05','備註':''}];nightDetectedCols={name:'員工姓名',dept:'部門',shift:'班別名稱',date:'出勤日',cin:'實際出勤',cout:'實際退勤',note:'備註'};nightRawRows=nightNormalizeRows(demo);nightLog(`示範資料：${demo.length} 筆`,'info');nightCalculate();}
+
+// EIP init
+document.getElementById('night-f-month').value=`${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2,'0')}`;
+try{const cfg=JSON.parse(localStorage.getItem('night-eip')||'{}');if(cfg.url)document.getElementById('night-f-url').value=cfg.url;if(cfg.path)document.getElementById('night-f-path').value=cfg.path;if(cfg.user)document.getElementById('night-f-user').value=cfg.user;if(cfg.auth)document.getElementById('night-f-auth').value=cfg.auth;}catch(e){}
+
+// ════════════════════════════════════════════════
+// OVERTIME AUDIT SYSTEM
+// ════════════════════════════════════════════════
+const OTS={t1:null,t2:null,t3:null,results:[],missing:[]};
+const OT_COL={t1:{name:4,date:7,K:10,S:18,applyMonth:6,skipRows:2},t2:{name:3,date:4,G:6,P:15,Q:16,skipRows:2},t3:{name:2,date:6,I:8,J:9,K:10,skipRows:1}};
+
+function otGo(p){
+  document.querySelectorAll('.ot-page').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.ot-nav-item').forEach(e=>e.classList.remove('active'));
+  document.getElementById('ot-pg-'+p).classList.add('active');
+  document.getElementById('ot-nav-'+p).classList.add('active');
+}
+function otDg(e,on,id){e.preventDefault();document.getElementById(id).classList.toggle('drag',on);}
+function otDp(e,key){e.preventDefault();const idx=key==='t1'?'1':key==='t2'?'2':'3';document.getElementById('ot-z'+idx).classList.remove('drag');if(e.dataTransfer.files[0])otParseF(e.dataTransfer.files[0],key);}
+function otLoadF(el,key){if(el.files[0])otParseF(el.files[0],key);}
+function otParseF(file,key){
+  const r=new FileReader();
+  r.onload=e=>{
+    try{
+      const wb=XLSX.read(e.target.result,{type:'array',cellDates:true});
+      const ws=wb.Sheets[wb.SheetNames[0]];
+      const data=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+      OTS[key]=data;
+      const idx=key==='t1'?'1':key==='t2'?'2':'3';
+      document.getElementById('ot-z'+idx).classList.add('loaded');
+      document.getElementById('ot-zb'+idx).textContent='✓ '+file.name;
+      document.getElementById('ot-zs'+idx).textContent=`${data.length-OT_COL[key].skipRows} 筆資料`;
+      otCheckReady();
+    }catch(err){alert('讀取失敗：'+err.message);}
+  };
+  r.readAsArrayBuffer(file);
+}
+function otCheckReady(){document.getElementById('ot-run-btn').disabled=!(OTS.t1&&OTS.t2);}
+function otAddLog(t,m){const el=document.getElementById('ot-lg');if(!el)return;const d=document.createElement('div');d.className='ot-log-'+t;d.textContent=`[${new Date().toLocaleTimeString('zh-TW')}] ${m}`;el.appendChild(d);el.scrollTop=el.scrollHeight;}
+function otSetP(v,lbl){document.getElementById('ot-pb').style.width=v+'%';document.getElementById('ot-pl').textContent=lbl;}
+const otTick=()=>new Promise(r=>setTimeout(r,10));
+const otSleep=ms=>new Promise(r=>setTimeout(r,ms));
+function otNormDate(v){if(!v)return'';let s=String(v).trim();s=s.replace(/[（(][一二三四五六日A-Za-z][）)]/,'').trim();return s;}
+async function otRunAudit(){
+  if(!OTS.t1||!OTS.t2){alert('請先上傳明細表與出勤加班時數明細表');return;}
+  document.getElementById('ot-run-prog').style.display='block';
+  document.getElementById('ot-lg').innerHTML='';
+  otSetP(5,'解析資料…');await otTick();
+  const rows1=OTS.t1.slice(OT_COL.t1.skipRows).filter(r=>r[OT_COL.t1.name]&&String(r[OT_COL.t1.name]).trim());
+  const rows2=OTS.t2.slice(OT_COL.t2.skipRows).filter(r=>r[OT_COL.t2.name]&&String(r[OT_COL.t2.name]).trim());
+  const rows3=OTS.t3?OTS.t3.slice(OT_COL.t3.skipRows).filter(r=>r&&r.length>1):[];
+  otAddLog('i',`明細表 ${rows1.length} 筆 ｜ 出勤加班時數明細表 ${rows2.length} 筆 ｜ 公假換休 ${rows3.length} 筆`);
+  otSetP(20,'建立索引…');await otTick();
+  const map2={};
+  rows2.forEach(r=>{const nm=String(r[OT_COL.t2.name]||'').trim();const dt=otNormDate(r[OT_COL.t2.date]);const key=`${nm}|${dt}`;if(!map2[key])map2[key]=r;});
+  const map3={};
+  if(rows3.length>0){rows3.forEach(r=>{const nm=String(r[OT_COL.t3.name]||'').trim();const dt=otNormDate(r[OT_COL.t3.date]);if(!nm||!dt)return;const key=`${nm}|${dt}`;if(!map3[key])map3[key]=[];map3[key].push(r);});}
+  otSetP(40,'執行稽核…');await otTick();
+  const anomalies=[],missing=[];let matched=0,proc=0;
+  for(const row of rows1){
+    const name=String(row[OT_COL.t1.name]||'').trim();
+    const date=otNormDate(row[OT_COL.t1.date]);
+    const K=String(row[OT_COL.t1.K]||'').trim();
+    const S_val=parseFloat(row[OT_COL.t1.S])||0;
+    const applyMonth=String(row[OT_COL.t1.applyMonth]||'').trim();
+    const key=`${name}|${date}`;
+    if(!map2[key]){missing.push({name,date,applyMonth,K,S:S_val});proc++;continue;}
+    matched++;
+    const r2=map2[key];
+    const G=String(r2[OT_COL.t2.G]||'').trim();
+    const P=parseFloat(r2[OT_COL.t2.P])||0;
+    const Q=parseFloat(r2[OT_COL.t2.Q])||0;
+    const reasons=[];
+    const k5=K.slice(0,5),g5=G.slice(0,5);
+    if(k5&&g5&&k5!==g5)reasons.push({type:'C1',msg:'表定與實際時段不符',detail:`K欄:${k5}, G欄:${g5}`});
+    const c2=parseFloat((P-Q+S_val).toFixed(4));
+    if(Math.abs(c2)>0.001)reasons.push({type:'C2',msg:`加班時數計算不合（${c2>0?'多報':'少報'}）`,detail:`差額: ${c2>0?'+':''}${c2.toFixed(1)} 小時`});
+    if(S_val===0&&rows3.length>0){
+      const leaveTotal=(map3[key]||[]).reduce((s,r3)=>s+(parseFloat(r3[OT_COL.t3.I])||0)+(parseFloat(r3[OT_COL.t3.J])||0)+(parseFloat(r3[OT_COL.t3.K])||0),0);
+      const c3=parseFloat((Q-leaveTotal).toFixed(4));
+      if(Math.abs(c3)>0.001)reasons.push({type:'C3',msg:'公假換休時數不符',detail:`Q(${Q}) - 換休合計(${leaveTotal.toFixed(1)}) = ${c3.toFixed(1)}`});
+    }
+    if(reasons.length>0)anomalies.push({name,date,reasons,raw:{K,S:S_val,G,P,Q,leaveRows:map3[key]||[]}});
+    proc++;
+    if(proc%50===0){otSetP(40+Math.round(proc/rows1.length*50),'稽核中…');await otTick();}
+  }
+  otSetP(95,'整理結果…');await otTick();
+  OTS.results=anomalies;OTS.missing=missing;
+  const totalRows=rows1.length;const normalRows=matched-anomalies.length;
+  otAddLog('ok',`稽核完成 ｜ 明細表共 ${totalRows} 筆 ｜ 有效比對 ${matched} 筆 ｜ 無對應 ${missing.length} 筆 ｜ 異常 ${anomalies.length} 筆`);
+  otSetP(100,'完成');
+  document.getElementById('ot-st-total').textContent=totalRows.toLocaleString();
+  document.getElementById('ot-st-anom').textContent=anomalies.length.toLocaleString();
+  document.getElementById('ot-st-missing').textContent=missing.length.toLocaleString();
+  document.getElementById('ot-st-ok').textContent=normalRows.toLocaleString();
+  const months=[...new Set(anomalies.map(a=>a.date.slice(0,7)))].sort();
+  document.getElementById('ot-fm').innerHTML='<option value="">全部月份</option>'+months.map(m=>`<option value="${m}">${m}</option>`).join('');
+  if(missing.length>0){
+    const mmonths=[...new Set(missing.map(a=>a.date.slice(0,7)))].sort();
+    document.getElementById('ot-mm').innerHTML='<option value="">全部月份</option>'+mmonths.map(m=>`<option value="${m}">${m}</option>`).join('');
+    document.getElementById('ot-missing-section').style.display='block';
+    document.getElementById('ot-missing-count').textContent=missing.length.toLocaleString();
+    otApplyMissing();
+  }
+  await otSleep(500);
+  document.getElementById('ot-run-prog').style.display='none';
+  otRenderTable();
+  otGo('result');
+}
+function otRenderTable(){document.getElementById('ot-no-result').style.display='none';otApplyF();}
+const OTC={C1:'ot-b-red',C2:'ot-b-orange',C3:'ot-b-blue'};
+function otApplyF(){
+  const nf=document.getElementById('ot-fn').value.toLowerCase();
+  const rf=document.getElementById('ot-fr').value;
+  const mf=document.getElementById('ot-fm').value;
+  const filtered=OTS.results.filter(a=>(!nf||a.name.toLowerCase().includes(nf))&&(!rf||a.reasons.some(r=>r.msg.includes(rf)))&&(!mf||a.date.startsWith(mf)));
+  const noAnom=document.getElementById('ot-no-anom'),noResult=document.getElementById('ot-no-result'),tb=document.getElementById('ot-tb');
+  noResult.style.display='none';
+  if(OTS.results.length===0&&!OTS.t1){noResult.style.display='block';tb.innerHTML='';noAnom.style.display='none';return;}
+  if(filtered.length===0&&OTS.results.length===0){noAnom.style.display='block';tb.innerHTML='';return;}
+  noAnom.style.display='none';
+  tb.innerHTML=filtered.map((a,i)=>`<tr><td style="color:var(--ink3);font-size:10px;">${i+1}</td><td><strong>${a.name}</strong></td><td class="ot-mono">${a.date}</td><td>${a.reasons.map(r=>`<span class="ot-badge ${OTC[r.type]||'ot-b-gray'}" style="margin:1px 2px 1px 0;">${r.msg}</span>`).join('<br>')}</td><td class="ot-mono" style="color:var(--ink2);">${a.reasons.map(r=>r.detail).join('<br>')}</td><td><button class="ot-btn ot-btn-outline ot-btn-sm" onclick="otShowDrw(${OTS.results.indexOf(a)})">詳情</button></td></tr>`).join('');
+  document.getElementById('ot-fc').textContent=`顯示 ${filtered.length} / ${OTS.results.length} 筆`;
+  if(filtered.length===0&&OTS.results.length>0){tb.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--ink3);">目前篩選條件無符合結果</td></tr>`;}
+}
+let otMissingExpanded=false;
+function otToggleMissing(){otMissingExpanded=!otMissingExpanded;document.getElementById('ot-missing-body').style.display=otMissingExpanded?'block':'none';document.getElementById('ot-missing-toggle-btn').textContent=otMissingExpanded?'▲ 收合明細':'▼ 展開明細';}
+function otApplyMissing(){
+  const nf=(document.getElementById('ot-mn')?.value||'').toLowerCase();const mf=document.getElementById('ot-mm')?.value||'';
+  const filtered=OTS.missing.filter(a=>(!nf||a.name.toLowerCase().includes(nf))&&(!mf||a.date.startsWith(mf)));
+  const mtb=document.getElementById('ot-mtb');if(!mtb)return;
+  mtb.innerHTML=filtered.map((a,i)=>`<tr><td style="color:var(--ink3);font-size:10px;">${i+1}</td><td><strong>${a.name}</strong></td><td class="ot-mono">${a.date}</td><td class="ot-mono" style="color:var(--ink3);">${a.applyMonth||'—'}</td><td class="ot-mono">${a.K||'—'}</td><td>${a.S}</td></tr>`).join('');
+  document.getElementById('ot-mc').textContent=`顯示 ${filtered.length} / ${OTS.missing.length} 筆`;
+}
+function otShowDrw(idx){
+  const a=OTS.results[idx];if(!a)return;
+  document.getElementById('ot-drw-name').textContent=a.name;
+  document.getElementById('ot-drw-date').textContent=a.date+'　｜　'+a.reasons.length+' 項異常';
+  const TL={C1:'① 時段比對',C2:'② 時數計算',C3:'③ 換休核對'};const TI={C1:'🕐',C2:'⏱',C3:'🔄'};
+  document.getElementById('ot-drw-body').innerHTML=`<div class="ot-kv" style="margin-bottom:16px;"><div class="ot-kv-k">員工姓名</div><div class="ot-kv-v">${a.name}</div><div class="ot-kv-k">出勤日期</div><div class="ot-kv-v ot-mono">${a.date}</div><div class="ot-kv-k">異常項目數</div><div class="ot-kv-v">${a.reasons.length} 項</div></div><hr style="border:none;border-top:1px solid var(--rule);margin:14px 0;"><div style="font-size:11px;font-weight:700;color:var(--ink2);margin-bottom:10px;">原始數值</div><div class="ot-kv" style="margin-bottom:16px;"><div class="ot-kv-k">K欄（表定）</div><div class="ot-kv-v ot-mono">${a.raw.K||'—'}</div><div class="ot-kv-k">G欄（刷卡）</div><div class="ot-kv-v ot-mono">${a.raw.G||'—'}</div><div class="ot-kv-k">P欄（換休合計）</div><div class="ot-kv-v">${a.raw.P} hr</div><div class="ot-kv-k">Q欄（總合）</div><div class="ot-kv-v">${a.raw.Q} hr</div><div class="ot-kv-k">S欄（合計時數）</div><div class="ot-kv-v">${a.raw.S} hr</div></div><hr style="border:none;border-top:1px solid var(--rule);margin:14px 0;"><div style="font-size:11px;font-weight:700;color:var(--ink2);margin-bottom:8px;">稽核結果</div>${a.reasons.map(r=>`<div class="ot-chk"><span class="ot-chk-ic">${TI[r.type]||'•'}</span><div class="ot-chk-body"><div class="ot-chk-lbl">${TL[r.type]||r.type}</div><div class="ot-chk-detail">${r.detail}</div></div><span class="ot-chk-res" style="color:var(--red);">❌ 異常</span></div>`).join('')}<div style="margin-top:20px;"><button class="ot-btn ot-btn-outline ot-btn-sm" onclick="otCloseDrw()">關閉</button></div>`;
+  document.getElementById('ot-drw-ov').classList.add('on');
+}
+function otCloseDrwOv(e){if(e.target===document.getElementById('ot-drw-ov'))otCloseDrw();}
+function otCloseDrw(){document.getElementById('ot-drw-ov').classList.remove('on');}
+function otExpCSV(){if(!OTS.results.length){alert('尚無異常記錄');return;}const rows=[['員工姓名','出勤日','異常類型','異常原因','差額/明細']];OTS.results.forEach(a=>a.reasons.forEach(r=>rows.push([a.name,a.date,r.type,r.msg,r.detail])));const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');otDl(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}),`加班異常稽核_${otTs()}.csv`);}
+function otExpXLS(){if(!OTS.results.length){alert('尚無異常記錄');return;}const rows=[['員工姓名','出勤日','異常類型','異常原因','差額/明細']];OTS.results.forEach(a=>a.reasons.forEach(r=>rows.push([a.name,a.date,r.type,r.msg,r.detail])));const ws=XLSX.utils.aoa_to_sheet(rows);ws['!cols']=[{wch:10},{wch:12},{wch:10},{wch:26},{wch:30}];const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'加班異常稽核');XLSX.writeFile(wb,`加班異常稽核_${otTs()}.xlsx`);}
+function otExpMissingCSV(){if(!OTS.missing.length){alert('無資料');return;}const rows=[['員工姓名','出勤日','申報月份','K欄(表定時段)','S欄(合計時數)','說明']];OTS.missing.forEach(a=>rows.push([a.name,a.date,a.applyMonth,a.K,a.S,'出勤加班時數明細表無對應記錄']));const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');otDl(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}),`無對應記錄_${otTs()}.csv`);}
+function otDl(blob,name){const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);}
+function otTs(){return new Date().toLocaleDateString('zh-TW').replace(/\//g,'-');}
+function otLoadSample(){
+  const h1a=['實際單號','部門代號','部門名稱','員工代號','員工姓名','外派','申報月份','出勤日','實際出勤時間','實際加班時間',null,null,null,'前二時數','後二時數','休息日第9~12小時','國定假日時數','假日時數(舊制)','合計時數','處理狀態','過檔日期時間'];
+  const h1b=[null,null,null,null,null,null,null,null,null,'開始時間',null,'結束時間',null,null,null,null,null,null,null,null,null];
+  const names=[['陳映筑','B001','經營企劃課','10912005'],['徐譽玲','C003','桃竹課','09812005'],['陳建元','C005','北三課','11312002']];
+  const t1data=[h1a,h1b];
+  const t2data=[['部門代號','部門名稱','員工編號','員工姓名','出勤日','實際出退勤時間','加班起訖時間','前二時數','後二時數','休息日第9~12小時','國定假日時數','出勤加班時數合計','換休前二時數','換休後二時數','換休國定假日時數','換休時數合計','總合']];
+  const dates=['2026/01/06','2026/01/07','2026/01/08','2026/01/09','2026/01/10','2026/01/12','2026/01/13','2026/01/14'];
+  const kSlots=['17:30','17:30','17:30','17:30','09:00','17:30','17:30','17:30'];
+  const sTimes=[1.5,2,2.5,1,8,1.5,2,2.5];
+  names.forEach((nm,ni)=>{const ndates=ni===0?dates:['2026/01/10'];ndates.forEach((dt,di)=>{const realDi=ni===0?di:4;const K=kSlots[realDi];const S=sTimes[realDi];const row1=Array(21).fill('');row1[0]='OT'+nm[1]+dt.replace(/\//g,'').slice(2);row1[1]=nm[1];row1[2]=nm[2];row1[3]=nm[3];row1[4]=nm[0];row1[5]='否';row1[6]='202601';row1[7]=dt;row1[8]='08:08~20:00';row1[9]=dt;row1[10]=K;row1[11]=dt;row1[12]=K.slice(0,2)+':59';row1[13]=Math.min(2,S);row1[14]=Math.max(0,S-2);row1[18]=S;row1[19]='結案';t1data.push(row1);let G=K+'-20:00';let P=0,Q=S;if(ni===0&&di===0){G='18:00-20:00';}if(ni===0&&di===5){P=1;}const row2=[nm[1],nm[2],nm[3],nm[0],dt,'08:08~20:00',G,Math.min(2,S),Math.max(0,S-2),0,0,S,0,0,0,P,Q];t2data.push(row2);});});
+  OTS.t1=t1data;OTS.t2=t2data;OTS.t3=null;
+  ['1','2'].forEach(i=>{document.getElementById('ot-z'+i).classList.add('loaded');document.getElementById('ot-zb'+i).textContent='✓ 範例資料';document.getElementById('ot-zs'+i).textContent=i==='1'?(t1data.length-2)+' 筆資料':(t2data.length-1)+' 筆資料';});
+  otCheckReady();otAddLog('i','已載入範例資料（含 2 筆預設異常）');
+}
+</script>
+</body>
+</html>
