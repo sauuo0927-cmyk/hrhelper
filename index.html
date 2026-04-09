@@ -662,9 +662,218 @@ input[type=file]{display:none;}
   .a-layout{grid-template-columns:1fr;}
   .a-main{padding:0;}
 }
+
+/* ════════════════════════════════════════════
+   登入頁面
+════════════════════════════════════════════ */
+#login-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: linear-gradient(135deg, #0b1a38 0%, #1e3560 50%, #0f2044 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-family: 'Noto Sans TC', sans-serif;
+}
+#login-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 20% 30%, rgba(74,120,200,0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 60% at 80% 70%, rgba(26,86,219,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+/* 點陣背景裝飾 */
+#login-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 36px 36px;
+  pointer-events: none;
+}
+.login-card {
+  position: relative;
+  z-index: 1;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 48px 44px 44px;
+  width: 380px;
+  backdrop-filter: blur(20px);
+  box-shadow:
+    0 32px 64px rgba(0,0,0,0.4),
+    0 0 0 1px rgba(255,255,255,0.06) inset;
+  animation: loginCardIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes loginCardIn {
+  from { opacity:0; transform: translateY(24px) scale(0.96); }
+  to   { opacity:1; transform: translateY(0) scale(1); }
+}
+.login-logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 32px;
+}
+.login-logo-icon {
+  width: 48px; height: 48px;
+  background: linear-gradient(135deg, #4a78c8, #1e3560);
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  box-shadow: 0 4px 16px rgba(74,120,200,0.5);
+  flex-shrink: 0;
+}
+.login-logo-text { color: #fff; font-size: 20px; font-weight: 700; letter-spacing: 0.02em; }
+.login-logo-sub  { color: rgba(255,255,255,0.35); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; margin-top: 2px; }
+.login-field {
+  margin-bottom: 16px;
+}
+.login-field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.login-input-wrap {
+  position: relative;
+}
+.login-input-icon {
+  position: absolute;
+  left: 14px; top: 50%; transform: translateY(-50%);
+  font-size: 14px;
+  opacity: 0.4;
+  pointer-events: none;
+}
+.login-field input {
+  width: 100%;
+  padding: 12px 14px 12px 40px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  color: #fff;
+  font-size: 13px;
+  font-family: 'Noto Sans TC', sans-serif;
+  outline: none;
+  transition: border-color 0.18s, background 0.18s;
+}
+.login-field input::placeholder { color: rgba(255,255,255,0.2); }
+.login-field input:focus {
+  border-color: rgba(74,120,200,0.7);
+  background: rgba(255,255,255,0.1);
+}
+.login-pw-toggle {
+  position: absolute;
+  right: 13px; top: 50%; transform: translateY(-50%);
+  background: none; border: none;
+  color: rgba(255,255,255,0.3);
+  cursor: pointer; font-size: 13px;
+  padding: 2px 4px;
+  transition: color 0.15s;
+}
+.login-pw-toggle:hover { color: rgba(255,255,255,0.7); }
+.login-btn {
+  width: 100%;
+  padding: 13px;
+  margin-top: 8px;
+  background: linear-gradient(135deg, #2a5bc7, #1e3a8a);
+  border: 1px solid rgba(74,120,200,0.5);
+  border-radius: 10px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: 'Noto Sans TC', sans-serif;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: all 0.18s;
+  box-shadow: 0 4px 16px rgba(26,58,138,0.4);
+}
+.login-btn:hover {
+  background: linear-gradient(135deg, #3a6bd7, #2a4a9a);
+  box-shadow: 0 6px 20px rgba(26,58,138,0.6);
+  transform: translateY(-1px);
+}
+.login-btn:active { transform: translateY(0); }
+.login-error {
+  margin-top: 14px;
+  padding: 10px 14px;
+  background: rgba(192,57,43,0.15);
+  border: 1px solid rgba(192,57,43,0.35);
+  border-radius: 8px;
+  color: #ff8a7a;
+  font-size: 12px;
+  text-align: center;
+  display: none;
+  animation: shakeX 0.4s ease;
+}
+@keyframes shakeX {
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-6px)}
+  40%{transform:translateX(6px)}
+  60%{transform:translateX(-4px)}
+  80%{transform:translateX(4px)}
+}
+.login-footer {
+  margin-top: 28px;
+  text-align: center;
+  font-size: 10px;
+  color: rgba(255,255,255,0.18);
+  letter-spacing: 0.06em;
+}
+/* 登入後隱藏 overlay */
+#login-overlay.hidden {
+  animation: loginFadeOut 0.35s ease forwards;
+  pointer-events: none;
+}
+@keyframes loginFadeOut {
+  to { opacity: 0; transform: scale(1.02); }
+}
 </style>
 </head>
 <body>
+
+<!-- ════════════ 登入頁面 ════════════ -->
+<div id="login-overlay">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-icon">🤝</div>
+      <div>
+        <div class="login-logo-text">HR 小幫手</div>
+        <div class="login-logo-sub">HR Assistant Platform</div>
+      </div>
+    </div>
+
+    <div class="login-field">
+      <label>使用者帳號</label>
+      <div class="login-input-wrap">
+        <span class="login-input-icon">👤</span>
+        <input type="text" id="login-user" placeholder="請輸入帳號" autocomplete="username">
+      </div>
+    </div>
+
+    <div class="login-field">
+      <label>密碼</label>
+      <div class="login-input-wrap">
+        <span class="login-input-icon">🔒</span>
+        <input type="password" id="login-pass" placeholder="請輸入密碼" autocomplete="current-password"
+               onkeydown="if(event.key==='Enter')doLogin()">
+        <button class="login-pw-toggle" id="pw-toggle" onclick="togglePw()" title="顯示/隱藏密碼">👁</button>
+      </div>
+    </div>
+
+    <button class="login-btn" onclick="doLogin()">登　入</button>
+    <div class="login-error" id="login-error">帳號或密碼錯誤，請重新輸入</div>
+
+    <div class="login-footer">© HR Assistant Platform · Authorized Use Only</div>
+  </div>
+</div>
 
 <!-- ════════════ APP SWITCHER ════════════ -->
 <div class="app-switcher">
@@ -1360,6 +1569,48 @@ input[type=file]{display:none;}
 // ════════════════════════════════════════════════
 // APP SWITCHER
 // ════════════════════════════════════════════════
+// ════════════════════════════════════════════════
+// ══ 登入邏輯 ══
+// ════════════════════════════════════════════════
+const _CRED = { u: 'reyi', p: 'Reyi8741' };
+
+function doLogin() {
+  const u = document.getElementById('login-user').value.trim();
+  const p = document.getElementById('login-pass').value;
+  const err = document.getElementById('login-error');
+  if (u === _CRED.u && p === _CRED.p) {
+    err.style.display = 'none';
+    const overlay = document.getElementById('login-overlay');
+    overlay.classList.add('hidden');
+    setTimeout(() => overlay.remove(), 380);
+  } else {
+    err.style.display = 'block';
+    // re-trigger shake animation
+    err.style.animation = 'none';
+    void err.offsetWidth;
+    err.style.animation = 'shakeX 0.4s ease';
+    document.getElementById('login-pass').value = '';
+    document.getElementById('login-pass').focus();
+  }
+}
+
+function togglePw() {
+  const inp = document.getElementById('login-pass');
+  const btn = document.getElementById('pw-toggle');
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    btn.textContent = '🙈';
+  } else {
+    inp.type = 'password';
+    btn.textContent = '👁';
+  }
+}
+
+// 頁面載入後自動 focus 帳號欄
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('login-user').focus();
+});
+
 function switchSystem(sys) {
   document.querySelectorAll('.app-system').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.app-tab').forEach(el => el.classList.remove('active'));
