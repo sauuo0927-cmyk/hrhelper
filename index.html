@@ -471,197 +471,42 @@ input[type=file]{display:none;}
 .chk-res{font-size:11px;font-weight:700;white-space:nowrap;margin-top:2px;}
 
 /* ════════════════════════════════
-   系統二：夜點津貼（原版 CSS）
+   系統二：夜點津貼 v5 CSS
 ════════════════════════════════ */
 #sys-night {
   background:var(--n-paper);
 }
-.n-shell{display:grid;grid-template-columns:230px 1fr;min-height:calc(100vh - 44px);}
-
-/* SIDEBAR */
-.sb{background:var(--n-ink);color:rgba(255,255,255,.85);display:flex;flex-direction:column;position:sticky;top:44px;height:calc(100vh - 44px);overflow-y:auto}
-.sb-brand{padding:22px 18px 18px;border-bottom:1px solid rgba(255,255,255,.08)}
-.brand-row{display:flex;align-items:center;gap:10px;margin-bottom:4px}
-.brand-ico{width:28px;height:28px;background:var(--n-accent);border-radius:7px;display:flex;align-items:center;justify-content:center}
-.brand-name{font-size:13px;font-weight:700;color:#fff}
-.brand-sub{font-size:9px;color:rgba(255,255,255,.35);font-family:var(--mono2);letter-spacing:.1em}
-.sb-sec{padding:14px 10px 6px}
-.sb-lbl{font-size:9px;font-family:var(--mono2);color:rgba(255,255,255,.3);letter-spacing:.12em;text-transform:uppercase;padding:0 8px;margin-bottom:4px}
-.nav{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r);cursor:pointer;color:rgba(255,255,255,.55);font-size:12px;transition:all .15s;border:none;background:none;width:100%;text-align:left}
-.nav:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.9)}
-.nav.active{background:var(--n-accent);color:#fff}
-.sb-foot{margin-top:auto;padding:14px 18px;border-top:1px solid rgba(255,255,255,.08)}
-.sb-chip{display:flex;justify-content:space-between;font-size:10px;color:rgba(255,255,255,.35);padding:3px 0}
-.sb-chip-val{font-family:var(--mono2);color:rgba(255,255,255,.75);font-size:11px}
-
-/* MAIN */
-.n-main{display:flex;flex-direction:column;overflow:hidden;}
-.topbar{background:var(--n-white);border-bottom:1px solid var(--n-line);padding:0 28px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:44px;z-index:50}
-.page-ttl{font-size:14px;font-weight:700;color:var(--n-ink);letter-spacing:-.3px}
-.topbar-acts{display:flex;gap:8px;align-items:center}
-.n-content{padding:24px 28px}
-
-/* CARDS */
-.card{background:var(--n-white);border:1px solid var(--n-line);border-radius:var(--r-lg);padding:20px 22px;margin-bottom:14px}
-.card-ttl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--n-ink3);margin-bottom:16px;font-family:var(--mono2)}
-
-/* BUTTONS (夜點) */
-.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:var(--r);font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--n-line);background:var(--n-white);color:var(--n-ink2);font-family:var(--font);transition:all .15s;white-space:nowrap}
-.btn:hover{background:var(--n-paper)}
-.btn:active{transform:scale(.98)}
-.btn:disabled{opacity:.4;cursor:not-allowed}
-.btn-primary{background:var(--n-accent);color:#fff;border-color:var(--n-accent)}
-.btn-primary:hover{background:#1648c5}
-.btn-green{background:var(--n-green);color:#fff;border-color:var(--n-green)}
-.btn-green:hover{opacity:.9}
-.btn-sm{padding:5px 11px;font-size:11px}
-.btn-xs{padding:3px 8px;font-size:10px}
-
-/* DROPZONE */
-.dz{border:1.5px dashed rgba(15,17,23,.18);border-radius:var(--r-lg);padding:36px 20px;text-align:center;cursor:pointer;transition:all .2s;background:var(--n-paper)}
-.dz:hover,.dz.over{border-color:var(--n-accent);background:var(--n-accent-pale)}
-.dz p{color:var(--n-ink3);font-size:12px;margin-top:8px}
-.dz strong{color:var(--n-accent)}
-
-/* STATS (夜點) */
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
-.n-stat{background:var(--n-paper);border-radius:var(--r);padding:12px 14px;border:1px solid var(--n-line2)}
-.n-stat-lbl{font-size:9px;color:var(--n-ink3);font-family:var(--mono2);letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px}
-.n-stat-val{font-size:20px;font-weight:700;color:var(--n-ink);letter-spacing:-1px}
-.n-stat-unit{font-size:10px;color:var(--n-ink3);font-weight:400;margin-left:2px}
-
-/* TABLE (夜點) */
-.n-tbl-wrap{border:1px solid var(--n-line);border-radius:var(--r-lg);overflow:hidden;overflow-x:auto}
-.n-tbl{width:100%;border-collapse:collapse}
-.n-tbl thead{background:var(--n-paper)}
-.n-tbl th{padding:9px 13px;text-align:left;font-size:9px;font-family:var(--mono2);font-weight:500;color:var(--n-ink3);letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--n-line);white-space:nowrap;cursor:pointer;user-select:none}
-.n-tbl th:hover{color:var(--n-ink)}
-.n-tbl td{padding:8px 13px;border-bottom:1px solid var(--n-line2);color:var(--n-ink2);font-size:12px;white-space:nowrap}
-.n-tbl tr:last-child td{border-bottom:none}
-.n-tbl tr:hover td{background:#fafaf8}
-.tr{text-align:right}.n-mono{font-family:var(--mono2)}
-.accent{color:var(--n-accent);font-weight:700;font-size:13px}
-.name-cell{font-weight:500;color:var(--n-ink)}
-
-/* BADGE / PILL */
-.n-badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:500;font-family:var(--mono2)}
-.badge-green{background:var(--n-green-pale);color:var(--n-green)}
-.badge-amber{background:var(--n-amber-pale);color:var(--n-amber)}
-.badge-red{background:var(--n-red-pale);color:var(--n-red)}
-.badge-blue{background:var(--n-accent-pale);color:var(--n-accent)}
-.pill{display:inline-block;padding:1px 7px;border-radius:4px;font-size:10px;font-family:var(--mono2);background:var(--n-paper);border:1px solid var(--n-line);color:var(--n-ink2)}
-.pill-neg{background:var(--n-red-pale);color:var(--n-red);border-color:rgba(185,28,28,.15)}
-.pill-dim{opacity:.3}
-
-/* LOG (夜點) */
-.n-log{background:#0f1117;border-radius:var(--r);padding:12px 14px;font-family:var(--mono2);font-size:10px;max-height:140px;overflow-y:auto;border:1px solid var(--n-line)}
-.ll{padding:1px 0;line-height:1.6}
-.ll.ok{color:#4ade80}.ll.err{color:#f87171}.ll.warn{color:#fbbf24}.ll.info{color:#60a5fa}.ll.dim{color:rgba(255,255,255,.3)}
-
-/* PROGRESS (夜點) */
-.n-prog{height:3px;background:var(--n-line2);border-radius:2px;overflow:hidden;margin-top:10px}
-.n-prog-bar{height:100%;background:var(--n-accent);border-radius:2px;transition:width .4s ease}
-
-/* FILTER (夜點) */
-.frow{display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
-.frow input,.frow select{padding:6px 10px;border:1px solid var(--n-line);border-radius:var(--r);background:var(--n-white);color:var(--n-ink);font-size:12px;outline:none;font-family:var(--font)}
-.frow input:focus,.frow select:focus{border-color:var(--n-accent)}
-.ml-a{margin-left:auto}
-
-/* PAGE/TAB (夜點) */
-.n-page{display:none}
-.n-page.active{display:block}
-.n-empty{padding:60px 20px;text-align:center;color:var(--n-ink3)}
-.n-empty p{font-size:12px;margin-top:12px}
-
-/* FIELD MAP TABLE */
-.fmap-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.fmap-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--n-line2);font-size:12px}
-.fmap-row:last-child{border-bottom:none}
-.fmap-key{font-family:var(--mono2);font-size:11px;color:var(--n-ink3)}
-.fmap-val{font-family:var(--mono2);font-size:11px;font-weight:500}
-.fmap-val.ok{color:var(--n-green)}
-.fmap-val.warn{color:var(--n-amber)}
-.chip{background:var(--n-paper);border:1px solid var(--n-line);border-radius:4px;padding:1px 7px;font-size:10px;font-family:var(--mono2)}
-
-/* EIP */
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.field{display:flex;flex-direction:column;gap:4px}
-.field label{font-size:10px;font-weight:500;color:var(--n-ink2);font-family:var(--mono2);letter-spacing:.03em}
-.field input,.field select{padding:7px 10px;border:1px solid var(--n-line);border-radius:var(--r);background:var(--n-paper);color:var(--n-ink);font-size:12px;font-family:var(--font);outline:none}
-.field input:focus,.field select:focus{border-color:var(--n-accent);background:var(--n-white)}
-.form-full{grid-column:1/-1}
-.conn-bar{display:flex;align-items:center;gap:8px;padding:9px 13px;background:var(--n-paper);border:1px solid var(--n-line);border-radius:var(--r);margin-bottom:14px}
-.cdot{width:7px;height:7px;border-radius:50%;background:var(--n-ink3)}
-.cdot.ok{background:#22c55e}.cdot.err{background:var(--n-red)}.cdot.ping{background:#f59e0b;animation:pulse 1s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-
-/* SHIFT CONFIG */
-.shift-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--n-line2);font-size:12px}
-.shift-row:last-child{border-bottom:none}
-
-/* DASHBOARD */
-.dash-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
-.kpi{background:var(--n-white);border:1px solid var(--n-line);border-radius:var(--r-lg);padding:18px 20px;position:relative;overflow:hidden}
-.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--kpi-color,var(--n-accent))}
-.kpi-label{font-size:10px;font-family:var(--mono2);color:var(--n-ink3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
-.kpi-value{font-size:26px;font-weight:700;color:var(--n-ink);letter-spacing:-1.5px;line-height:1}
-.kpi-unit{font-size:12px;color:var(--n-ink3);font-weight:400;margin-left:3px}
-.kpi-sub{font-size:11px;color:var(--n-ink3);margin-top:6px}
-.kpi-trend{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-family:var(--mono2);padding:2px 7px;border-radius:20px;margin-top:6px}
-.trend-up{background:var(--n-green-pale);color:var(--n-green)}
-.trend-dn{background:var(--n-red-pale);color:var(--n-red)}
-
-.dash-row{display:grid;gap:14px;margin-bottom:14px}
-.dash-row-2{grid-template-columns:1fr 1fr}
-.dash-row-3{grid-template-columns:2fr 1fr 1fr}
-.dash-row-half{grid-template-columns:3fr 2fr}
-
-.chart-card{background:var(--n-white);border:1px solid var(--n-line);border-radius:var(--r-lg);padding:18px 20px}
-.chart-ttl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--n-ink3);margin-bottom:4px;font-family:var(--mono2)}
-.chart-sub{font-size:11px;color:var(--n-ink3);margin-bottom:16px}
-.chart-wrap{position:relative}
-
-/* RANKING LIST */
-.rank-list{list-style:none}
-.rank-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--n-line2)}
-.rank-item:last-child{border-bottom:none}
-.rank-num{font-family:var(--mono2);font-size:10px;color:var(--n-ink3);min-width:18px;text-align:right}
-.rank-name{font-size:12px;font-weight:500;flex:1;color:var(--n-ink)}
-.rank-dept{font-size:10px;color:var(--n-ink3)}
-.rank-bar-wrap{width:80px;height:5px;background:var(--n-line2);border-radius:3px;overflow:hidden}
-.rank-bar{height:100%;background:var(--n-accent);border-radius:3px;transition:width .6s ease}
-.rank-val{font-family:var(--mono2);font-size:11px;color:var(--n-accent);font-weight:500;min-width:36px;text-align:right}
-
-/* DEPT BAR */
-.dept-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--n-line2)}
-.dept-row:last-child{border-bottom:none}
-.dept-name{font-size:11px;min-width:110px;color:var(--n-ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.dept-bar-wrap{flex:1;height:8px;background:var(--n-line2);border-radius:4px;overflow:hidden}
-.dept-bar{height:100%;border-radius:4px;transition:width .6s ease}
-.dept-val{font-family:var(--mono2);font-size:11px;min-width:44px;text-align:right;color:var(--n-ink2)}
-
-/* LEAVE TYPE PIE legend */
-.legend-list{display:flex;flex-direction:column;gap:6px;margin-top:12px}
-.legend-item{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--n-ink2)}
-.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.legend-pct{margin-left:auto;font-family:var(--mono2);font-size:10px;color:var(--n-ink3)}
-
-/* HEATMAP */
-.heatmap-grid{display:grid;gap:3px}
-.hm-cell{border-radius:3px;height:22px;display:flex;align-items:center;justify-content:center;font-size:9px;font-family:var(--mono2);color:var(--n-ink3);cursor:default;transition:opacity .15s}
-.hm-cell:hover{opacity:.8}
-.hm-label{font-size:9px;font-family:var(--mono2);color:var(--n-ink3);text-align:center}
-
-/* ── 捲軸 ── */
-::-webkit-scrollbar{width:5px;height:5px;}
-::-webkit-scrollbar-thumb{background:var(--rule);border-radius:3px;}
-
-@media print{
-  .app-switcher,.a-sidebar,.toolbar,.btn-row{display:none!important;}
-  .a-layout{grid-template-columns:1fr;}
-  .a-main{padding:0;}
-}
+:root{
+  --ink:#0f1117;--ink2:#3a3d4a;--ink3:#7a7e8e;
+  --paper:#f5f4ef;--white:#fff;
+  --line:rgba(15,17,23,.1);--line2:rgba(15,17,23,.05);
+  --accent:#1a56db;--accent-pale:#e8f0fe;
+  --green:#1a7a4a;--green-pale:#e6f4ec;
+  --amber:#92520a;--amber-pale:#fef3e2;
+  --red:#b91c1c;--red-pale:#fef2f2;
+  --mono:'DM Mono',monospace;--sans:'Noto Sans TC',sans-serif;
+  --r:8px;--r-lg:14px;
+}*{box-sizing:border-box;margin:0;padding:0}body{font-family:var(--sans);background:var(--paper);color:var(--ink);font-size:13px;line-height:1.6;min-height:100vh}#sys-night .shell{display:grid;grid-template-columns:230px 1fr;min-height:100vh}#sys-night /* SIDEBAR */
+.sb{background:var(--ink);color:rgba(255,255,255,.85);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}#sys-night .sb-brand{padding:22px 18px 18px;border-bottom:1px solid rgba(255,255,255,.08)}#sys-night .brand-row{display:flex;align-items:center;gap:10px;margin-bottom:4px}#sys-night .brand-ico{width:28px;height:28px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center}#sys-night .brand-name{font-size:13px;font-weight:700;color:#fff}#sys-night .brand-sub{font-size:9px;color:rgba(255,255,255,.35);font-family:var(--mono);letter-spacing:.1em}#sys-night .sb-sec{padding:14px 10px 6px}#sys-night .sb-lbl{font-size:9px;font-family:var(--mono);color:rgba(255,255,255,.3);letter-spacing:.12em;text-transform:uppercase;padding:0 8px;margin-bottom:4px}#sys-night .nav{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r);cursor:pointer;color:rgba(255,255,255,.55);font-size:12px;transition:all .15s;border:none;background:none;width:100%;text-align:left}#sys-night .nav:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.9)}#sys-night .nav.active{background:var(--accent);color:#fff}#sys-night .sb-foot{margin-top:auto;padding:14px 18px;border-top:1px solid rgba(255,255,255,.08)}#sys-night .sb-chip{display:flex;justify-content:space-between;font-size:10px;color:rgba(255,255,255,.35);padding:3px 0}#sys-night .sb-chip-val{font-family:var(--mono);color:rgba(255,255,255,.75);font-size:11px}#sys-night /* MAIN */
+.topbar{background:var(--white);border-bottom:1px solid var(--line);padding:0 28px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}#sys-night .page-ttl{font-size:14px;font-weight:700;color:var(--ink);letter-spacing:-.3px}#sys-night .topbar-acts{display:flex;gap:8px;align-items:center}#sys-night .content{padding:24px 28px}#sys-night /* CARDS */
+.card{background:var(--white);border:1px solid var(--line);border-radius:var(--r-lg);padding:20px 22px;margin-bottom:14px}#sys-night .card-ttl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:16px;font-family:var(--mono)}#sys-night /* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:var(--r);font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--line);background:var(--white);color:var(--ink2);font-family:var(--sans);transition:all .15s;white-space:nowrap}#sys-night .btn:hover{background:var(--paper)}#sys-night .btn:active{transform:scale(.98)}#sys-night .btn:disabled{opacity:.4;cursor:not-allowed}#sys-night .btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}#sys-night .btn-primary:hover{background:#1648c5}#sys-night .btn-green{background:var(--green);color:#fff;border-color:var(--green)}#sys-night .btn-green:hover{opacity:.9}#sys-night .btn-sm{padding:5px 11px;font-size:11px}#sys-night .btn-xs{padding:3px 8px;font-size:10px}#sys-night /* DROPZONE */
+.dz{border:1.5px dashed rgba(15,17,23,.18);border-radius:var(--r-lg);padding:36px 20px;text-align:center;cursor:pointer;transition:all .2s;background:var(--paper)}#sys-night .dz:hover, #sys-night .dz.over{border-color:var(--accent);background:var(--accent-pale)}#sys-night .dz p{color:var(--ink3);font-size:12px;margin-top:8px}#sys-night .dz strong{color:var(--accent)}#sys-night /* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}#sys-night .stat{background:var(--paper);border-radius:var(--r);padding:12px 14px;border:1px solid var(--line2)}#sys-night .stat-lbl{font-size:9px;color:var(--ink3);font-family:var(--mono);letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px}#sys-night .stat-val{font-size:20px;font-weight:700;color:var(--ink);letter-spacing:-1px}#sys-night .stat-unit{font-size:10px;color:var(--ink3);font-weight:400;margin-left:2px}#sys-night /* TABLE */
+.tbl-wrap{border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;overflow-x:auto}#sys-night table{width:100%;border-collapse:collapse}#sys-night thead{background:var(--paper)}#sys-night th{padding:9px 13px;text-align:left;font-size:9px;font-family:var(--mono);font-weight:500;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--line);white-space:nowrap;cursor:pointer;user-select:none}#sys-night th:hover{color:var(--ink)}#sys-night td{padding:8px 13px;border-bottom:1px solid var(--line2);color:var(--ink2);font-size:12px;white-space:nowrap}#sys-night tr:last-child td{border-bottom:none}#sys-night tr:hover td{background:#fafaf8}#sys-night .tr{text-align:right}#sys-night .mono{font-family:var(--mono)}#sys-night .accent{color:var(--accent);font-weight:700;font-size:13px}#sys-night .name-cell{font-weight:500;color:var(--ink)}#sys-night /* BADGE / PILL */
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:500;font-family:var(--mono)}#sys-night .badge-green{background:var(--green-pale);color:var(--green)}#sys-night .badge-amber{background:var(--amber-pale);color:var(--amber)}#sys-night .badge-red{background:var(--red-pale);color:var(--red)}#sys-night .badge-blue{background:var(--accent-pale);color:var(--accent)}#sys-night .pill{display:inline-block;padding:1px 7px;border-radius:4px;font-size:10px;font-family:var(--mono);background:var(--paper);border:1px solid var(--line);color:var(--ink2)}#sys-night .pill-neg{background:var(--red-pale);color:var(--red);border-color:rgba(185,28,28,.15)}#sys-night .pill-dim{opacity:.3}#sys-night /* LOG */
+.log{background:#0f1117;border-radius:var(--r);padding:12px 14px;font-family:var(--mono);font-size:10px;max-height:140px;overflow-y:auto;border:1px solid var(--line)}#sys-night .ll{padding:1px 0;line-height:1.6}#sys-night .ll.ok{color:#4ade80}#sys-night .ll.err{color:#f87171}#sys-night .ll.warn{color:#fbbf24}#sys-night .ll.info{color:#60a5fa}#sys-night .ll.dim{color:rgba(255,255,255,.3)}#sys-night /* PROGRESS */
+.prog{height:3px;background:var(--line2);border-radius:2px;overflow:hidden;margin-top:10px}#sys-night .prog-bar{height:100%;background:var(--accent);border-radius:2px;transition:width .4s ease}#sys-night /* FILTER */
+.frow{display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap}#sys-night .frow input, #sys-night .frow select{padding:6px 10px;border:1px solid var(--line);border-radius:var(--r);background:var(--white);color:var(--ink);font-size:12px;outline:none;font-family:var(--sans)}#sys-night .frow input:focus, #sys-night .frow select:focus{border-color:var(--accent)}#sys-night .ml-a{margin-left:auto}#sys-night /* PAGE/TAB */
+.page{display:none}#sys-night .page.active{display:block}#sys-night .empty{padding:60px 20px;text-align:center;color:var(--ink3)}#sys-night .empty p{font-size:12px;margin-top:12px}#sys-night /* FIELD MAP TABLE */
+.fmap-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}#sys-night .fmap-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--line2);font-size:12px}#sys-night .fmap-row:last-child{border-bottom:none}#sys-night .fmap-key{font-family:var(--mono);font-size:11px;color:var(--ink3)}#sys-night .fmap-val{font-family:var(--mono);font-size:11px;font-weight:500}#sys-night .fmap-val.ok{color:var(--green)}#sys-night .fmap-val.warn{color:var(--amber)}#sys-night .chip{background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:1px 7px;font-size:10px;font-family:var(--mono)}#sys-night /* EIP */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}#sys-night .field{display:flex;flex-direction:column;gap:4px}#sys-night .field label{font-size:10px;font-weight:500;color:var(--ink2);font-family:var(--mono);letter-spacing:.03em}#sys-night .field input, #sys-night .field select{padding:7px 10px;border:1px solid var(--line);border-radius:var(--r);background:var(--paper);color:var(--ink);font-size:12px;font-family:var(--sans);outline:none}#sys-night .field input:focus, #sys-night .field select:focus{border-color:var(--accent);background:var(--white)}#sys-night .form-full{grid-column:1/-1}#sys-night .conn-bar{display:flex;align-items:center;gap:8px;padding:9px 13px;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);margin-bottom:14px}#sys-night .cdot{width:7px;height:7px;border-radius:50%;background:var(--ink3)}#sys-night .cdot.ok{background:#22c55e}#sys-night .cdot.err{background:var(--red)}#sys-night .cdot.ping{background:#f59e0b;animation:pulse 1s infinite}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}#sys-night /* SHIFT CONFIG */
+.shift-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--line2);font-size:12px}#sys-night .shift-row:last-child{border-bottom:none}#sys-night /* DASHBOARD */
+.dash-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}#sys-night .kpi{background:var(--white);border:1px solid var(--line);border-radius:var(--r-lg);padding:18px 20px;position:relative;overflow:hidden}#sys-night .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--kpi-color,var(--accent))}#sys-night .kpi-label{font-size:10px;font-family:var(--mono);color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}#sys-night .kpi-value{font-size:26px;font-weight:700;color:var(--ink);letter-spacing:-1.5px;line-height:1}#sys-night .kpi-unit{font-size:12px;color:var(--ink3);font-weight:400;margin-left:3px}#sys-night .kpi-sub{font-size:11px;color:var(--ink3);margin-top:6px}#sys-night .kpi-trend{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-family:var(--mono);padding:2px 7px;border-radius:20px;margin-top:6px}#sys-night .trend-up{background:var(--green-pale);color:var(--green)}#sys-night .trend-dn{background:var(--red-pale);color:var(--red)}#sys-night .dash-row{display:grid;gap:14px;margin-bottom:14px}#sys-night .dash-row-2{grid-template-columns:1fr 1fr}#sys-night .dash-row-3{grid-template-columns:2fr 1fr 1fr}#sys-night .dash-row-half{grid-template-columns:3fr 2fr}#sys-night .chart-card{background:var(--white);border:1px solid var(--line);border-radius:var(--r-lg);padding:18px 20px}#sys-night .chart-ttl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px;font-family:var(--mono)}#sys-night .chart-sub{font-size:11px;color:var(--ink3);margin-bottom:16px}#sys-night .chart-wrap{position:relative}#sys-night /* RANKING LIST */
+.rank-list{list-style:none}#sys-night .rank-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line2)}#sys-night .rank-item:last-child{border-bottom:none}#sys-night .rank-num{font-family:var(--mono);font-size:10px;color:var(--ink3);min-width:18px;text-align:right}#sys-night .rank-name{font-size:12px;font-weight:500;flex:1;color:var(--ink)}#sys-night .rank-dept{font-size:10px;color:var(--ink3)}#sys-night .rank-bar-wrap{width:80px;height:5px;background:var(--line2);border-radius:3px;overflow:hidden}#sys-night .rank-bar{height:100%;background:var(--accent);border-radius:3px;transition:width .6s ease}#sys-night .rank-val{font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:500;min-width:36px;text-align:right}#sys-night /* DEPT BAR */
+.dept-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--line2)}#sys-night .dept-row:last-child{border-bottom:none}#sys-night .dept-name{font-size:11px;min-width:110px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#sys-night .dept-bar-wrap{flex:1;height:8px;background:var(--line2);border-radius:4px;overflow:hidden}#sys-night .dept-bar{height:100%;border-radius:4px;transition:width .6s ease}#sys-night .dept-val{font-family:var(--mono);font-size:11px;min-width:44px;text-align:right;color:var(--ink2)}#sys-night /* LEAVE TYPE PIE legend */
+.legend-list{display:flex;flex-direction:column;gap:6px;margin-top:12px}#sys-night .legend-item{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--ink2)}#sys-night .legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}#sys-night .legend-pct{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--ink3)}#sys-night /* HEATMAP */
+.heatmap-grid{display:grid;gap:3px}#sys-night .hm-cell{border-radius:3px;height:22px;display:flex;align-items:center;justify-content:center;font-size:9px;font-family:var(--mono);color:var(--ink3);cursor:default;transition:opacity .15s}#sys-night .hm-cell:hover{opacity:.8}#sys-night .hm-label{font-size:9px;font-family:var(--mono);color:var(--ink3);text-align:center}
 
 /* ════════════════════════════════════════════
    登入頁面
@@ -1223,7 +1068,7 @@ input[type=file]{display:none;}
   系統二：夜點津貼計算
 ════════════════════════════════════ -->
 <div class="app-system" id="sys-night">
-<div class="n-shell">
+<div class="shell">
 
 <!-- SIDEBAR -->
 <aside class="sb">
@@ -1234,7 +1079,7 @@ input[type=file]{display:none;}
       </div>
       <span class="brand-name">夜點津貼系統</span>
     </div>
-    <div class="brand-sub">NIGHT ALLOWANCE v4.0</div>
+    <div class="brand-sub">NIGHT ALLOWANCE v5.0</div>
   </div>
   <div class="sb-sec">
     <div class="sb-lbl">資料來源</div>
@@ -1266,7 +1111,7 @@ input[type=file]{display:none;}
     <div class="sb-lbl">設定</div>
     <button class="nav" onclick="gotoPage('config',this)">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 19.07a10 10 0 0 1 0-14.14"/></svg>
-      班別 &amp; 欄位設定
+      班別 & 欄位設定
     </button>
   </div>
   <div class="sb-foot">
@@ -1277,7 +1122,7 @@ input[type=file]{display:none;}
 </aside>
 
 <!-- MAIN -->
-<div class="n-main">
+<div>
   <div class="topbar">
     <div class="page-ttl" id="page-ttl">上傳 Excel / CSV</div>
     <div class="topbar-acts">
@@ -1289,14 +1134,14 @@ input[type=file]{display:none;}
     </div>
   </div>
 
-  <div class="n-content">
+  <div class="content">
 
   <!-- ── PAGE: UPLOAD ── -->
-  <div class="n-page active" id="page-upload">
+  <div class="page active" id="page-upload">
     <div class="card">
       <div class="card-ttl">上傳出勤資料</div>
       <div class="dz" id="dz" onclick="document.getElementById('fi').click()">
-        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="var(--n-ink3)" stroke-width="1.5">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="var(--ink3)" stroke-width="1.5">
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
           <polyline points="14 2 14 8 20 8"/>
           <line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/>
@@ -1307,10 +1152,10 @@ input[type=file]{display:none;}
       </div>
       <div id="upload-status" style="display:none;margin-top:12px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-          <span style="font-size:11px;font-family:var(--mono2);color:var(--n-ink2);" id="upload-fname"></span>
-          <span class="n-badge badge-blue" id="upload-badge">處理中</span>
+          <span style="font-size:11px;font-family:var(--mono);color:var(--ink2);" id="upload-fname"></span>
+          <span class="badge badge-blue" id="upload-badge">處理中</span>
         </div>
-        <div class="n-prog"><div class="n-prog-bar" id="prog-bar" style="width:0%"></div></div>
+        <div class="prog"><div class="prog-bar" id="prog-bar" style="width:0%"></div></div>
       </div>
     </div>
 
@@ -1329,9 +1174,9 @@ input[type=file]{display:none;}
           <div class="fmap-row"><span class="fmap-key">備註欄</span><span class="fmap-val ok" id="fm-note">—</span></div>
         </div>
       </div>
-      <div style="margin-top:14px;padding:10px 12px;background:var(--n-paper);border-radius:var(--r);border:1px solid var(--n-line);">
-        <div style="font-size:10px;color:var(--n-ink3);font-family:var(--mono2);margin-bottom:6px;">時間欄位偵測格式</div>
-        <div id="time-fmt-info" style="font-size:11px;color:var(--n-ink2);font-family:var(--mono2);"></div>
+      <div style="margin-top:14px;padding:10px 12px;background:var(--paper);border-radius:var(--r);border:1px solid var(--line);">
+        <div style="font-size:10px;color:var(--ink3);font-family:var(--mono);margin-bottom:6px;">時間欄位偵測格式</div>
+        <div id="time-fmt-info" style="font-size:11px;color:var(--ink2);font-family:var(--mono);"></div>
       </div>
     </div>
 
@@ -1340,18 +1185,18 @@ input[type=file]{display:none;}
         <div class="card-ttl" style="margin-bottom:0">系統日誌</div>
         <button class="btn btn-xs" onclick="document.getElementById('log').innerHTML=''">清除</button>
       </div>
-      <div class="n-log" id="log"><div class="ll dim">系統就緒。請上傳出勤資料。</div></div>
+      <div class="log" id="log"><div class="ll dim">系統就緒。請上傳出勤資料。</div></div>
     </div>
   </div>
 
   <!-- ── PAGE: EIP ── -->
-  <div class="n-page" id="page-eip">
+  <div class="page" id="page-eip">
     <div class="card">
       <div class="card-ttl">EIP 系統連線設定</div>
       <div class="conn-bar">
         <span class="cdot" id="eip-dot"></span>
-        <span style="font-size:12px;color:var(--n-ink2);" id="eip-lbl">尚未連線</span>
-        <span style="font-size:10px;font-family:var(--mono2);color:var(--n-ink3);margin-left:auto;" id="eip-detail"></span>
+        <span style="font-size:12px;color:var(--ink2);" id="eip-lbl">尚未連線</span>
+        <span style="font-size:10px;font-family:var(--mono);color:var(--ink3);margin-left:auto;" id="eip-detail"></span>
       </div>
       <div class="form-grid" style="margin-bottom:12px;">
         <div class="field"><label>EIP 系統網址</label><input type="url" id="f-url" placeholder="https://eip.company.com"></div>
@@ -1372,22 +1217,26 @@ input[type=file]{display:none;}
         <button class="btn btn-primary btn-sm" onclick="connectEIP()">連接並抓取</button>
         <button class="btn btn-sm" onclick="testEIP()">測試連線</button>
         <button class="btn btn-sm" onclick="saveEIP()">儲存設定</button>
-        <span id="eip-spin" style="display:none;font-size:10px;font-family:var(--mono2);color:var(--n-ink3);align-self:center;">● 連線中...</span>
+        <span id="eip-spin" style="display:none;font-size:10px;font-family:var(--mono);color:var(--ink3);align-self:center;">● 連線中...</span>
       </div>
-      <div style="background:var(--n-amber-pale);border:1px solid rgba(146,82,10,.15);border-radius:var(--r);padding:12px 14px;font-size:11px;color:var(--n-amber);line-height:1.8;">
+      <div style="background:var(--amber-pale);border:1px solid rgba(146,82,10,.15);border-radius:var(--r);padding:12px 14px;font-size:11px;color:var(--amber);line-height:1.8;">
         <strong>CORS 限制：</strong>瀏覽器安全政策限制跨域存取。解法：A. 請 IT 在 EIP 加入 CORS 標頭　B. 設本地反向代理　C. 從 EIP 匯出 xlsx 後直接上傳（最快）
       </div>
     </div>
   </div>
 
   <!-- ── PAGE: DASHBOARD ── -->
-  <div class="n-page" id="page-dash">
-    <div id="dash-empty" class="n-empty">
+  <div class="page" id="page-dash">
+    <div id="dash-empty" class="empty">
       <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
       <p>尚無資料，請先上傳出勤 Excel 或連接 EIP</p>
     </div>
     <div id="dash-data" style="display:none;">
+
+      <!-- KPI row -->
       <div class="dash-kpi-grid" id="dash-kpis"></div>
+
+      <!-- Row 1: 夜點時數橫條圖 + 跨夜排名 -->
       <div class="dash-row dash-row-half" style="margin-bottom:14px;">
         <div class="chart-card">
           <div class="chart-ttl">各員工夜點時數排名</div>
@@ -1400,6 +1249,8 @@ input[type=file]{display:none;}
           <ul class="rank-list" id="rank-list"></ul>
         </div>
       </div>
+
+      <!-- Row 2: 課別圓餅 + 假別分布 + 班別分布 -->
       <div class="dash-row dash-row-3" style="margin-bottom:14px;">
         <div class="chart-card">
           <div class="chart-ttl">課別夜點時數分布</div>
@@ -1421,6 +1272,8 @@ input[type=file]{display:none;}
           <div class="chart-wrap" style="height:200px;"><canvas id="chart-shift-doughnut"></canvas></div>
         </div>
       </div>
+
+      <!-- Row 3: 課別橫條 + 跨夜分布 -->
       <div class="dash-row dash-row-2" style="margin-bottom:14px;">
         <div class="chart-card">
           <div class="chart-ttl">課別夜點時數比較</div>
@@ -1433,6 +1286,8 @@ input[type=file]{display:none;}
           <div class="chart-wrap" style="height:200px;"><canvas id="chart-hist"></canvas></div>
         </div>
       </div>
+
+      <!-- Row 4: scatter plot + overnight by dept -->
       <div class="dash-row dash-row-2">
         <div class="chart-card">
           <div class="chart-ttl">夜點時數 vs 跨夜天數</div>
@@ -1445,12 +1300,13 @@ input[type=file]{display:none;}
           <div class="chart-wrap" style="height:220px;"><canvas id="chart-overnight-bar"></canvas></div>
         </div>
       </div>
+
     </div>
   </div>
 
   <!-- ── PAGE: RESULT ── -->
-  <div class="n-page" id="page-result">
-    <div id="result-empty" class="n-empty">
+  <div class="page" id="page-result">
+    <div id="result-empty" class="empty">
       <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/></svg>
       <p>尚無資料，請先上傳出勤 Excel 或連接 EIP</p>
     </div>
@@ -1460,17 +1316,18 @@ input[type=file]{display:none;}
         <div class="frow">
           <input placeholder="搜尋姓名..." id="r-q" oninput="renderResult()">
           <select id="r-dept" onchange="renderResult()"><option value="">全部課別</option></select>
-          <span class="ml-a" style="font-size:11px;color:var(--n-ink3);font-family:var(--mono2);" id="result-count"></span>
+          <span class="ml-a" style="font-size:11px;color:var(--ink3);font-family:var(--mono);" id="result-count"></span>
         </div>
-        <div class="n-tbl-wrap">
-          <table class="n-tbl">
+        <div class="tbl-wrap">
+          <table>
             <thead><tr>
               <th onclick="sort('rank')">#</th>
+              <th onclick="sort('empId')">員工編號</th>
               <th onclick="sort('dept')">課別</th>
               <th onclick="sort('name')">姓名</th>
               <th onclick="sort('nightHours')" class="tr">夜點時數（hr）</th>
               <th onclick="sort('overnight')" class="tr">跨夜天數</th>
-              <th onclick="sort('count')" class="tr">出勤筆數</th>
+              <th onclick="sort('nightCount')" class="tr">夜班筆數</th>
               <th class="tr">假扣除（hr）</th>
             </tr></thead>
             <tbody id="result-tbody"></tbody>
@@ -1481,29 +1338,32 @@ input[type=file]{display:none;}
   </div>
 
   <!-- ── PAGE: DETAIL ── -->
-  <div class="n-page" id="page-detail">
-    <div id="detail-empty" class="n-empty">
+  <div class="page" id="page-detail">
+    <div id="detail-empty" class="empty">
       <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <p>尚無資料</p>
     </div>
     <div id="detail-data" style="display:none;">
       <div class="card" style="padding:16px 18px;">
         <div class="frow">
-          <input placeholder="搜尋姓名..." id="d-q" oninput="renderDetail()">
+          <input placeholder="搜尋姓名/編號..." id="d-q" oninput="renderDetail()">
           <select id="d-dept" onchange="renderDetail()"><option value="">全部課別</option></select>
           <select id="d-shift" onchange="renderDetail()"><option value="">全部班別</option></select>
-          <span class="ml-a" style="font-size:11px;color:var(--n-ink3);font-family:var(--mono2);" id="detail-count"></span>
+          <label style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--ink2);cursor:pointer;">
+            <input type="checkbox" id="d-nightonly" checked onchange="renderDetail()"> 僅顯示夜班
+          </label>
+          <span class="ml-a" style="font-size:11px;color:var(--ink3);font-family:var(--mono);" id="detail-count"></span>
         </div>
-        <div class="n-tbl-wrap">
-          <table class="n-tbl">
+        <div class="tbl-wrap">
+          <table>
             <thead><tr>
-              <th>課別</th><th>姓名</th><th>班別</th>
+              <th>課別</th><th>員工編號</th><th>姓名</th><th>班別</th>
               <th>出勤日</th><th>實際出勤</th><th>實際退勤</th>
               <th>夜點區間</th>
               <th class="tr">夜點時數</th>
               <th class="tr">假扣除</th>
               <th class="tr">跨夜</th>
-              <th>備註</th>
+              <th>備註</th><th>狀態</th>
             </tr></thead>
             <tbody id="detail-tbody"></tbody>
           </table>
@@ -1513,52 +1373,53 @@ input[type=file]{display:none;}
   </div>
 
   <!-- ── PAGE: CONFIG ── -->
-  <div class="n-page" id="page-config">
+  <div class="page" id="page-config">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
       <div class="card">
         <div class="card-ttl">欄位對應設定（您的 Excel 格式）</div>
-        <div style="font-size:11px;color:var(--n-ink3);margin-bottom:12px;">系統已自動偵測並支援以下欄位名稱：</div>
+        <div style="font-size:11px;color:var(--ink3);margin-bottom:12px;">系統已自動偵測並支援以下欄位名稱：</div>
         <div id="col-map-list"></div>
-        <div style="margin-top:14px;padding:10px 12px;background:var(--n-accent-pale);border-radius:var(--r);font-size:11px;color:var(--n-accent);line-height:1.7;">
-          <strong>您的檔案欄位：</strong><br>
-          員工姓名 / 部門 / 班別名稱 / 出勤日 / 實際出勤 / 實際退勤 / 備註<br>
-          <strong>時間格式：</strong>Excel datetime.time 物件（自動處理）
+        <div style="margin-top:14px;padding:10px 12px;background:var(--accent-pale);border-radius:var(--r);font-size:11px;color:var(--accent);line-height:1.7;">
+          <strong>新格式欄位（出勤紀錄_20260416.xlsx）：</strong><br>
+          員工編號 / 員工姓名 / 部門 / 班別名稱 / 檢核狀態 / 出勤日 / 實際出勤 / 實際退勤 / 遲到 / 早退 / 曠職 / 備註<br>
+          <strong>班別格式：</strong>上班HHMM-HHMM（含前綴，自動去除）｜休假HHMM-HHMM（夜點歸零）<br>
+          <strong>備註空值：</strong>\xa0（不斷行空格，自動過濾）
         </div>
       </div>
       <div class="card">
         <div class="card-ttl">班別對照表</div>
         <div id="shift-list"></div>
         <div style="margin-top:12px;display:flex;gap:8px;">
-          <input id="new-shift" placeholder="HHMM-HHMM" style="flex:1;padding:6px 10px;border:1px solid var(--n-line);border-radius:var(--r);font-size:11px;font-family:var(--mono2);background:var(--n-paper);color:var(--n-ink);outline:none;">
+          <input id="new-shift" placeholder="HHMM-HHMM" style="flex:1;padding:6px 10px;border:1px solid var(--line);border-radius:var(--r);font-size:11px;font-family:var(--mono);background:var(--paper);color:var(--ink);outline:none;">
           <button class="btn btn-sm btn-primary" onclick="addShift()">新增</button>
         </div>
       </div>
       <div class="card">
         <div class="card-ttl">計算規則</div>
-        <div style="font-size:11px;line-height:2.2;color:var(--n-ink2);">
-          <div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--n-line2);">
-            <span style="color:var(--n-ink3);font-family:var(--mono2);">夜點有效區間</span><span style="font-family:var(--mono2);">22:00 ~ 07:00</span>
+        <div style="font-size:11px;line-height:2.2;color:var(--ink2);">
+          <div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--line2);">
+            <span style="color:var(--ink3);font-family:var(--mono);">夜點有效區間</span><span style="font-family:var(--mono);">22:00 ~ 07:00</span>
           </div>
-          <div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--n-line2);">
-            <span style="color:var(--n-ink3);font-family:var(--mono2);">請假扣除範圍</span><span style="font-family:var(--mono2);">特休 / 事假 / 病假 / 生理假（全部假別）</span>
+          <div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--line2);">
+            <span style="color:var(--ink3);font-family:var(--mono);">請假扣除範圍</span><span style="font-family:var(--mono);">特休 / 事假 / 病假 / 生理假（全部假別）</span>
           </div>
-          <div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--n-line2);">
-            <span style="color:var(--n-ink3);font-family:var(--mono2);">備註時間格式</span><span style="font-family:var(--mono2);">假別HHMM~HHMM（可無空格）</span>
+          <div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--line2);">
+            <span style="color:var(--ink3);font-family:var(--mono);">備註時間格式</span><span style="font-family:var(--mono);">假別HHMM~HHMM（可無空格）</span>
           </div>
-          <div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--n-line2);">
-            <span style="color:var(--n-ink3);font-family:var(--mono2);">跨夜排除班別</span><span style="font-family:var(--mono2);">14xx, 15xx 開頭</span>
+          <div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--line2);">
+            <span style="color:var(--ink3);font-family:var(--mono);">跨夜排除班別</span><span style="font-family:var(--mono);">14xx, 15xx 開頭</span>
           </div>
           <div style="display:flex;justify-content:space-between;padding:3px 0;">
-            <span style="color:var(--n-ink3);font-family:var(--mono2);">跨夜判定門檻</span><span style="font-family:var(--mono2);">實際退勤 &gt; 隔日 00:30</span>
+            <span style="color:var(--ink3);font-family:var(--mono);">跨夜判定門檻</span><span style="font-family:var(--mono);">實際退勤 &gt; 隔日 00:30</span>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  </div><!-- /n-content -->
-</div><!-- /n-main -->
-</div><!-- /n-shell -->
+  </div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /shell -->
 </div><!-- /sys-night -->
 
 
@@ -2004,9 +1865,11 @@ function ts(){return new Date().toLocaleDateString('zh-TW').replace(/\//g,'-');}
 
 
 // ════════════════════════════════════════════════
-// ══ 系統二：夜點津貼計算 ══
+// ══ 系統二：夜點津貼計算 v5 ══
 // ════════════════════════════════════════════════
-
+// ══════════════════════════════════════════════════
+// SHIFT DEFINITIONS
+// ══════════════════════════════════════════════════
 let SHIFTS = {
   '2330-0830': {ns:23*60+30, ne:7*60,  max:7.5},
   '2300-0800': {ns:23*60,    ne:7*60,  max:8.0},
@@ -2018,16 +1881,28 @@ let SHIFTS = {
   '1400-2300': {ns:22*60,    ne:23*60, max:1.0},
 };
 
+// ══════════════════════════════════════════════════
+// FIELD MAPPING — supports YOUR exact column names
+// + all common aliases
+// ══════════════════════════════════════════════════
 const FIELD_MAP = {
+  empId: ['員工編號','emp_id','empId','編號','工號'],
   name:  ['員工姓名','姓名','name','Name','員工名稱'],
   dept:  ['部門','課別','科別','dept','department'],
   shift: ['班別名稱','班別','班次','shift'],
+  status:['檢核狀態','狀態','status'],
   date:  ['出勤日','日期','date','Date'],
   cin:   ['實際出勤','出勤時間','上班時間','clock_in','clockIn'],
   cout:  ['實際退勤','退勤時間','下班時間','clock_out','clockOut'],
+  late:  ['遲到','late'],
+  early: ['早退','early_leave'],
+  absent:['曠職','absent'],
   note:  ['備註','note','remark','說明'],
 };
 
+// ══════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════
 let rawRows   = [];
 let processed = [];
 let aggregated= [];
@@ -2035,15 +1910,21 @@ let detectedCols = {};
 let detectedTimeFmt = '';
 let sortKey='nightHours', sortDir=-1;
 
+// ══════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════
 const PAGE_TITLES = {upload:'上傳 Excel / CSV',eip:'EIP 系統串接',dash:'數據儀表板',result:'加總報表',detail:'明細查詢',config:'班別 & 欄位設定'};
 function gotoPage(id, btn) {
   document.querySelectorAll('.nav').forEach(n=>n.classList.remove('active'));
   btn.classList.add('active');
-  document.querySelectorAll('.n-page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
   document.getElementById('page-ttl').textContent = PAGE_TITLES[id];
 }
 
+// ══════════════════════════════════════════════════
+// LOG
+// ══════════════════════════════════════════════════
 function log(msg, type='dim') {
   const box = document.getElementById('log');
   const t = new Date().toLocaleTimeString('zh-TW',{hour12:false});
@@ -2054,12 +1935,18 @@ function log(msg, type='dim') {
   box.scrollTop = box.scrollHeight;
 }
 
+// ══════════════════════════════════════════════════
+// DRAG & DROP
+// ══════════════════════════════════════════════════
 const dz = document.getElementById('dz');
 dz.addEventListener('dragover', e=>{e.preventDefault();dz.classList.add('over')});
 dz.addEventListener('dragleave',()=>dz.classList.remove('over'));
 dz.addEventListener('drop', e=>{e.preventDefault();dz.classList.remove('over');const f=e.dataTransfer.files[0];if(f)processFile(f)});
 function handleFile(e){const f=e.target.files[0];if(f)processFile(f);e.target.value='';}
 
+// ══════════════════════════════════════════════════
+// FILE PROCESSING
+// ══════════════════════════════════════════════════
 function processFile(file) {
   const ext = file.name.split('.').pop().toLowerCase();
   log(`讀取：${file.name}（${(file.size/1024).toFixed(1)} KB）`,'info');
@@ -2073,9 +1960,11 @@ function processFile(file) {
         allRows = parseCSV(e.target.result);
         log(`CSV：${allRows.length} 筆`,'ok');
       } else {
+        // xlsx — read ALL sheets, merge
         const wb = XLSX.read(e.target.result, {type:'binary', cellDates:true});
         log(`Excel 共 ${wb.SheetNames.length} 個 Sheet：${wb.SheetNames.join('、')}`,'info');
         wb.SheetNames.forEach(sn=>{
+          // Use raw:false so dates come as formatted strings OR use cellDates:true
           const ws = wb.Sheets[sn];
           const sheetRows = XLSX.utils.sheet_to_json(ws, {defval:''});
           log(`  Sheet "${sn}"：${sheetRows.length} 筆`,'ok');
@@ -2085,6 +1974,7 @@ function processFile(file) {
       }
       showProgress(file.name, 60);
 
+      // Detect columns from first row's keys
       if (allRows.length) detectColumns(Object.keys(allRows[0]));
 
       rawRows = normalizeRows(allRows);
@@ -2097,7 +1987,7 @@ function processFile(file) {
     } catch(err) {
       log(`錯誤：${err.message}`,'err');
       console.error(err);
-      document.getElementById('upload-badge').className='n-badge badge-red';
+      document.getElementById('upload-badge').className='badge badge-red';
       document.getElementById('upload-badge').textContent='失敗';
     }
   };
@@ -2108,13 +1998,15 @@ function processFile(file) {
 function showProgress(fname, pct, done=false) {
   document.getElementById('upload-status').style.display='block';
   document.getElementById('upload-fname').textContent=fname;
-  document.getElementById('n-prog-bar')?document.getElementById('n-prog-bar').style.width=pct+'%':null;
   document.getElementById('prog-bar').style.width=pct+'%';
   const b=document.getElementById('upload-badge');
-  if(done){b.className='n-badge badge-green';b.textContent='完成';}
-  else{b.className='n-badge badge-blue';b.textContent='處理中';}
+  if(done){b.className='badge badge-green';b.textContent='完成';}
+  else{b.className='badge badge-blue';b.textContent='處理中';}
 }
 
+// ══════════════════════════════════════════════════
+// COLUMN DETECTION
+// ══════════════════════════════════════════════════
 function detectColumns(keys) {
   detectedCols = {};
   for (const [field, aliases] of Object.entries(FIELD_MAP)) {
@@ -2130,409 +2022,697 @@ function showFieldMapStatus() {
     const el = document.getElementById('fm-'+k.replace('cin','cin').replace('cout','cout'));
     if (!el) continue;
     const col = detectedCols[k];
-    el.textContent = col || '未偵測';
-    el.className = 'fmap-val ' + (col ? 'ok' : 'warn');
+    el.textContent = col ? `「${col}」✓` : '未找到 ✗';
+    el.className = 'fmap-val ' + (col?'ok':'warn');
   }
-  document.getElementById('time-fmt-info').textContent = detectedTimeFmt || '尚未偵測';
+  // Use the right ids
+  const ids={name:'fm-name',dept:'fm-dept',shift:'fm-shift',cin:'fm-cin',cout:'fm-cout',note:'fm-note'};
+  for (const [k, id] of Object.entries(ids)) {
+    const el = document.getElementById(id);
+    if (!el) continue;
+    const col = detectedCols[k];
+    el.textContent = col ? `「${col}」 ✓` : '未偵測到';
+    el.className = 'fmap-val '+(col?'ok':'warn');
+  }
+  document.getElementById('time-fmt-info').textContent = detectedTimeFmt || '自動偵測（支援 datetime.time / HH:MM 字串 / Excel 序列值）';
 }
 
+// ══════════════════════════════════════════════════
+// CSV PARSER
+// ══════════════════════════════════════════════════
 function parseCSV(text) {
-  const lines = text.split(/\r?\n/).filter(l=>l.trim());
-  if (!lines.length) return [];
-  const headers = lines[0].split(',').map(h=>h.replace(/^"|"$/g,'').trim());
+  const lines = text.replace(/\r\n/g,'\n').split('\n').filter(l=>l.trim());
+  if (lines.length<2) return [];
+  const headers = lines[0].split(',').map(h=>h.trim().replace(/^"|"$/g,''));
   return lines.slice(1).map(line=>{
-    const vals = line.split(',').map(v=>v.replace(/^"|"$/g,'').trim());
+    const vals=line.split(',').map(v=>v.trim().replace(/^"|"$/g,''));
     const obj={};
     headers.forEach((h,i)=>obj[h]=vals[i]||'');
     return obj;
   });
 }
 
-function parseTime(val) {
-  if (!val && val!==0) return null;
-  if (val instanceof Date) {
-    return val.getHours()*60 + val.getMinutes();
+// ══════════════════════════════════════════════════
+// TIME PARSING — handles ALL formats from your xlsx
+// ══════════════════════════════════════════════════
+function toMin(v) {
+  if (v===null||v===undefined||v==='') return null;
+
+  // 1. JS Date object (XLSX cellDates:true) or Date-like
+  if (v instanceof Date) {
+    return v.getHours()*60 + v.getMinutes();
   }
-  if (typeof val === 'number') {
-    if (val > 0 && val < 1) {
-      const mins = Math.round(val * 1440);
-      return mins;
+
+  // 2. Number: Excel serial fraction (0..1) or could be HH.MM
+  if (typeof v==='number') {
+    if (v >= 0 && v < 1) {
+      // Fractional day: 0.5 = noon
+      const totalMins = Math.round(v * 1440);
+      return totalMins % 1440;
     }
-    if (val >= 0 && val <= 2359) {
-      const h = Math.floor(val/100), m = val%100;
-      if (h<24 && m<60) return h*60+m;
+    // Could be HHMM integer like 2330
+    if (v >= 0 && v <= 2359) {
+      const h = Math.floor(v/100), m = v%100;
+      if (h<=23 && m<=59) return h*60+m;
     }
     return null;
   }
-  const s = String(val).trim();
-  const m1 = s.match(/^(\d{1,2}):(\d{2})$/);
-  if (m1) {
-    detectedTimeFmt = 'HH:MM 字串';
-    return parseInt(m1[1])*60+parseInt(m1[2]);
-  }
-  const m2 = s.match(/^(\d{3,4})$/);
-  if (m2) {
-    const n=parseInt(m2[1]);
-    const h=Math.floor(n/100),mn=n%100;
-    if(h<24&&mn<60){detectedTimeFmt='HHMM 數字字串';return h*60+mn;}
-  }
+
+  // 3. String formats: "HH:MM", "HH:MM:SS", "HHMM"
+  const s = String(v).trim();
+  if (!s || s==='None' || s==='null') return null;
+
+  const colonMatch = s.match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
+  if (colonMatch) return parseInt(colonMatch[1])*60+parseInt(colonMatch[2]);
+
+  if (/^\d{4}$/.test(s)) return parseInt(s.slice(0,2))*60+parseInt(s.slice(2,4));
+
+  // 4. Object with hour/minute (openpyxl datetime.time-like, serialized)
+  if (typeof v==='object' && v!==null && 'hour' in v) return v.hour*60+v.minute;
+
   return null;
 }
 
 function fmtMin(m) {
-  if (m==null) return '—';
-  const hh = Math.floor(((m%1440)+1440)%1440/60);
-  const mm = ((m%1440)+1440)%1440%60;
-  return `${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;
+  if (m===null||m===undefined) return '—';
+  m = ((m%1440)+1440)%1440;
+  return `${String(Math.floor(m/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;
 }
 
-function parseLeaveRanges(note, shiftNs, shiftNe) {
-  if (!note) return [];
-  const ranges = [];
-  const re = /(\D{1,6}?)\s*(\d{3,4})\s*[~～\-–]\s*(\d{3,4})/g;
-  let m;
-  while ((m = re.exec(note)) !== null) {
-    const sMin = parseInt(m[2].length===3 ? '0'+m[2] : m[2].slice(0,2))*60 + parseInt(m[2].slice(-2));
-    const eMin = parseInt(m[3].length===3 ? '0'+m[3] : m[3].slice(0,2))*60 + parseInt(m[3].slice(-2));
-    ranges.push({ type: m[1].trim(), start: sMin, end: eMin });
+// ══════════════════════════════════════════════════
+// NORMALIZE ROWS
+// ══════════════════════════════════════════════════
+function getField(row, field) {
+  const col = detectedCols[field];
+  if (col && row[col]!==undefined) return row[col];
+  // fallback: try all aliases
+  for (const a of FIELD_MAP[field]) {
+    if (row[a]!==undefined && row[a]!=='') return row[a];
   }
-  return ranges;
-}
-
-function calcNightHours(cinMin, coutMin, shiftCode, note) {
-  const s = SHIFTS[shiftCode];
-  if (!s) return { hours:0, deduction:0, span:'—', overnight:false };
-
-  const NS = s.ns, NE = s.ne;
-  const neNorm = NE < NS ? NE + 1440 : NE;
-  const maxH = s.max;
-
-  if (cinMin == null) {
-    const leaveRanges = parseLeaveRanges(note, NS, neNorm);
-    if (!leaveRanges.length) return { hours:0, deduction:0, span:'(假)', overnight:false };
-    let leaveMins = 0;
-    for (const lr of leaveRanges) {
-      const lsNorm = lr.start < NS-120 ? lr.start+1440 : lr.start;
-      const leNorm = lr.end   < NS-120 ? lr.end+1440   : lr.end;
-      const ov = Math.max(0, Math.min(leNorm, neNorm) - Math.max(lsNorm, NS));
-      leaveMins += ov;
-    }
-    const baseH = Math.min(maxH, (neNorm-NS)/60);
-    const deduction = Math.min(baseH, leaveMins/60);
-    const hours = Math.max(0, baseH - deduction);
-    return { hours: Math.round(hours*10)/10, deduction: Math.round(deduction*10)/10, span:'(假扣)', overnight: false };
-  }
-
-  let cinNorm  = cinMin  < NS-120 ? cinMin+1440  : cinMin;
-  let coutNorm = coutMin < cinNorm-30 ? coutMin+1440 : coutMin;
-
-  const actualNs = Math.max(cinNorm,  NS);
-  const actualNe = Math.min(coutNorm, neNorm);
-  if (actualNs >= actualNe) return { hours:0, deduction:0, span:'(不含夜點)', overnight: coutNorm >= 1440+30 };
-
-  let rawMins = actualNe - actualNs;
-
-  const leaveRanges = parseLeaveRanges(note, NS, neNorm);
-  let leaveMins = 0;
-  for (const lr of leaveRanges) {
-    const lsNorm = lr.start < actualNs-60 ? lr.start+1440 : lr.start;
-    const leNorm = lr.end   < lsNorm      ? lr.end+1440   : lr.end;
-    const ov = Math.max(0, Math.min(leNorm, actualNe) - Math.max(lsNorm, actualNs));
-    leaveMins += ov;
-  }
-
-  rawMins = Math.max(0, rawMins - leaveMins);
-  const hours = Math.round(Math.min(maxH, rawMins/60)*10)/10;
-  const deduction = Math.round(leaveMins/60*10)/10;
-  const span = `${fmtMin(actualNs%1440)}–${fmtMin(actualNe%1440)}`;
-  const overnight = coutNorm >= 1440+30 && !shiftCode.startsWith('14') && !shiftCode.startsWith('15');
-  return { hours, deduction, span, overnight };
+  return '';
 }
 
 function normalizeRows(rows) {
-  const c = detectedCols;
-  return rows.filter(r => c.name && r[c.name]).map(r => ({
-    name:  String(r[c.name]  ||'').trim(),
-    dept:  String(r[c.dept]  ||'').trim(),
-    shift: String(r[c.shift] ||'').trim(),
-    date:  String(r[c.date]  ||'').trim().replace(/[（(][一二三四五六日][）)]/,'').trim(),
-    cin:   c.cin  ? parseTime(r[c.cin])  : null,
-    cout:  c.cout ? parseTime(r[c.cout]) : null,
-    note:  String(r[c.note]  ||'').trim(),
-    raw:   r
-  })).filter(r => r.name && r.shift && r.date);
+  // Auto-detect time format from first non-empty time cell
+  const sample = rows.find(r => getField(r,'cin'));
+  if (sample) {
+    const v = getField(sample,'cin');
+    if (v instanceof Date) detectedTimeFmt = 'JS Date 物件（Excel cellDates）';
+    else if (typeof v==='number') detectedTimeFmt = `數值型（${v}）— 可能為 Excel 序列值`;
+    else detectedTimeFmt = `字串型：「${v}」`;
+  }
+
+  return rows
+    .map(r=>{
+      // Sanitize note: treat \xa0 (non-breaking space) as empty
+      const rawNote = getField(r,'note');
+      const note = (rawNote && String(rawNote).replace(/\xa0/g,'').trim()) || '';
+      return {
+        empId:  String(getField(r,'empId')||'').trim(),
+        name:   String(getField(r,'name')||'').trim(),
+        dept:   String(getField(r,'dept')||'').trim() || '未分類',
+        shift:  String(getField(r,'shift')||'').trim(),
+        status: String(getField(r,'status')||'').trim(),
+        date:   String(getField(r,'date')||'').trim(),
+        cin:    getField(r,'cin'),
+        cout:   getField(r,'cout'),
+        note,
+      };
+    })
+    .filter(r=>r.name);
 }
 
+// ══════════════════════════════════════════════════
+// LEAVE DEDUCTION
+// Handles: 特休/事假/病假/生理假/住院傷病假/未住院病假
+// Format:  假別HHMM~HHMM  (no space required)
+// ══════════════════════════════════════════════════
+function parseLeave(note) {
+  if (!note) return [];
+  const leaves=[];
+  // Match any prefix before 4-digit time ~ 4-digit time
+  for (const m of note.matchAll(/(\d{4})\s*[~～]\s*(\d{4})/g)) {
+    const s=parseInt(m[1].slice(0,2))*60+parseInt(m[1].slice(2,4));
+    const e=parseInt(m[2].slice(0,2))*60+parseInt(m[2].slice(2,4));
+    leaves.push([s,e]);
+  }
+  return leaves;
+}
+
+function overlapMins(s1,e1,s2,e2) {
+  const a2=e1<=s1?e1+1440:e1;
+  const b2=e2<=s2?e2+1440:e2;
+  return Math.max(0,Math.min(a2,b2)-Math.max(s1,s2));
+}
+
+// ══════════════════════════════════════════════════
+// SHIFT LOOKUP & DERIVE
+// Supports:
+//   - Prefixed names: "上班2330-0830", "休假1500-0000"
+//   - Plain codes:    "2330-0830"
+//   - Static lookup table (SHIFTS) for manual overrides
+// "休假" prefix = no night pay regardless of hours
+// ══════════════════════════════════════════════════
+function parseShiftCode(raw) {
+  // Returns { code, prefix, isHoliday }
+  if (!raw) return null;
+  const s = String(raw).trim();
+  // Extract HHMM-HHMM from end of string (handles any Chinese prefix)
+  const m = s.match(/(\d{4})-(\d{4})$/);
+  if (!m) return null;
+  const prefix = s.slice(0, s.indexOf(m[0])).trim();   // e.g. "上班" / "休假" / ""
+  const isHoliday = prefix === '休假';
+  return { code: m[0], prefix, isHoliday, raw: s };
+}
+
+function getShift(rawShift) {
+  const parsed = parseShiftCode(rawShift);
+  if (!parsed) return null;
+
+  // 休假 班別 → 0 夜點, 0 跨夜
+  if (parsed.isHoliday) return { ns:22*60, ne:7*60, max:0, isHoliday:true };
+
+  const code = parsed.code;
+
+  // 1. Check static lookup table (manual overrides)
+  if (SHIFTS[code]) return { ...SHIFTS[code], isHoliday:false };
+
+  // 2. Auto-derive from HHMM-HHMM
+  const sh = parseInt(code.slice(0,2)), sm = parseInt(code.slice(2,4));
+  const eh = parseInt(code.slice(5,7)), em = parseInt(code.slice(7,9));
+  const startMin = sh*60 + sm;
+  const endMin   = eh*60 + em;
+  const NS = 22*60;          // 1320 — night zone start
+  const NE7 = 7*60 + 1440;   // 1860 — 07:00 next day (absolute)
+
+  // Normalize shift end to be after shift start
+  const endNorm = (endMin <= startMin) ? endMin + 1440 : endMin;
+
+  // Effective night end = min(shift_end, 07:00_nextday)
+  const effEnd = Math.min(endNorm, NE7);
+
+  // Night start for THIS shift = max(shift_start, 22:00)
+  const nightStart = Math.max(startMin, NS);
+
+  const maxH = Math.max(0, (effEnd - nightStart) / 60);
+  const ne   = effEnd % 1440;
+
+  return { ns: nightStart, ne, max: maxH, isHoliday: false };
+}
+
+// Whether this shift code is excluded from overnight counting (14xx, 15xx start)
+function isExcludeOvernight(rawShift) {
+  const parsed = parseShiftCode(rawShift);
+  if (!parsed) return true;
+  if (parsed.isHoliday) return true;
+  const prefix2 = parsed.code.slice(0,2);   // first 2 digits of HHMM
+  return prefix2 === '14' || prefix2 === '15';
+}
+
+// ══════════════════════════════════════════════════
+// CALCULATE PER ROW
+// ══════════════════════════════════════════════════
+function calcRow(r) {
+  const sd = getShift(r.shift);
+
+  // No night hours for day shifts or unknown shifts
+  if (!sd || sd.max === 0) {
+    return {...r, nightH:0, overnight:0, deductH:0,
+            interval:'—', maxH:0, isNight:false, warn: sd ? '' : '未知班別'};
+  }
+
+  const {ns, ne, max} = sd;
+
+  // Leave deduction — all leave types (特休/事假/病假/公假/喪假/...)
+  const leaves    = parseLeave(r.note);
+  const deductMin = leaves.reduce((s,[ls,le])=>s+overlapMins(ls,le,ns,ne),0);
+  const nightH    = parseFloat(Math.max(0, max - deductMin/60).toFixed(1));
+
+  // Overnight count
+  let overnight = 0;
+  if (!isExcludeOvernight(r.shift)) {
+    const ci = toMin(r.cin), co = toMin(r.cout);
+    if (ci !== null && co !== null) {
+      // clock_out is next day if it's < clock_in and in early morning
+      const isNext = co < ci && co <= 12*60;
+      if (isNext && co > 30) overnight = 1;
+    }
+  }
+
+  const neDisp  = ne < ns ? ne+1440 : ne;
+  const interval = `${fmtMin(ns)}–${fmtMin(neDisp%1440)}`;
+
+  return {...r, nightH, overnight,
+          deductH: parseFloat((deductMin/60).toFixed(1)),
+          interval, maxH: max, isNight: true, warn: ''};
+}
+
+// ══════════════════════════════════════════════════
+// AGGREGATE & RENDER
+// ══════════════════════════════════════════════════
 function calculate() {
-  processed = rawRows.map(r => {
-    const result = calcNightHours(r.cin, r.cout, r.shift, r.note);
-    return { ...r, ...result };
+  if (!rawRows.length) return;
+
+  processed = rawRows.map(calcRow);
+
+  // GroupBy name — traverse ALL rows first regardless of night/day
+  const map = {};
+  processed.forEach(p => {
+    if (!map[p.name]) map[p.name] = {
+      name:p.name, dept:p.dept, empId:p.empId,
+      nightHours:0, overnight:0, count:0, nightCount:0, deductH:0
+    };
+    const g = map[p.name];
+    g.nightHours  += p.nightH;
+    g.overnight   += p.overnight;
+    g.count       += 1;
+    if (p.isNight) g.nightCount += 1;
+    g.deductH     += p.deductH;
   });
-  aggregate();
+
+  aggregated = Object.values(map)
+    .filter(g => g.nightHours > 0)   // only employees with night hours
+    .map(g => ({
+      ...g,
+      nightHours: parseFloat(g.nightHours.toFixed(1)),
+      deductH:    parseFloat(g.deductH.toFixed(1)),
+    }));
+  aggregated.sort((a,b) => b.nightHours - a.nightHours);
+
+  const total = aggregated.reduce((s,r)=>s+r.nightHours, 0);
+  const allEmp = Object.keys(map).length;
+  log(`✓ 計算完成：全部 ${allEmp} 人 / ${processed.length} 筆 → 夜班員工 ${aggregated.length} 人 / 總夜點 ${total.toFixed(1)} hr`, 'ok');
+
+  updateSidebar();
+  renderStats();
+  populateFilters();
   renderResult();
   renderDetail();
-  renderDash();
-  updateSidebar();
+  renderDashboard();
   document.getElementById('btn-export').disabled = false;
-}
 
-function aggregate() {
-  const map = new Map();
-  for (const r of processed) {
-    const key = r.name + '||' + r.dept;
-    if (!map.has(key)) map.set(key, { name:r.name, dept:r.dept, nightHours:0, overnight:0, count:0, deduction:0 });
-    const agg = map.get(key);
-    agg.nightHours  += r.hours;
-    agg.overnight   += r.overnight ? 1 : 0;
-    agg.count       += 1;
-    agg.deduction   += r.deduction;
-  }
-  aggregated = [...map.values()].map(a=>({...a, nightHours:Math.round(a.nightHours*10)/10, deduction:Math.round(a.deduction*10)/10}));
-  aggregated.sort((a,b)=>b.nightHours-a.nightHours);
-  aggregated.forEach((a,i)=>a.rank=i+1);
+  // Auto-jump to dashboard
+  document.querySelectorAll('.nav')[2].click();
 }
 
 function updateSidebar() {
-  const empSet = new Set(processed.map(r=>r.name));
-  document.getElementById('sb-emp').textContent = empSet.size;
-  document.getElementById('sb-rows').textContent = processed.length;
-  const total = processed.reduce((s,r)=>s+r.hours,0);
-  document.getElementById('sb-total').textContent = total.toFixed(1)+' hr';
+  const t=aggregated.reduce((s,r)=>s+r.nightHours,0);
+  document.getElementById('sb-emp').textContent=aggregated.length;
+  document.getElementById('sb-rows').textContent=processed.length;
+  document.getElementById('sb-total').textContent=t.toFixed(1)+' hr';
 }
 
+function renderStats() {
+  const t=aggregated.reduce((s,r)=>s+r.nightHours,0);
+  const on=aggregated.reduce((s,r)=>s+r.overnight,0);
+  const avg=aggregated.length?(t/aggregated.length).toFixed(1):0;
+  const top=aggregated[0]||{};
+  document.getElementById('stats-row').innerHTML=`
+    <div class="stat"><div class="stat-lbl">員工人數</div><div class="stat-val">${aggregated.length}<span class="stat-unit">人</span></div></div>
+    <div class="stat"><div class="stat-lbl">總夜點時數</div><div class="stat-val">${t.toFixed(1)}<span class="stat-unit">hr</span></div></div>
+    <div class="stat"><div class="stat-lbl">平均夜點/人</div><div class="stat-val">${avg}<span class="stat-unit">hr</span></div></div>
+    <div class="stat"><div class="stat-lbl">總跨夜天數</div><div class="stat-val">${on}<span class="stat-unit">天</span></div></div>`;
+}
+
+function populateFilters() {
+  const depts=[...new Set(aggregated.map(r=>r.dept))].sort();
+  const shifts=[...new Set(processed.map(r=>r.shift).filter(Boolean))].sort();
+  ['r-dept','d-dept'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.innerHTML='<option value="">全部課別</option>'+depts.map(d=>`<option>${d}</option>`).join('');
+  });
+  const ds=document.getElementById('d-shift');
+  if(ds) ds.innerHTML='<option value="">全部班別</option>'+shifts.map(s=>`<option>${s}</option>`).join('');
+}
+
+// ── Sort ──
 function sort(key) {
-  if (sortKey===key) sortDir*=-1;
-  else { sortKey=key; sortDir=key==='rank'?1:-1; }
+  sortDir=(sortKey===key)?-sortDir:-1;
+  sortKey=key;
+  aggregated.sort((a,b)=>{
+    const av=typeof a[key]==='string'?a[key].localeCompare(b[key]):(a[key]||0)-(b[key]||0);
+    return av*sortDir;
+  });
   renderResult();
 }
 
+// ── Result Table ──
 function renderResult() {
-  if (!aggregated.length) return;
-  document.getElementById('result-empty').style.display='none';
-  document.getElementById('result-data').style.display='block';
-
-  const depts = [...new Set(aggregated.map(a=>a.dept))].sort();
-  const rdept = document.getElementById('r-dept');
-  const curD  = rdept.value;
-  rdept.innerHTML = '<option value="">全部課別</option>' + depts.map(d=>`<option value="${d}" ${d===curD?'selected':''}>${d}</option>`).join('');
-
-  const q  = document.getElementById('r-q').value.toLowerCase();
-  const df = rdept.value;
-
-  let data = aggregated.filter(a=>
-    a.nightHours > 0 &&
-    (!q || a.name.toLowerCase().includes(q)||a.dept.toLowerCase().includes(q))&&
-    (!df|| a.dept===df)
-  );
-  data = [...data].sort((a,b)=>{
-    const av=a[sortKey]??a.rank, bv=b[sortKey]??b.rank;
-    return typeof av==='string'? av.localeCompare(bv)*sortDir : (av-bv)*sortDir;
-  });
-
-  const stats = [
-    {lbl:'員工人數',val:aggregated.length,unit:'人'},
-    {lbl:'總夜點時數',val:aggregated.reduce((s,a)=>s+a.nightHours,0).toFixed(1),unit:'hr'},
-    {lbl:'跨夜天數',val:aggregated.reduce((s,a)=>s+a.overnight,0),unit:'天'},
-    {lbl:'假扣除合計',val:aggregated.reduce((s,a)=>s+a.deduction,0).toFixed(1),unit:'hr'},
-  ];
-  document.getElementById('stats-row').innerHTML = stats.map(s=>`
-    <div class="n-stat">
-      <div class="n-stat-lbl">${s.lbl}</div>
-      <div class="n-stat-val">${s.val}<span class="n-stat-unit">${s.unit}</span></div>
-    </div>`).join('');
-
-  document.getElementById('result-count').textContent = `顯示 ${data.length} / ${aggregated.length} 筆`;
-  document.getElementById('result-tbody').innerHTML = data.map(a=>`
+  const q    = (document.getElementById('r-q')?.value||'').toLowerCase();
+  const dept = document.getElementById('r-dept')?.value||'';
+  const data = aggregated.filter(r=>(!q||r.name.includes(q)||String(r.empId).includes(q))&&(!dept||r.dept===dept));
+  document.getElementById('result-empty').style.display = data.length?'none':'block';
+  document.getElementById('result-data').style.display  = data.length?'block':'none';
+  document.getElementById('result-count').textContent = `共 ${data.length} 人`;
+  document.getElementById('result-tbody').innerHTML = data.map((r,i)=>`
     <tr>
-      <td class="n-mono" style="color:var(--n-ink3)">${a.rank}</td>
-      <td>${a.dept||'—'}</td>
-      <td class="name-cell">${a.name}</td>
-      <td class="tr accent n-mono">${a.nightHours.toFixed(1)}</td>
-      <td class="tr n-mono">${a.overnight}</td>
-      <td class="tr n-mono">${a.count}</td>
-      <td class="tr n-mono" style="color:${a.deduction>0?'var(--n-amber)':'var(--n-ink3)'}">${a.deduction>0?'-'+a.deduction.toFixed(1):'0'}</td>
-    </tr>`).join('');
-}
-
-function renderDetail() {
-  if (!processed.length) return;
-  document.getElementById('detail-empty').style.display='none';
-  document.getElementById('detail-data').style.display='block';
-
-  const depts  = [...new Set(processed.map(r=>r.dept))].sort();
-  const shifts = [...new Set(processed.map(r=>r.shift))].sort();
-  const ddept  = document.getElementById('d-dept');
-  const dshift = document.getElementById('d-shift');
-  const curDD=ddept.value, curDS=dshift.value;
-  ddept.innerHTML  = '<option value="">全部課別</option>'  + depts.map(d=>`<option value="${d}" ${d===curDD?'selected':''}>${d}</option>`).join('');
-  dshift.innerHTML = '<option value="">全部班別</option>' + shifts.map(s=>`<option value="${s}" ${s===curDS?'selected':''}>${s}</option>`).join('');
-
-  const q  = document.getElementById('d-q').value.toLowerCase();
-  const df = ddept.value, sf = dshift.value;
-
-  const data = processed.filter(r=>
-    r.hours > 0 &&
-    (!q || r.name.toLowerCase().includes(q)||r.dept.toLowerCase().includes(q))&&
-    (!df|| r.dept===df)&&
-    (!sf|| r.shift===sf)
-  );
-
-  document.getElementById('detail-count').textContent = `顯示 ${data.length} / ${processed.length} 筆`;
-  document.getElementById('detail-tbody').innerHTML = data.map(r=>`
-    <tr>
-      <td>${r.dept||'—'}</td>
+      <td class="mono" style="color:var(--ink3)">${String(i+1).padStart(2,'0')}</td>
+      <td class="mono" style="color:var(--ink3);font-size:11px">${r.empId||'—'}</td>
+      <td>${r.dept}</td>
       <td class="name-cell">${r.name}</td>
-      <td><span class="pill ${SHIFTS[r.shift]?'':'pill-neg'}">${r.shift}</span></td>
-      <td class="n-mono">${r.date}</td>
-      <td class="n-mono">${r.cin!=null?fmtMin(r.cin):'—'}</td>
-      <td class="n-mono">${r.cout!=null?fmtMin(r.cout):'—'}</td>
-      <td class="n-mono" style="font-size:10px;color:var(--n-ink3)">${r.span}</td>
-      <td class="tr accent n-mono">${r.hours.toFixed(1)}</td>
-      <td class="tr n-mono" style="color:${r.deduction>0?'var(--n-amber)':'var(--n-ink3)'}">${r.deduction>0?'-'+r.deduction.toFixed(1):'—'}</td>
-      <td class="tr">${r.overnight?'<span class="n-badge badge-blue">●</span>':'—'}</td>
-      <td style="font-size:10px;color:var(--n-ink3);max-width:150px;overflow:hidden;text-overflow:ellipsis">${r.note||'—'}</td>
+      <td class="tr accent mono">${r.nightHours.toFixed(1)}</td>
+      <td class="tr mono">${r.overnight}</td>
+      <td class="tr mono" style="color:var(--ink3)">${r.nightCount}</td>
+      <td class="tr">${r.deductH>0?`<span class="pill pill-neg">-${r.deductH.toFixed(1)}</span>`:'<span class="pill pill-dim">—</span>'}</td>
     </tr>`).join('');
 }
 
-let charts = {};
-function destroyChart(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
+// ── Detail Table ──
+function renderDetail() {
+  const q         = (document.getElementById('d-q')?.value||'').toLowerCase();
+  const dept      = document.getElementById('d-dept')?.value||'';
+  const shift     = document.getElementById('d-shift')?.value||'';
+  const nightOnly = document.getElementById('d-nightonly')?.checked ?? true;
 
-function renderDash() {
+  const data = processed.filter(r =>
+    (!q     || r.name.includes(q) || String(r.empId).includes(q)) &&
+    (!dept  || r.dept===dept) &&
+    (!shift || r.shift===shift) &&
+    (!nightOnly || r.isNight)
+  );
+
+  document.getElementById('detail-empty').style.display = data.length?'none':'block';
+  document.getElementById('detail-data').style.display  = data.length?'block':'none';
+  document.getElementById('detail-count').textContent   = `共 ${data.length} 筆`;
+
+  const statusColor = s => {
+    if (!s || s==='正常') return 'color:var(--green)';
+    if (s.includes('異常')) return 'color:var(--red)';
+    return 'color:var(--ink3)';
+  };
+
+  document.getElementById('detail-tbody').innerHTML = data.map(p=>`
+    <tr>
+      <td>${p.dept}</td>
+      <td class="mono" style="font-size:10px;color:var(--ink3)">${p.empId||'—'}</td>
+      <td class="name-cell">${p.name}</td>
+      <td><span class="pill">${p.shift||'—'}</span></td>
+      <td class="mono" style="font-size:11px;color:var(--ink3)">${p.date||'—'}</td>
+      <td class="mono" style="font-size:11px">${fmtMin(toMin(p.cin))}</td>
+      <td class="mono" style="font-size:11px">${fmtMin(toMin(p.cout))}</td>
+      <td class="mono" style="font-size:10px;color:var(--ink3)">${p.interval}</td>
+      <td class="tr accent mono">${p.nightH.toFixed(1)}</td>
+      <td class="tr">${p.deductH>0?`<span class="pill pill-neg">-${p.deductH.toFixed(1)}</span>`:'<span class="pill pill-dim">—</span>'}</td>
+      <td class="tr mono">${p.overnight}</td>
+      <td style="font-size:11px;color:var(--ink3);max-width:150px;overflow:hidden;text-overflow:ellipsis">${p.note||''}</td>
+      <td style="font-size:10px;font-family:var(--mono);${statusColor(p.status)}">${p.status||''}</td>
+    </tr>`).join('');
+}
+
+// ══════════════════════════════════════════════════
+// EXCEL EXPORT
+// ══════════════════════════════════════════════════
+function exportExcel() {
   if (!aggregated.length) return;
-  document.getElementById('dash-empty').style.display='none';
-  document.getElementById('dash-data').style.display='block';
+  const wb = XLSX.utils.book_new();
 
-  const aggVisible = aggregated.filter(a=>a.nightHours>0);
-  const procVisible = processed.filter(r=>r.hours>0);
+  // Sheet 1: Summary — night employees only, sorted by night hours desc
+  const s1 = [['員工編號','課別','姓名','夜點時數（小時）','跨夜天數','夜班筆數','假扣除（小時）']];
+  aggregated.forEach(r => s1.push([
+    r.empId||'', r.dept, r.name,
+    r.nightHours, r.overnight, r.nightCount, r.deductH
+  ]));
+  s1.push(['','合計',`共${aggregated.length}人`,
+    parseFloat(aggregated.reduce((s,r)=>s+r.nightHours,0).toFixed(1)),
+    aggregated.reduce((s,r)=>s+r.overnight,0),
+    aggregated.reduce((s,r)=>s+r.nightCount,0),
+    parseFloat(aggregated.reduce((s,r)=>s+r.deductH,0).toFixed(1)),
+  ]);
+  const ws1 = XLSX.utils.aoa_to_sheet(s1);
+  ws1['!cols'] = [{wch:12},{wch:18},{wch:10},{wch:18},{wch:10},{wch:10},{wch:16}];
+  XLSX.utils.book_append_sheet(wb, ws1, '夜點津貼報表');
 
-  const total = procVisible.reduce((s,r)=>s+r.hours,0);
-  const empSet = new Set(procVisible.map(r=>r.name));
-  const overnight = procVisible.filter(r=>r.overnight).length;
-  const deduction = procVisible.reduce((s,r)=>s+r.deduction,0);
+  // Sheet 2: Detail — night shifts only
+  const nightRows = processed.filter(p => p.isNight);
+  const s2 = [['員工編號','課別','姓名','班別','出勤日','實際出勤','實際退勤','夜點區間','夜點時數','假扣除(hr)','跨夜','備註','檢核狀態']];
+  nightRows.forEach(p => s2.push([
+    p.empId||'', p.dept, p.name, p.shift, p.date,
+    fmtMin(toMin(p.cin)), fmtMin(toMin(p.cout)),
+    p.interval, p.nightH, p.deductH||'', p.overnight, p.note, p.status||''
+  ]));
+  const ws2 = XLSX.utils.aoa_to_sheet(s2);
+  ws2['!cols'] = [{wch:12},{wch:16},{wch:10},{wch:14},{wch:16},{wch:10},{wch:10},{wch:14},{wch:10},{wch:12},{wch:8},{wch:22},{wch:12}];
+  XLSX.utils.book_append_sheet(wb, ws2, '出勤明細');
 
-  document.getElementById('dash-kpis').innerHTML = [
-    {lbl:'員工人數',val:empSet.size,unit:'人',color:'#1a56db'},
-    {lbl:'總夜點時數',val:total.toFixed(1),unit:'hr',color:'#1a7a4a'},
-    {lbl:'跨夜天數',val:overnight,unit:'天',color:'#92520a'},
-    {lbl:'假扣除',val:deduction.toFixed(1),unit:'hr',color:'#b91c1c'},
-  ].map(k=>`<div class="kpi" style="--kpi-color:${k.color}">
-    <div class="kpi-label">${k.lbl}</div>
-    <div class="kpi-value">${k.val}<span class="kpi-unit">${k.unit}</span></div>
-  </div>`).join('');
+  // Sheet 3: Dept pivot
+  const dmap = {};
+  aggregated.forEach(r => {
+    if (!dmap[r.dept]) dmap[r.dept] = {emp:0, night:0, overnight:0, nightCount:0};
+    dmap[r.dept].emp++;
+    dmap[r.dept].night      += r.nightHours;
+    dmap[r.dept].overnight  += r.overnight;
+    dmap[r.dept].nightCount += r.nightCount;
+  });
+  const s3 = [['課別','夜班員工人數','夜點時數合計','平均夜點/人','跨夜天數合計','夜班出勤筆數']];
+  Object.entries(dmap).sort((a,b)=>b[1].night-a[1].night)
+    .forEach(([d,g]) => s3.push([
+      d, g.emp,
+      parseFloat(g.night.toFixed(1)),
+      parseFloat((g.night/g.emp).toFixed(1)),
+      g.overnight, g.nightCount
+    ]));
+  const ws3 = XLSX.utils.aoa_to_sheet(s3);
+  ws3['!cols'] = [{wch:22},{wch:14},{wch:14},{wch:12},{wch:14},{wch:14}];
+  XLSX.utils.book_append_sheet(wb, ws3, '課別統計');
 
-  const top15 = aggVisible.slice(0,15);
+  const d = new Date();
+  const stamp = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+  XLSX.writeFile(wb, `夜點津貼報表_${stamp}.xlsx`);
+  log(`✓ Excel 已匯出：${aggregated.length} 人 / ${nightRows.length} 筆夜班明細`, 'ok');
+}
+
+// ══════════════════════════════════════════════════
+// DASHBOARD
+// ══════════════════════════════════════════════════
+const CHART_COLORS = ['#1a56db','#1a7a4a','#b91c1c','#92520a','#6b21a8','#0891b2','#be185d','#15803d','#c2410c','#1d4ed8'];
+const CHART_COLORS_PALE = ['#e8f0fe','#e6f4ec','#fef2f2','#fef3e2','#f3e8ff','#e0f2fe','#fce7f3','#dcfce7','#fff7ed','#eff6ff'];
+let _charts = {};
+
+function destroyChart(id) {
+  if (_charts[id]) { _charts[id].destroy(); delete _charts[id]; }
+}
+
+function renderDashboard() {
+  if (!aggregated.length) return;
+  document.getElementById('dash-empty').style.display = 'none';
+  document.getElementById('dash-data').style.display  = 'block';
+
+  const totalNight  = aggregated.reduce((s,r)=>s+r.nightHours,0);
+  const totalON     = aggregated.reduce((s,r)=>s+r.overnight,0);
+  const totalDeduct = aggregated.reduce((s,r)=>s+r.deductH,0);
+  const avgNight    = totalNight / aggregated.length;
+  const maxPerson   = aggregated[0];
+  const minPerson   = aggregated[aggregated.length-1];
+
+  // ── KPI Cards ──
+  document.getElementById('dash-kpis').innerHTML = `
+    <div class="kpi" style="--kpi-color:#1a56db">
+      <div class="kpi-label">總夜點時數</div>
+      <div class="kpi-value">${totalNight.toFixed(1)}<span class="kpi-unit">hr</span></div>
+      <div class="kpi-sub">${aggregated.length} 位員工 · ${processed.length} 筆記錄</div>
+    </div>
+    <div class="kpi" style="--kpi-color:#1a7a4a">
+      <div class="kpi-label">平均夜點 / 人</div>
+      <div class="kpi-value">${avgNight.toFixed(1)}<span class="kpi-unit">hr</span></div>
+      <div class="kpi-sub">最高 ${maxPerson.nightHours}hr（${maxPerson.name}）</div>
+    </div>
+    <div class="kpi" style="--kpi-color:#92520a">
+      <div class="kpi-label">總跨夜天數</div>
+      <div class="kpi-value">${totalON}<span class="kpi-unit">天</span></div>
+      <div class="kpi-sub">平均 ${(totalON/aggregated.length).toFixed(1)} 天 / 人</div>
+    </div>
+    <div class="kpi" style="--kpi-color:#b91c1c">
+      <div class="kpi-label">假別扣除時數</div>
+      <div class="kpi-value">${totalDeduct.toFixed(1)}<span class="kpi-unit">hr</span></div>
+      <div class="kpi-sub">${aggregated.filter(r=>r.deductH>0).length} 人受假別影響</div>
+    </div>`;
+
+  // ── Bar Chart: top 15 employees ──
   destroyChart('bar');
-  charts['bar'] = new Chart(document.getElementById('chart-bar'),{
-    type:'bar',
-    data:{labels:top15.map(a=>a.name),datasets:[{data:top15.map(a=>a.nightHours),backgroundColor:'rgba(26,86,219,0.7)',borderRadius:4}]},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.raw} hr`}}},
-      scales:{x:{grid:{display:false},ticks:{font:{size:9,family:'Noto Sans TC'},color:'#7a7e8e'},border:{display:false}},
-              y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10},color:'#7a7e8e'},border:{display:false}}}}
-  });
-
-  document.getElementById('rank-list').innerHTML = aggVisible.slice(0,10).map((a,i)=>`
-    <li class="rank-item">
-      <span class="rank-num">${i+1}</span>
-      <div style="flex:1"><div class="rank-name">${a.name}</div><div class="rank-dept">${a.dept}</div></div>
-      <div class="rank-bar-wrap"><div class="rank-bar" style="width:${Math.min(100,aggVisible[0]?a.nightHours/aggVisible[0].nightHours*100:0)}%"></div></div>
-      <span class="rank-val">${a.nightHours.toFixed(1)}</span>
-    </li>`).join('');
-
-  const deptMap = new Map();
-  for (const a of aggVisible) {
-    if (!deptMap.has(a.dept)) deptMap.set(a.dept,{total:0,cnt:0,overnight:0});
-    const d=deptMap.get(a.dept);d.total+=a.nightHours;d.cnt++;d.overnight+=a.overnight;
-  }
-  const depts=[...deptMap.entries()].sort((a,b)=>b[1].total-a[1].total);
-  const deptTotal=depts.reduce((s,[,d])=>s+d.total,0);
-  const colors=['#1a56db','#1a7a4a','#92520a','#b91c1c','#6d28d9','#0891b2','#d97706','#059669'];
-
-  destroyChart('dept-pie');
-  charts['dept-pie']=new Chart(document.getElementById('chart-dept-pie'),{
-    type:'doughnut',
-    data:{labels:depts.map(([k])=>k),datasets:[{data:depts.map(([,d])=>+d.total.toFixed(1)),backgroundColor:colors,borderWidth:0}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}
-  });
-  document.getElementById('dept-legend').innerHTML=depts.map(([k,d],i)=>`
-    <div class="legend-item"><div class="legend-dot" style="background:${colors[i%colors.length]}"></div>
-    <span>${k}</span><span class="legend-pct">${(d.total/deptTotal*100).toFixed(0)}%</span></div>`).join('');
-
-  const leaveMap=new Map();
-  for (const r of procVisible) {
-    if (!r.note) continue;
-    const re=/([^\d~～\-–\s]{1,6}?)\s*\d{3,4}\s*[~～\-–]\s*\d{3,4}/g;
-    let m;
-    while((m=re.exec(r.note))!==null){
-      const t=m[1].trim();if(!t)continue;
-      leaveMap.set(t,(leaveMap.get(t)||0)+r.deduction);
-    }
-  }
-  const leaves=[...leaveMap.entries()].filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]);
-  destroyChart('leave-pie');
-  if(leaves.length){
-    charts['leave-pie']=new Chart(document.getElementById('chart-leave-pie'),{
-      type:'doughnut',
-      data:{labels:leaves.map(([k])=>k),datasets:[{data:leaves.map(([,v])=>+v.toFixed(1)),backgroundColor:colors,borderWidth:0}]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}
-    });
-    document.getElementById('leave-legend').innerHTML=leaves.map(([k,v],i)=>`
-      <div class="legend-item"><div class="legend-dot" style="background:${colors[i%colors.length]}"></div>
-      <span>${k}</span><span class="legend-pct">${v.toFixed(1)} hr</span></div>`).join('');
-  }
-
-  const shiftMap=new Map();
-  for(const r of procVisible)shiftMap.set(r.shift,(shiftMap.get(r.shift)||0)+1);
-  const shiftArr=[...shiftMap.entries()].sort((a,b)=>b[1]-a[1]);
-  destroyChart('shift-doughnut');
-  charts['shift-doughnut']=new Chart(document.getElementById('chart-shift-doughnut'),{
-    type:'doughnut',
-    data:{labels:shiftArr.map(([k])=>k),datasets:[{data:shiftArr.map(([,v])=>v),backgroundColor:colors,borderWidth:0}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:9},boxWidth:10}}}}
-  });
-
-  const deptBarMax=depts.length?depts[0][1].total:1;
-  document.getElementById('dept-bar-list').innerHTML=depts.map(([k,d])=>`
-    <div class="dept-row">
-      <div class="dept-name" title="${k}">${k}</div>
-      <div class="dept-bar-wrap"><div class="dept-bar" style="width:${Math.min(100,d.total/deptBarMax*100)}%;background:var(--n-accent)"></div></div>
-      <div class="dept-val">${d.total.toFixed(1)} hr</div>
-    </div>`).join('');
-
-  const buckets=Array(12).fill(0);
-  const bSize=2;
-  for(const a of aggVisible){const b=Math.min(11,Math.floor(a.nightHours/bSize));buckets[b]++;}
-  destroyChart('hist');
-  charts['hist']=new Chart(document.getElementById('chart-hist'),{
+  const top15 = aggregated.slice(0,15);
+  const ctxBar = document.getElementById('chart-bar').getContext('2d');
+  _charts.bar = new Chart(ctxBar, {
     type:'bar',
     data:{
-      labels:Array.from({length:12},(_,i)=>`${i*bSize}–${(i+1)*bSize}`),
-      datasets:[{data:buckets,backgroundColor:'rgba(26,86,219,0.6)',borderRadius:3}]
+      labels: top15.map(r=>r.name),
+      datasets:[{
+        label:'夜點時數',
+        data: top15.map(r=>r.nightHours),
+        backgroundColor: top15.map((_,i)=> i===0?'#1a56db': i<3?'#3b7dd8':'#93b4ef'),
+        borderRadius:4, borderSkipped:false,
+      }]
     },
+    options:{
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>`${c.raw.toFixed(1)} hr`}}},
+      scales:{
+        x:{grid:{color:'rgba(0,0,0,0.04)'}, ticks:{font:{size:10},color:'#7a7e8e'}, border:{display:false}},
+        y:{grid:{display:false}, ticks:{font:{size:11,family:'Noto Sans TC'},color:'#3a3d4a'}, border:{display:false}},
+      }
+    }
+  });
+
+  // ── Rank List ──
+  const maxH = aggregated[0].nightHours;
+  document.getElementById('rank-list').innerHTML = aggregated.slice(0,10).map((r,i)=>`
+    <li class="rank-item">
+      <span class="rank-num">${i+1}</span>
+      <div style="flex:1;min-width:0;">
+        <div class="rank-name">${r.name}</div>
+        <div class="rank-dept">${r.dept}</div>
+      </div>
+      <div class="rank-bar-wrap"><div class="rank-bar" style="width:${(r.nightHours/maxH*100).toFixed(1)}%"></div></div>
+      <span class="rank-val">${r.nightHours.toFixed(1)}</span>
+    </li>`).join('');
+
+  // ── Dept aggregation ──
+  const deptMap = {};
+  aggregated.forEach(r=>{
+    if(!deptMap[r.dept]) deptMap[r.dept]={night:0,emp:0,overnight:0};
+    deptMap[r.dept].night    += r.nightHours;
+    deptMap[r.dept].emp      += 1;
+    deptMap[r.dept].overnight+= r.overnight;
+  });
+  const depts = Object.entries(deptMap).sort((a,b)=>b[1].night-a[1].night);
+
+  // ── Dept Pie ──
+  destroyChart('deptPie');
+  const ctxDeptPie = document.getElementById('chart-dept-pie').getContext('2d');
+  _charts.deptPie = new Chart(ctxDeptPie,{
+    type:'doughnut',
+    data:{
+      labels: depts.map(d=>d[0]),
+      datasets:[{data:depts.map(d=>d[1].night.toFixed(1)), backgroundColor:CHART_COLORS, borderWidth:2, borderColor:'#fff', hoverOffset:4}]
+    },
+    options:{responsive:true,maintainAspectRatio:false,cutout:'62%',
+      plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>`${c.label}: ${c.raw}hr`}}}
+    }
+  });
+  document.getElementById('dept-legend').innerHTML = depts.map((d,i)=>`
+    <div class="legend-item">
+      <span class="legend-dot" style="background:${CHART_COLORS[i%CHART_COLORS.length]}"></span>
+      <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px;">${d[0]}</span>
+      <span class="legend-pct">${d[1].night.toFixed(0)}hr</span>
+    </div>`).join('');
+
+  // ── Leave type analysis ──
+  const leaveTypes = {};
+  processed.forEach(p=>{
+    if(!p.note) return;
+    const m = p.note.match(/^([\u4e00-\u9fff]+)/);
+    const type = m ? m[1] : '其他';
+    if(p.deductH>0) leaveTypes[type]=(leaveTypes[type]||0)+p.deductH;
+  });
+  const leaveEntries = Object.entries(leaveTypes).sort((a,b)=>b[1]-a[1]);
+  destroyChart('leavePie');
+  if(leaveEntries.length){
+    const ctxLv = document.getElementById('chart-leave-pie').getContext('2d');
+    const leaveColors=['#e24b4a','#f59e0b','#1a7a4a','#6b21a8','#0891b2','#be185d'];
+    _charts.leavePie = new Chart(ctxLv,{
+      type:'pie',
+      data:{labels:leaveEntries.map(e=>e[0]),datasets:[{data:leaveEntries.map(e=>e[1].toFixed(1)),backgroundColor:leaveColors,borderWidth:2,borderColor:'#fff'}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.label}: ${c.raw}hr`}}}}
+    });
+    document.getElementById('leave-legend').innerHTML = leaveEntries.map((e,i)=>`
+      <div class="legend-item">
+        <span class="legend-dot" style="background:${leaveColors[i%leaveColors.length]}"></span>
+        <span>${e[0]}</span>
+        <span class="legend-pct">${parseFloat(e[1]).toFixed(1)}hr</span>
+      </div>`).join('');
+  } else {
+    document.getElementById('chart-leave-pie').parentElement.innerHTML='<div style="text-align:center;padding:40px 0;color:var(--ink3);font-size:12px;">無假別扣除資料</div>';
+  }
+
+  // ── Shift doughnut ──
+  destroyChart('shiftDoughnut');
+  const shiftCounts = {};
+  processed.forEach(p=>{ if(p.shift) shiftCounts[p.shift]=(shiftCounts[p.shift]||0)+1; });
+  const shiftEntries = Object.entries(shiftCounts).sort((a,b)=>b[1]-a[1]);
+  const ctxSD = document.getElementById('chart-shift-doughnut').getContext('2d');
+  _charts.shiftDoughnut = new Chart(ctxSD,{
+    type:'doughnut',
+    data:{labels:shiftEntries.map(e=>e[0]),datasets:[{data:shiftEntries.map(e=>e[1]),backgroundColor:CHART_COLORS,borderWidth:2,borderColor:'#fff',hoverOffset:3}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'55%',
+      plugins:{legend:{position:'bottom',labels:{font:{size:9,family:'DM Mono'},color:'#7a7e8e',boxWidth:10,padding:8}},
+        tooltip:{callbacks:{label:c=>`${c.label}: ${c.raw}次`}}}
+    }
+  });
+
+  // ── Dept horizontal bars (custom HTML) ──
+  const maxDeptNight = depts[0][1].night;
+  const deptColors = ['#1a56db','#1a7a4a','#92520a','#b91c1c','#6b21a8','#0891b2','#be185d','#15803d','#c2410c'];
+  document.getElementById('dept-bar-list').innerHTML = depts.map((d,i)=>`
+    <div class="dept-row">
+      <span class="dept-name" title="${d[0]}">${d[0]}</span>
+      <div class="dept-bar-wrap">
+        <div class="dept-bar" style="width:${(d[1].night/maxDeptNight*100).toFixed(1)}%;background:${deptColors[i%deptColors.length]}"></div>
+      </div>
+      <span class="dept-val">${d[1].night.toFixed(1)}hr</span>
+      <span style="font-size:10px;color:var(--ink3);font-family:var(--mono);min-width:30px;text-align:right;">${d[1].emp}人</span>
+    </div>`).join('');
+
+  // ── Histogram ──
+  destroyChart('hist');
+  const vals = aggregated.map(r=>r.nightHours);
+  const binSize = 10;
+  const minV = Math.floor(Math.min(...vals)/binSize)*binSize;
+  const maxV = Math.ceil(Math.max(...vals)/binSize)*binSize;
+  const bins = [];
+  for(let v=minV; v<maxV; v+=binSize) bins.push({label:`${v}–${v+binSize}`,count:0});
+  vals.forEach(v=>{ const idx=Math.min(Math.floor((v-minV)/binSize),bins.length-1); if(bins[idx])bins[idx].count++; });
+  const ctxHist = document.getElementById('chart-hist').getContext('2d');
+  _charts.hist = new Chart(ctxHist,{
+    type:'bar',
+    data:{labels:bins.map(b=>b.label),datasets:[{label:'人數',data:bins.map(b=>b.count),backgroundColor:'#93b4ef',borderRadius:3,borderSkipped:false}]},
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.raw} 人`}}},
-      scales:{x:{grid:{display:false},ticks:{font:{size:9},color:'#7a7e8e'},border:{display:false}},
-              y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10},color:'#7a7e8e',stepSize:1},border:{display:false}}}}
+      scales:{
+        x:{grid:{display:false},ticks:{font:{size:9},color:'#7a7e8e'},border:{display:false}},
+        y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10},color:'#7a7e8e',stepSize:1},border:{display:false}},
+      }
+    }
   });
 
+  // ── Scatter: night hours vs overnight ──
   destroyChart('scatter');
-  charts['scatter']=new Chart(document.getElementById('chart-scatter'),{
+  const ctxSc = document.getElementById('chart-scatter').getContext('2d');
+  _charts.scatter = new Chart(ctxSc,{
     type:'scatter',
-    data:{datasets:[{data:aggVisible.map(a=>({x:a.nightHours,y:a.overnight,label:a.name})),
-      backgroundColor:'rgba(26,86,219,0.5)',pointRadius:5,pointHoverRadius:7}]},
+    data:{datasets:[{
+      label:'員工',
+      data: aggregated.map(r=>({x:r.nightHours,y:r.overnight,name:r.name,dept:r.dept})),
+      backgroundColor: aggregated.map(r=>{
+        const di=depts.findIndex(d=>d[0]===r.dept);
+        return CHART_COLORS[di%CHART_COLORS.length]+'cc';
+      }),
+      pointRadius:5, pointHoverRadius:7,
+    }]},
     options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.raw.label} (${c.raw.x}hr, ${c.raw.y}天)`}}},
-      scales:{x:{title:{display:true,text:'夜點時數',font:{size:10}},grid:{color:'rgba(0,0,0,0.04)'}},
-              y:{title:{display:true,text:'跨夜天數',font:{size:10}},grid:{color:'rgba(0,0,0,0.04)'}}}}
+      plugins:{legend:{display:false},
+        tooltip:{callbacks:{label:c=>`${c.raw.name}｜${c.raw.dept}｜夜點:${c.raw.x}hr 跨夜:${c.raw.y}天`}}
+      },
+      scales:{
+        x:{title:{display:true,text:'夜點時數（hr）',font:{size:10},color:'#7a7e8e'},grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10},color:'#7a7e8e'},border:{display:false}},
+        y:{title:{display:true,text:'跨夜天數',font:{size:10},color:'#7a7e8e'},grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10},color:'#7a7e8e',stepSize:1},border:{display:false}},
+      }
+    }
   });
 
-  const overnightByDept=new Map();
-  for(const r of procVisible)if(r.overnight){overnightByDept.set(r.dept,(overnightByDept.get(r.dept)||0)+1);}
-  const ovArr=[...overnightByDept.entries()].sort((a,b)=>b[1]-a[1]);
-  destroyChart('overnight-bar');
-  charts['overnight-bar']=new Chart(document.getElementById('chart-overnight-bar'),{
+  // ── Overnight by dept bar ──
+  destroyChart('overnightBar');
+  const ctxON = document.getElementById('chart-overnight-bar').getContext('2d');
+  const deptsSortedON = [...depts].sort((a,b)=>b[1].overnight-a[1].overnight);
+  _charts.overnightBar = new Chart(ctxON,{
     type:'bar',
-    data:{labels:ovArr.map(([k])=>k),datasets:[{data:ovArr.map(([,v])=>v),backgroundColor:'rgba(146,82,10,0.65)',borderRadius:4}]},
+    data:{
+      labels:deptsSortedON.map(d=>d[0]),
+      datasets:[{
+        label:'跨夜天數',
+        data:deptsSortedON.map(d=>d[1].overnight),
+        backgroundColor:deptsSortedON.map((_,i)=>CHART_COLORS[i%CHART_COLORS.length]),
+        borderRadius:4,borderSkipped:false,
+      }]
+    },
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.raw} 天`}}},
       scales:{
@@ -2543,6 +2723,9 @@ function renderDash() {
   });
 }
 
+// ══════════════════════════════════════════════════
+// EIP
+// ══════════════════════════════════════════════════
 function buildHdrs() {
   const auth=document.getElementById('f-auth').value;
   const user=document.getElementById('f-user').value;
@@ -2595,19 +2778,23 @@ function saveEIP(){
   try{localStorage.setItem('eip',JSON.stringify({url:document.getElementById('f-url').value,path:document.getElementById('f-path').value,user:document.getElementById('f-user').value,auth:document.getElementById('f-auth').value}));log('EIP 設定已儲存','ok');}catch(e){}
 }
 
+// ══════════════════════════════════════════════════
+// SHIFT CONFIG
+// ══════════════════════════════════════════════════
 function renderShifts(){
   document.getElementById('shift-list').innerHTML=Object.entries(SHIFTS).map(([code,s],i)=>`
     <div class="shift-row">
-      <span style="font-family:var(--mono2);font-weight:500;font-size:11px;min-width:90px">${code}</span>
-      <span style="font-family:var(--mono2);font-size:11px;color:var(--n-ink3);flex:1">${fmtMin(s.ns)}–${fmtMin(s.ne<s.ns?s.ne+1440:s.ne)}</span>
-      <span style="font-family:var(--mono2);font-size:11px;color:var(--n-accent);min-width:50px;text-align:right">${s.max.toFixed(1)} hr</span>
-      <button class="btn btn-xs" style="color:var(--n-red);border-color:rgba(185,28,28,.2)" onclick="removeShift('${code}')">移除</button>
+      <span style="font-family:var(--mono);font-weight:500;font-size:11px;min-width:90px">${code}</span>
+      <span style="font-family:var(--mono);font-size:11px;color:var(--ink3);flex:1">${fmtMin(s.ns)}–${fmtMin(s.ne<s.ns?s.ne+1440:s.ne)}</span>
+      <span style="font-family:var(--mono);font-size:11px;color:var(--accent);min-width:50px;text-align:right">${s.max.toFixed(1)} hr</span>
+      <button class="btn btn-xs" style="color:var(--red);border-color:rgba(185,28,28,.2)" onclick="removeShift('${code}')">移除</button>
     </div>`).join('');
 
+  // Col map list
   document.getElementById('col-map-list').innerHTML=Object.entries(FIELD_MAP).map(([k,aliases])=>`
     <div class="fmap-row">
       <span class="fmap-key">${k}</span>
-      <span style="font-size:10px;color:var(--n-ink3)">${aliases.slice(0,4).map(a=>`<span class="chip">${a}</span>`).join(' ')}</span>
+      <span style="font-size:10px;color:var(--ink3)">${aliases.slice(0,4).map(a=>`<span class="chip">${a}</span>`).join(' ')}</span>
     </div>`).join('');
 }
 function removeShift(code){delete SHIFTS[code];renderShifts();log(`移除班別 ${code}`,'warn');}
@@ -2627,44 +2814,40 @@ function addShift(){
   log(`新增班別 ${code}，夜點上限 ${max.toFixed(1)} hr`,'ok');
 }
 
-function exportExcel(){
-  if(!aggregated.length){alert('尚無資料');return;}
-  const wb=XLSX.utils.book_new();
-  const aggFiltered=aggregated.filter(a=>a.nightHours>0);
-  const agg=[['課別','姓名','夜點時數(hr)','跨夜天數','出勤筆數','假扣除(hr)'],
-    ...aggFiltered.map(a=>[a.dept,a.name,a.nightHours,a.overnight,a.count,a.deduction])];
-  const ws1=XLSX.utils.aoa_to_sheet(agg);
-  ws1['!cols']=[{wch:14},{wch:10},{wch:14},{wch:10},{wch:10},{wch:12}];
-  XLSX.utils.book_append_sheet(wb,ws1,'加總報表');
-  const detFiltered=processed.filter(r=>r.hours>0);
-  const det=[['課別','姓名','班別','出勤日','實際出勤','實際退勤','夜點區間','夜點時數','假扣除','跨夜','備註'],
-    ...detFiltered.map(r=>[r.dept,r.name,r.shift,r.date,r.cin!=null?fmtMin(r.cin):'—',r.cout!=null?fmtMin(r.cout):'—',r.span,r.hours,r.deduction,r.overnight?'是':'否',r.note])];
-  const ws2=XLSX.utils.aoa_to_sheet(det);
-  ws2['!cols']=[{wch:14},{wch:10},{wch:12},{wch:14},{wch:10},{wch:10},{wch:14},{wch:10},{wch:10},{wch:6},{wch:20}];
-  XLSX.utils.book_append_sheet(wb,ws2,'明細');
-  XLSX.writeFile(wb,`夜點津貼_${new Date().toLocaleDateString('zh-TW').replace(/\//g,'-')}.xlsx`);
-}
-
+// ══════════════════════════════════════════════════
+// DEMO — matches new 出勤紀錄_20260416.xlsx format exactly
+// ══════════════════════════════════════════════════
 function loadDemo(){
-  const demo=[
-    {'員工姓名':'黃馨儀','部門':'運務課','班別名稱':'2330-0830','出勤日':'2026/01/31(六)','實際出勤':'23:30','實際退勤':'09:36','備註':''},
-    {'員工姓名':'黃馨儀','部門':'運務課','班別名稱':'2330-0830','出勤日':'2026/02/02(一)','實際出勤':'00:27','實際退勤':'08:46','備註':'特休2330~0030'},
-    {'員工姓名':'陳育棋','部門':'大肚運務課','班別名稱':'2300-0800','出勤日':'2026/02/01(日)','實際出勤':'22:56','實際退勤':'08:07','備註':''},
-    {'員工姓名':'鄧勝献','部門':'岡山營運課','班別名稱':'2200-0700','出勤日':'2026/02/03(二)','實際出勤':'','實際退勤':'','備註':'未住院病假2200~0700'},
-    {'員工姓名':'張文仁','部門':'岡山營運課','班別名稱':'2200-0700','出勤日':'2026/02/04(三)','實際出勤':'','實際退勤':'','備註':'特休2200~0700'},
-    {'員工姓名':'江衍成','部門':'岡山營運課','班別名稱':'1700-0200','出勤日':'2026/02/05(四)','實際出勤':'17:49','實際退勤':'02:22','備註':'特休1700~1800'},
-    {'員工姓名':'陳家淇','部門':'岡山營運課','班別名稱':'1600-0100','出勤日':'2026/02/06(五)','實際出勤':'','實際退勤':'','備註':'生理假1600~0100'},
-    {'員工姓名':'呂宗岳','部門':'大肚運務課','班別名稱':'1500-0000','出勤日':'2026/02/07(六)','實際出勤':'14:57','實際退勤':'20:10','備註':'特休2000~0000'},
-    {'員工姓名':'羊俊傑','部門':'北區設備工程課','班別名稱':'1500-0000','出勤日':'2026/02/08(日)','實際出勤':'15:00','實際退勤':'00:05','備註':''},
-    {'員工姓名':'黃馨儀','部門':'運務課','班別名稱':'2330-0830','出勤日':'2026/02/09(一)','實際出勤':'23:23','實際退勤':'10:52','備註':''},
+  const demo = [
+    // 新格式：12 欄，班別含前綴，備註無空格，空值為 \xa0
+    {'員工編號':9307001,'員工姓名':'黃馨儀','部門':'運務課','班別名稱':'上班2330-0830','檢核狀態':'正常','出勤日':'2026/03/26(四)','實際出勤':'23:30','實際退勤':'09:36','遲到':'\xa0','早退':'\xa0','曠職':'\xa0','備註':'\xa0'},
+    {'員工編號':9307001,'員工姓名':'黃馨儀','部門':'運務課','班別名稱':'上班2330-0830','檢核狀態':'正常','出勤日':'2026/03/27(五)','實際出勤':'00:27','實際退勤':'08:46','遲到':'\xa0','早退':'\xa0','曠職':'\xa0','備註':'特休2330~0030'},
+    {'員工編號':9307001,'員工姓名':'黃馨儀','部門':'運務課','班別名稱':'休假2330-0830','檢核狀態':'正常','出勤日':'2026/03/28(六)','實際出勤':'23:30','實際退勤':'09:10','遲到':'\xa0','早退':'\xa0','曠職':'\xa0','備註':'\xa0'},
+    {'員工編號':9308002,'員工姓名':'張文仁','部門':'岡山營運課','班別名稱':'上班2200-0700','檢核狀態':'正常','出勤日':'2026/03/26(四)','實際出勤':'22:00','實際退勤':'07:10','遲到':'\xa0','早退':'\xa0','曠職':'\xa0','備註':'\xa0'},
+    {'員工編號':9308002,'員工姓名':'張文仁','部門':'岡山營運課','班別名稱':'上班2200-0700','檢核狀態':'正常','出勤日':'2026/03/27(五)','實際出勤':'','實際退勤':'','遲到':'\xa0','早退':'\xa0','曠職':'\xa0','備註':'特休2200~0700'},
+    {'員工編號':9308002,'員工姓名':'張文仁','部門':'岡山營運課','班別名稱':'上班2200-0700','檢核狀態':'異常 未處理','出勤日':'2026/03/28(六)','實際出勤':'22:05','實際退勤':'07:00','遲到':'\xa0','早退':'\xa0','曠職':'\xa0','備註':'\xa0'},
+    {'員工編號':9309003,'員工姓名':'江衍成','部門':'運務課','班別名稱':'上班1700-0200','檢核狀態':'正常','出勤日':'2026/03/26(四)','實際出勤':'17:49','實際退勤':'02:22','遲到':'\xa0','早退':'\xa0','曠職':'\xa0','備註':'公假1700~1800'},
+    {'員工編號':9309003,'員工姓名':'江衍成','部門':'運務課','班別名稱':'上班1700-0200','檢核狀態':'正常','出勤日':'2026/03/27(五)','實際出勤':'17:56','實際退勤':'02:00','遲到':'\xa0','早退':'\xa0','曠職':'\xa0','備註':'喪假1700~0200'},
+    {'員工編號':9310004,'員工姓名':'陳美英','部門':'大肚理貨課','班別名稱':'上班1500-0000','檢核狀態':'正常','出勤日':'2026/03/26(四)','實際出勤':'15:00','實際退勤':'00:05','遲到':'\xa0','早退':'\xa0','曠職':'\xa0','備註':'\xa0'},
+    {'員工編號':9310004,'員工姓名':'陳美英','部門':'大肚理貨課','班別名稱':'上班1500-0000','檢核狀態':'正常','出勤日':'2026/03/27(五)','實際出勤':'15:00','實際退勤':'00:03','遲到':'\xa0','早退':'\xa0','曠職':'\xa0','備註':'分娩假1500~1800'},
+    // Day shift — should be filtered out (0 night hours)
+    {'員工編號':9311005,'員工姓名':'吳雅惠','部門':'商品企劃課','班別名稱':'上班0800-1700','檢核狀態':'正常','出勤日':'2026/03/26(四)','實際出勤':'07:55','實際退勤':'17:14','遲到':'\xa0','早退':'\xa0','曠職':'\xa0','備註':'\xa0'},
+    // Cross-page same person test
+    {'員工編號':9307001,'員工姓名':'黃馨儀','部門':'運務課','班別名稱':'上班2330-0830','檢核狀態':'正常','出勤日':'2026/04/01(三)','實際出勤':'23:23','實際退勤':'10:52','遲到':'\xa0','早退':'\xa0','曠職':'\xa0','備註':'\xa0'},
   ];
-  detectedCols={name:'員工姓名',dept:'部門',shift:'班別名稱',date:'出勤日',cin:'實際出勤',cout:'實際退勤',note:'備註'};
-  rawRows=normalizeRows(demo);
-  log(`示範資料：${demo.length} 筆（模擬跨 Sheet 同人合併）`,'info');
+  detectedCols = {
+    empId:'員工編號', name:'員工姓名', dept:'部門', shift:'班別名稱',
+    status:'檢核狀態', date:'出勤日', cin:'實際出勤', cout:'實際退勤',
+    note:'備註'
+  };
+  rawRows = normalizeRows(demo);
+  log(`示範資料（新格式）：${demo.length} 筆，包含前綴班別 / \\xa0 備註 / 13 種假別 / 跨頁合併`, 'info');
   calculate();
 }
 
-// ── INIT ──
+// ══════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════
 document.getElementById('f-month').value=`${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2,'0')}`;
 try{const cfg=JSON.parse(localStorage.getItem('eip')||'{}');
   if(cfg.url)document.getElementById('f-url').value=cfg.url;
