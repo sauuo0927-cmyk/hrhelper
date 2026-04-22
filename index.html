@@ -1306,6 +1306,7 @@ input[type=file]{display:none;}
 
   <!-- ── PAGE: RESULT ── -->
   <div class="page" id="page-result">
+    <!-- initial empty (no data loaded yet) -->
     <div id="result-empty" class="empty">
       <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/></svg>
       <p>尚無資料，請先上傳出勤 Excel 或連接 EIP</p>
@@ -1333,6 +1334,11 @@ input[type=file]{display:none;}
             <tbody id="result-tbody"></tbody>
           </table>
         </div>
+        <!-- search no-result row (stays inside the card so search bar is always visible) -->
+        <div id="result-no-match" style="display:none;padding:32px 0;text-align:center;color:var(--ink3);">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:8px;opacity:.4"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <p style="font-size:12px;">查無符合條件的員工，請修改搜尋條件</p>
+        </div>
       </div>
     </div>
   </div>
@@ -1354,7 +1360,7 @@ input[type=file]{display:none;}
           </label>
           <span class="ml-a" style="font-size:11px;color:var(--ink3);font-family:var(--mono);" id="detail-count"></span>
         </div>
-        <div class="tbl-wrap">
+        <div id="detail-tbl-wrap" class="tbl-wrap">
           <table>
             <thead><tr>
               <th>課別</th><th>員工編號</th><th>姓名</th><th>班別</th>
@@ -1367,6 +1373,10 @@ input[type=file]{display:none;}
             </tr></thead>
             <tbody id="detail-tbody"></tbody>
           </table>
+        </div>
+        <div id="detail-no-match" style="display:none;padding:32px 0;text-align:center;color:var(--ink3);">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:8px;opacity:.4;display:block;margin-left:auto;margin-right:auto"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <p style="font-size:12px;">查無符合條件的記錄，請修改搜尋條件</p>
         </div>
       </div>
     </div>
@@ -1433,26 +1443,68 @@ input[type=file]{display:none;}
 // ════════════════════════════════════════════════
 // ══ 登入邏輯 ══
 // ════════════════════════════════════════════════
-const _CRED = { u: 'reyi', p: 'Reyi8741' };
-
-function doLogin() {
+async function doLogin() {
   const u = document.getElementById('login-user').value.trim();
   const p = document.getElementById('login-pass').value;
   const err = document.getElementById('login-error');
-  if (u === _CRED.u && p === _CRED.p) {
-    err.style.display = 'none';
-    const overlay = document.getElementById('login-overlay');
-    overlay.classList.add('hidden');
-    setTimeout(() => overlay.remove(), 380);
-  } else {
-    err.style.display = 'block';
-    // re-trigger shake animation
-    err.style.animation = 'none';
-    void err.offsetWidth;
-    err.style.animation = 'shakeX 0.4s ease';
-    document.getElementById('login-pass').value = '';
-    document.getElementById('login-pass').focus();
+  const btn = document.querySelector('.login-btn');
+
+  if (!u || !p) {
+    _showLoginError('請輸入帳號與密碼');
+    return;
   }
+  if (u.length > 15) { _showLoginError('帳號不得超過 15 字元'); return; }
+  if (p.length > 30) { _showLoginError('密碼不得超過 30 字元'); return; }
+
+  // 防止重複提交
+  btn.disabled = true;
+  btn.textContent = '驗證中…';
+
+  try {
+    const res = await fetch('https://eip.fme.com.tw/FMEIP/AasApi/CheckUserId', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ USER_ID: u, PSW: p }),
+      signal: AbortSignal.timeout(10000)
+    });
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const data = await res.json();
+    const code = (data.MSG || '').split(' ')[0];
+
+    if (code === '000') {
+      // 登入成功
+      err.style.display = 'none';
+      const overlay = document.getElementById('login-overlay');
+      overlay.classList.add('hidden');
+      setTimeout(() => overlay.remove(), 380);
+    } else {
+      const msgMap = {
+        '100': '帳號或密碼錯誤，請重新輸入',
+        '200': 'AD 認證錯誤，請聯絡系統管理員',
+        '998': '資料庫連線異常，請稍後再試',
+      };
+      _showLoginError(msgMap[code] || '系統發生錯誤，請聯絡管理員');
+      document.getElementById('login-pass').value = '';
+      document.getElementById('login-pass').focus();
+    }
+  } catch (e) {
+    _showLoginError('無法連線至驗證伺服器，請確認網路後重試');
+    document.getElementById('login-pass').focus();
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '登　入';
+  }
+}
+
+function _showLoginError(msg) {
+  const err = document.getElementById('login-error');
+  err.textContent = msg;
+  err.style.display = 'block';
+  err.style.animation = 'none';
+  void err.offsetWidth;
+  err.style.animation = 'shakeX 0.4s ease';
 }
 
 function togglePw() {
@@ -1871,6 +1923,7 @@ function ts(){return new Date().toLocaleDateString('zh-TW').replace(/\//g,'-');}
 // SHIFT DEFINITIONS
 // ══════════════════════════════════════════════════
 let SHIFTS = {
+  // Standard night shifts (22:00 onwards)
   '2330-0830': {ns:23*60+30, ne:7*60,  max:7.5},
   '2300-0800': {ns:23*60,    ne:7*60,  max:8.0},
   '2200-0700': {ns:22*60,    ne:7*60,  max:9.0},
@@ -1879,6 +1932,14 @@ let SHIFTS = {
   '1600-0100': {ns:22*60,    ne:1*60,  max:3.0},
   '1500-0000': {ns:22*60,    ne:0,     max:2.0},
   '1400-2300': {ns:22*60,    ne:23*60, max:1.0},
+  // Early-morning shifts (cross-midnight front segment)
+  '0500-1400': {ns:5*60,     ne:7*60,  max:2.0},
+  '0630-1530': {ns:6*60+30,  ne:7*60,  max:0.5},
+  '0000-0900': {ns:0,        ne:7*60,  max:7.0},
+  '0100-1000': {ns:1*60,     ne:7*60,  max:6.0},
+  '0200-1100': {ns:2*60,     ne:7*60,  max:5.0},
+  '0300-1200': {ns:3*60,     ne:7*60,  max:4.0},
+  '0400-1300': {ns:4*60,     ne:7*60,  max:3.0},
 };
 
 // ══════════════════════════════════════════════════
@@ -2150,7 +2211,6 @@ function normalizeRows(rows) {
 function parseLeave(note) {
   if (!note) return [];
   const leaves=[];
-  // Match any prefix before 4-digit time ~ 4-digit time
   for (const m of note.matchAll(/(\d{4})\s*[~～]\s*(\d{4})/g)) {
     const s=parseInt(m[1].slice(0,2))*60+parseInt(m[1].slice(2,4));
     const e=parseInt(m[2].slice(0,2))*60+parseInt(m[2].slice(2,4));
@@ -2159,10 +2219,36 @@ function parseLeave(note) {
   return leaves;
 }
 
-function overlapMins(s1,e1,s2,e2) {
-  const a2=e1<=s1?e1+1440:e1;
-  const b2=e2<=s2?e2+1440:e2;
-  return Math.max(0,Math.min(a2,b2)-Math.max(s1,s2));
+function leaveOverlapMins(ls, le, ns, ne) {
+  const NS = 22 * 60;   // 1320
+
+  function seg(s1, e1, s2, e2) { return Math.max(0, Math.min(e1,e2) - Math.max(s1,s2)); }
+
+  // Night Seg A: [max(ns,22:00), 24:00]
+  const nightA_s = Math.max(ns, NS);
+  const nightA_e = 1440;
+
+  // Night Seg B: [00:00, ne] — ONLY exists when ne is genuinely in the morning (0 < ne < 22:00)
+  // If ne >= 1320 (e.g. 1400-2300 has ne=23:00=1380), there is no morning segment
+  const hasB = ne > 0 && ne < NS;
+
+  let total = 0;
+
+  if (le > ls) {
+    // Contiguous (non-overnight) leave
+    total += seg(ls, le, nightA_s, nightA_e);
+    if (hasB) total += seg(ls, le, 0, ne);
+  } else {
+    // Overnight leave: split at midnight
+    const lvA_s = ls, lvA_e = 1440;
+    const lvB_s = 0,  lvB_e = le;
+    total += seg(lvA_s, lvA_e, nightA_s, nightA_e);
+    if (hasB) total += seg(lvA_s, lvA_e, 0, ne);
+    total += seg(lvB_s, lvB_e, nightA_s, nightA_e);
+    if (hasB) total += seg(lvB_s, lvB_e, 0, ne);
+  }
+
+  return total;
 }
 
 // ══════════════════════════════════════════════════
@@ -2190,7 +2276,7 @@ function getShift(rawShift) {
   if (!parsed) return null;
 
   // 休假 班別 → 0 夜點, 0 跨夜
-  if (parsed.isHoliday) return { ns:22*60, ne:7*60, max:0, isHoliday:true };
+  if (parsed.isHoliday) return { ns:0, ne:7*60, max:0, isHoliday:true };
 
   const code = parsed.code;
 
@@ -2198,26 +2284,45 @@ function getShift(rawShift) {
   if (SHIFTS[code]) return { ...SHIFTS[code], isHoliday:false };
 
   // 2. Auto-derive from HHMM-HHMM
+  // ─────────────────────────────────────────────────────────────────
+  // CORRECT algorithm: compute intersection of shift window with the
+  // night zone [22:00~07:00], which spans TWO segments in a 0–1440 day:
+  //   Segment A: [22:00, 24:00]  i.e. [1320, 1440]
+  //   Segment B: [00:00, 07:00]  i.e. [0,    420]
+  //
+  // This correctly handles:
+  //   • 0500-1400 → only B overlap: 05:00~07:00 = 2.0 hr
+  //   • 0630-1530 → only B overlap: 06:30~07:00 = 0.5 hr
+  //   • 2330-0830 → A: 22:00~24:00 + B: 00:00~07:00 = 7.5 hr
+  //   • 1700-0200 → A: 22:00~24:00 + B: 00:00~02:00 = 4.0 hr
+  // ─────────────────────────────────────────────────────────────────
   const sh = parseInt(code.slice(0,2)), sm = parseInt(code.slice(2,4));
   const eh = parseInt(code.slice(5,7)), em = parseInt(code.slice(7,9));
   const startMin = sh*60 + sm;
   const endMin   = eh*60 + em;
-  const NS = 22*60;          // 1320 — night zone start
-  const NE7 = 7*60 + 1440;   // 1860 — 07:00 next day (absolute)
+  const NS = 22*60, NE7 = 7*60;   // 1320, 420
 
-  // Normalize shift end to be after shift start
-  const endNorm = (endMin <= startMin) ? endMin + 1440 : endMin;
+  function segOverlap(s1, e1, s2, e2) { return Math.max(0, Math.min(e1,e2) - Math.max(s1,s2)); }
 
-  // Effective night end = min(shift_end, 07:00_nextday)
-  const effEnd = Math.min(endNorm, NE7);
+  let minA, minB;   // minutes of overlap with each segment
+  if (endMin > startMin) {
+    // Non-overnight shift (e.g. 05:00–14:00, 08:00–17:00, 22:00–23:00)
+    minA = segOverlap(startMin, endMin, NS, 1440);    // 22:00–24:00
+    minB = segOverlap(startMin, endMin, 0,  NE7);     // 00:00–07:00
+  } else {
+    // Overnight shift (e.g. 23:30–08:30, 17:00–02:00)
+    minA = segOverlap(startMin, 1440, NS, 1440);      // start–24:00 ∩ 22:00–24:00
+    minB = segOverlap(0, endMin, 0, NE7);             // 00:00–end   ∩ 00:00–07:00
+  }
 
-  // Night start for THIS shift = max(shift_start, 22:00)
-  const nightStart = Math.max(startMin, NS);
+  const maxH = (minA + minB) / 60;
 
-  const maxH = Math.max(0, (effEnd - nightStart) / 60);
-  const ne   = effEnd % 1440;
+  // For display: night interval starts at max(shift_start, 22:00) if seg A,
+  // or shift_start if only seg B
+  const ns = (minA > 0) ? NS : startMin;
+  const ne = (minB > 0) ? NE7 : (endMin > startMin ? endMin : endMin);
 
-  return { ns: nightStart, ne, max: maxH, isHoliday: false };
+  return { ns, ne, max: maxH, isHoliday: false };
 }
 
 // Whether this shift code is excluded from overnight counting (14xx, 15xx start)
@@ -2244,8 +2349,9 @@ function calcRow(r) {
   const {ns, ne, max} = sd;
 
   // Leave deduction — all leave types (特休/事假/病假/公假/喪假/...)
+  // Uses two-segment overlap to correctly handle leaves in the 00:00~07:00 window
   const leaves    = parseLeave(r.note);
-  const deductMin = leaves.reduce((s,[ls,le])=>s+overlapMins(ls,le,ns,ne),0);
+  const deductMin = leaves.reduce((s,[ls,le])=>s+leaveOverlapMins(ls,le,ns,ne),0);
   const nightH    = parseFloat(Math.max(0, max - deductMin/60).toFixed(1));
 
   // Overnight count
@@ -2259,8 +2365,20 @@ function calcRow(r) {
     }
   }
 
-  const neDisp  = ne < ns ? ne+1440 : ne;
-  const interval = `${fmtMin(ns)}–${fmtMin(neDisp%1440)}`;
+  const NS=22*60, NE7=7*60;
+
+  // Build display interval string
+  // For shifts with only segment B (early morning, e.g. 05:00-14:00): show "05:00–07:00"
+  // For shifts with only segment A (e.g. 14:00-23:00): show "22:00–23:00"
+  // For shifts with both A+B (e.g. 23:30-08:30): show "23:30–07:00"
+  let interval;
+  if (sd.max === 0) {
+    interval = '—';
+  } else {
+    const dispNS = fmtMin(ns);
+    const dispNE = fmtMin(ne === 0 ? 0 : ne);   // 0 = midnight display as 00:00
+    interval = `${dispNS}–${dispNE}`;
+  }
 
   return {...r, nightH, overnight,
           deductH: parseFloat((deductMin/60).toFixed(1)),
@@ -2272,8 +2390,8 @@ function calcRow(r) {
 // ══════════════════════════════════════════════════
 function calculate() {
   if (!rawRows.length) return;
-
-  processed = rawRows.map(calcRow);
+  try {
+    processed = rawRows.map(r => { try { return calcRow(r); } catch(e) { return {...r, nightH:0, overnight:0, deductH:0, interval:'—', maxH:0, isNight:false, warn:'計算錯誤'}; } });
 
   // GroupBy name — traverse ALL rows first regardless of night/day
   const map = {};
@@ -2313,6 +2431,13 @@ function calculate() {
 
   // Auto-jump to dashboard
   document.querySelectorAll('.nav')[2].click();
+  } catch(e) {
+    console.error('calculate error:', e);
+    log(`計算過程發生錯誤：${e.message}，請確認上傳資料格式是否正確`, 'err');
+    // Still try to render whatever partial data we have
+    try { renderResult(); } catch(_) {}
+    try { renderDetail(); } catch(_) {}
+  }
 }
 
 function updateSidebar() {
@@ -2358,65 +2483,120 @@ function sort(key) {
 
 // ── Result Table ──
 function renderResult() {
-  const q    = (document.getElementById('r-q')?.value||'').toLowerCase();
-  const dept = document.getElementById('r-dept')?.value||'';
-  const data = aggregated.filter(r=>(!q||r.name.includes(q)||String(r.empId).includes(q))&&(!dept||r.dept===dept));
-  document.getElementById('result-empty').style.display = data.length?'none':'block';
-  document.getElementById('result-data').style.display  = data.length?'block':'none';
-  document.getElementById('result-count').textContent = `共 ${data.length} 人`;
-  document.getElementById('result-tbody').innerHTML = data.map((r,i)=>`
-    <tr>
-      <td class="mono" style="color:var(--ink3)">${String(i+1).padStart(2,'0')}</td>
-      <td class="mono" style="color:var(--ink3);font-size:11px">${r.empId||'—'}</td>
-      <td>${r.dept}</td>
-      <td class="name-cell">${r.name}</td>
-      <td class="tr accent mono">${r.nightHours.toFixed(1)}</td>
-      <td class="tr mono">${r.overnight}</td>
-      <td class="tr mono" style="color:var(--ink3)">${r.nightCount}</td>
-      <td class="tr">${r.deductH>0?`<span class="pill pill-neg">-${r.deductH.toFixed(1)}</span>`:'<span class="pill pill-dim">—</span>'}</td>
-    </tr>`).join('');
+  try {
+    if (!aggregated.length) {
+      document.getElementById('result-empty').style.display = 'block';
+      document.getElementById('result-data').style.display  = 'none';
+      return;
+    }
+    // Data is loaded — ALWAYS show result-data so the search bar stays visible
+    document.getElementById('result-empty').style.display = 'none';
+    document.getElementById('result-data').style.display  = 'block';
+
+    const q    = (document.getElementById('r-q')?.value||'').toLowerCase();
+    const dept = document.getElementById('r-dept')?.value||'';
+    const data = aggregated.filter(r =>
+      (!q    || r.name.includes(q) || String(r.empId).includes(q)) &&
+      (!dept || r.dept===dept)
+    );
+
+    const tbody   = document.getElementById('result-tbody');
+    const tblWrap = tbody.closest('.tbl-wrap');
+    const noMatch = document.getElementById('result-no-match');
+
+    if (data.length) {
+      tblWrap.style.display = '';
+      noMatch.style.display = 'none';
+      document.getElementById('result-count').textContent = `共 ${data.length} 人`;
+      tbody.innerHTML = data.map((r,i)=>`
+        <tr>
+          <td class="mono" style="color:var(--ink3)">${String(i+1).padStart(2,'0')}</td>
+          <td class="mono" style="color:var(--ink3);font-size:11px">${r.empId||'—'}</td>
+          <td>${r.dept}</td>
+          <td class="name-cell">${r.name}</td>
+          <td class="tr accent mono">${r.nightHours.toFixed(1)}</td>
+          <td class="tr mono">${r.overnight}</td>
+          <td class="tr mono" style="color:var(--ink3)">${r.nightCount}</td>
+          <td class="tr">${r.deductH>0?`<span class="pill pill-neg">-${r.deductH.toFixed(1)}</span>`:'<span class="pill pill-dim">—</span>'}</td>
+        </tr>`).join('');
+    } else {
+      tblWrap.style.display = 'none';
+      noMatch.style.display = 'block';
+      document.getElementById('result-count').textContent = '查無結果';
+      tbody.innerHTML = '';
+    }
+  } catch(e) {
+    console.error('renderResult error:', e);
+    const tb = document.getElementById('result-tbody');
+    if (tb) tb.innerHTML = `<tr><td colspan="8" style="color:var(--red);text-align:center;padding:20px;font-size:12px;">顯示錯誤：${e.message}</td></tr>`;
+  }
 }
 
 // ── Detail Table ──
 function renderDetail() {
-  const q         = (document.getElementById('d-q')?.value||'').toLowerCase();
-  const dept      = document.getElementById('d-dept')?.value||'';
-  const shift     = document.getElementById('d-shift')?.value||'';
-  const nightOnly = document.getElementById('d-nightonly')?.checked ?? true;
+  try {
+    if (!processed.length) {
+      document.getElementById('detail-empty').style.display = 'block';
+      document.getElementById('detail-data').style.display  = 'none';
+      return;
+    }
+    // Data is loaded — ALWAYS show detail-data so the search bar stays visible
+    document.getElementById('detail-empty').style.display = 'none';
+    document.getElementById('detail-data').style.display  = 'block';
 
-  const data = processed.filter(r =>
-    (!q     || r.name.includes(q) || String(r.empId).includes(q)) &&
-    (!dept  || r.dept===dept) &&
-    (!shift || r.shift===shift) &&
-    (!nightOnly || r.isNight)
-  );
+    const q         = (document.getElementById('d-q')?.value||'').toLowerCase();
+    const dept      = document.getElementById('d-dept')?.value||'';
+    const shift     = document.getElementById('d-shift')?.value||'';
+    const nightOnly = document.getElementById('d-nightonly')?.checked ?? true;
 
-  document.getElementById('detail-empty').style.display = data.length?'none':'block';
-  document.getElementById('detail-data').style.display  = data.length?'block':'none';
-  document.getElementById('detail-count').textContent   = `共 ${data.length} 筆`;
+    const data = processed.filter(r =>
+      (!q        || r.name.includes(q) || String(r.empId).includes(q)) &&
+      (!dept     || r.dept===dept) &&
+      (!shift    || r.shift===shift) &&
+      (!nightOnly|| r.isNight)
+    );
 
-  const statusColor = s => {
-    if (!s || s==='正常') return 'color:var(--green)';
-    if (s.includes('異常')) return 'color:var(--red)';
-    return 'color:var(--ink3)';
-  };
+    const tbody   = document.getElementById('detail-tbody');
+    const tblWrap = document.getElementById('detail-tbl-wrap');
+    const noMatch = document.getElementById('detail-no-match');
 
-  document.getElementById('detail-tbody').innerHTML = data.map(p=>`
-    <tr>
-      <td>${p.dept}</td>
-      <td class="mono" style="font-size:10px;color:var(--ink3)">${p.empId||'—'}</td>
-      <td class="name-cell">${p.name}</td>
-      <td><span class="pill">${p.shift||'—'}</span></td>
-      <td class="mono" style="font-size:11px;color:var(--ink3)">${p.date||'—'}</td>
-      <td class="mono" style="font-size:11px">${fmtMin(toMin(p.cin))}</td>
-      <td class="mono" style="font-size:11px">${fmtMin(toMin(p.cout))}</td>
-      <td class="mono" style="font-size:10px;color:var(--ink3)">${p.interval}</td>
-      <td class="tr accent mono">${p.nightH.toFixed(1)}</td>
-      <td class="tr">${p.deductH>0?`<span class="pill pill-neg">-${p.deductH.toFixed(1)}</span>`:'<span class="pill pill-dim">—</span>'}</td>
-      <td class="tr mono">${p.overnight}</td>
-      <td style="font-size:11px;color:var(--ink3);max-width:150px;overflow:hidden;text-overflow:ellipsis">${p.note||''}</td>
-      <td style="font-size:10px;font-family:var(--mono);${statusColor(p.status)}">${p.status||''}</td>
-    </tr>`).join('');
+    const statusColor = s => {
+      if (!s || s==='正常') return 'color:var(--green)';
+      if (s.includes('異常')) return 'color:var(--red)';
+      return 'color:var(--ink3)';
+    };
+
+    if (data.length) {
+      tblWrap.style.display = '';
+      noMatch.style.display = 'none';
+      document.getElementById('detail-count').textContent = `共 ${data.length} 筆`;
+      tbody.innerHTML = data.map(p=>`
+        <tr>
+          <td>${p.dept}</td>
+          <td class="mono" style="font-size:10px;color:var(--ink3)">${p.empId||'—'}</td>
+          <td class="name-cell">${p.name}</td>
+          <td><span class="pill">${p.shift||'—'}</span></td>
+          <td class="mono" style="font-size:11px;color:var(--ink3)">${p.date||'—'}</td>
+          <td class="mono" style="font-size:11px">${fmtMin(toMin(p.cin))}</td>
+          <td class="mono" style="font-size:11px">${fmtMin(toMin(p.cout))}</td>
+          <td class="mono" style="font-size:10px;color:var(--ink3)">${p.interval}</td>
+          <td class="tr accent mono">${p.nightH.toFixed(1)}</td>
+          <td class="tr">${p.deductH>0?`<span class="pill pill-neg">-${p.deductH.toFixed(1)}</span>`:'<span class="pill pill-dim">—</span>'}</td>
+          <td class="tr mono">${p.overnight}</td>
+          <td style="font-size:11px;color:var(--ink3);max-width:150px;overflow:hidden;text-overflow:ellipsis">${p.note||''}</td>
+          <td style="font-size:10px;font-family:var(--mono);${statusColor(p.status)}">${p.status||''}</td>
+        </tr>`).join('');
+    } else {
+      tblWrap.style.display = 'none';
+      noMatch.style.display = 'block';
+      document.getElementById('detail-count').textContent = '查無結果';
+      tbody.innerHTML = '';
+    }
+  } catch(e) {
+    console.error('renderDetail error:', e);
+    const tb = document.getElementById('detail-tbody');
+    if (tb) tb.innerHTML = `<tr><td colspan="13" style="color:var(--red);text-align:center;padding:20px;font-size:12px;">顯示錯誤：${e.message}</td></tr>`;
+  }
 }
 
 // ══════════════════════════════════════════════════
