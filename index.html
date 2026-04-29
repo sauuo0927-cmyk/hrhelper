@@ -1443,68 +1443,26 @@ input[type=file]{display:none;}
 // ════════════════════════════════════════════════
 // ══ 登入邏輯 ══
 // ════════════════════════════════════════════════
-async function doLogin() {
+const _CRED = { u: 'reyi', p: 'Reyi8741' };
+
+function doLogin() {
   const u = document.getElementById('login-user').value.trim();
   const p = document.getElementById('login-pass').value;
   const err = document.getElementById('login-error');
-  const btn = document.querySelector('.login-btn');
-
-  if (!u || !p) {
-    _showLoginError('請輸入帳號與密碼');
-    return;
-  }
-  if (u.length > 15) { _showLoginError('帳號不得超過 15 字元'); return; }
-  if (p.length > 30) { _showLoginError('密碼不得超過 30 字元'); return; }
-
-  // 防止重複提交
-  btn.disabled = true;
-  btn.textContent = '驗證中…';
-
-  try {
-    const res = await fetch('https://eip.fme.com.tw/FMEIP/AasApi/CheckUserId', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ USER_ID: u, PSW: p }),
-      signal: AbortSignal.timeout(10000)
-    });
-
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-    const data = await res.json();
-    const code = (data.MSG || '').split(' ')[0];
-
-    if (code === '000') {
-      // 登入成功
-      err.style.display = 'none';
-      const overlay = document.getElementById('login-overlay');
-      overlay.classList.add('hidden');
-      setTimeout(() => overlay.remove(), 380);
-    } else {
-      const msgMap = {
-        '100': '帳號或密碼錯誤，請重新輸入',
-        '200': 'AD 認證錯誤，請聯絡系統管理員',
-        '998': '資料庫連線異常，請稍後再試',
-      };
-      _showLoginError(msgMap[code] || '系統發生錯誤，請聯絡管理員');
-      document.getElementById('login-pass').value = '';
-      document.getElementById('login-pass').focus();
-    }
-  } catch (e) {
-    _showLoginError('無法連線至驗證伺服器，請確認網路後重試');
+  if (u === _CRED.u && p === _CRED.p) {
+    err.style.display = 'none';
+    const overlay = document.getElementById('login-overlay');
+    overlay.classList.add('hidden');
+    setTimeout(() => overlay.remove(), 380);
+  } else {
+    err.style.display = 'block';
+    // re-trigger shake animation
+    err.style.animation = 'none';
+    void err.offsetWidth;
+    err.style.animation = 'shakeX 0.4s ease';
+    document.getElementById('login-pass').value = '';
     document.getElementById('login-pass').focus();
-  } finally {
-    btn.disabled = false;
-    btn.textContent = '登　入';
   }
-}
-
-function _showLoginError(msg) {
-  const err = document.getElementById('login-error');
-  err.textContent = msg;
-  err.style.display = 'block';
-  err.style.animation = 'none';
-  void err.offsetWidth;
-  err.style.animation = 'shakeX 0.4s ease';
 }
 
 function togglePw() {
