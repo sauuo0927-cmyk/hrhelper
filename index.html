@@ -1490,7 +1490,15 @@ async function doLogin() {
       document.getElementById('login-pass').focus();
     }
   } catch (e) {
-    _showLoginError('無法連線至驗證伺服器，請確認網路後重試');
+    // 診斷 CORS vs 網路錯誤
+    const isCors = e instanceof TypeError;
+    if (isCors) {
+      _showLoginError('⚠ CORS 限制：瀏覽器阻擋跨域請求。此 HTML 須部署在公司內網伺服器（與 EIP 同源），或請 IT 為 EIP API 設定 CORS 白名單後才能正常登入。');
+    } else if (e.name === 'TimeoutError' || e.name === 'AbortError') {
+      _showLoginError('連線逾時（10s），請確認網路後重試');
+    } else {
+      _showLoginError('驗證失敗：' + e.message);
+    }
     document.getElementById('login-pass').focus();
   } finally {
     btn.disabled = false;
